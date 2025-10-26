@@ -98,6 +98,12 @@
       color: var(--navy);
       background: var(--bg-tertiary);
     }
+    nav a.active {
+      color: var(--navy);
+      background: var(--cyan);
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(6, 182, 212, 0.3);
+    }
 
     /* Mobile menu toggle */
     .menu-toggle {
@@ -833,20 +839,8 @@
           <div class="publication">
             <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
             <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
-            <div class="pub-venue">Springer Transactions on Computational Science & Computational Intelligence · March 2024</div>
-            <p class="pub-abstract">Extended journal version of the 2022 conference paper. This work presents novel physical memory attack vectors and proposes a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems. Includes open-source proof-of-concept implementation released for research and industry adoption.</p>
-            <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
-                🎓 Google Scholar
-              </a>
-            </div>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
-            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
-            <div class="pub-venue">CSCE Conference on Computer Science, Computer Engineering, and Applied Computing · 2022</div>
-            <p class="pub-abstract">Conference paper presenting novel physical memory attack vectors and defense mechanisms. Extended and published in Springer Transactions (2024).</p>
+            <div class="pub-venue">Springer Transactions on Computational Science & Computational Intelligence · March 2024 (Extended from CSCE 2022)</div>
+            <p class="pub-abstract">Extended journal version presenting novel physical memory attack vectors and proposing a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems. Includes open-source proof-of-concept implementation released for research and industry adoption.</p>
             <div class="pub-links">
               <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
@@ -917,11 +911,6 @@
               </a>
             </div>
           </div>
-        </div>
-
-        <!-- Featured In -->
-        <div style="margin-top: 60px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Featured In</h3>
 
           <div class="publication">
             <div class="pub-title">Technical Book Reviewer: Security-Driven Software Development</div>
@@ -934,6 +923,11 @@
               </a>
             </div>
           </div>
+        </div>
+
+        <!-- Featured In -->
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Featured In</h3>
 
           <div class="publication">
             <div class="pub-title">IEEE The Institute: Crowdfunding Innovation and Entrepreneurship</div>
@@ -1013,13 +1007,16 @@
         <!-- Patents -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Patents</h3>
+          <p style="text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 16px;">Foundational patents in crowdfunding infrastructure cited by major fintech companies including Square, Capital One, 3M, and cryptocurrency platforms</p>
 
           <div class="grid cols-2">
             <div class="publication">
               <div class="pub-title">Offer Presentation for Crowdfunding</div>
               <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
-              <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014</div>
+              <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, offer presentation systems, and community engagement systems for creative and entrepreneurial ventures.</p>
+              <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
+              <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Square (15+ patents on merchant financing), Capital One (social discovery), 3M (internal crowdfunding), Winklevoss/Gemini (20+ crypto patents), Givling, Angelsoft, and numerous fintech innovations</p>
               <div class="pub-links">
                 <a href="https://patents.justia.com/patent/20140040157" class="pub-link" target="_blank" rel="noopener">
                   📄 View Patent Application
@@ -1030,8 +1027,10 @@
             <div class="publication">
               <div class="pub-title">Beneficiary Crowdsourcing</div>
               <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
-              <div class="pub-venue">USPTO Patent Application · Filed 2013</div>
+              <div class="pub-venue">USPTO Patent Application 20140279645A1 · Filed 2013 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency. Includes beneficiary-focused crowdsourcing mechanisms.</p>
+              <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
+              <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Shanghai Baichou Financial (secondary crowdfunding markets), Heyue Group (fintech platforms), BitPagos/Ripio (crypto payments), and compliance-focused crowdfunding systems</p>
               <div class="pub-links">
                 <a href="https://patents.google.com/?inventor=Alon+Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
                   📄 View on Google Patents
@@ -1430,8 +1429,8 @@
 
             <div class="card">
               <h3>HBK Capital Management</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 · Analyst</p>
-              <p>Financial analyst focused on quantitative trading strategies and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007</p>
+              <p>Quantitative trading and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
             </div>
           </div>
         </div>
@@ -1453,7 +1452,7 @@
               <li><strong>Academic Excellence Award</strong> — NYU Tandon School of Engineering (2024)</li>
               <li><strong>Cyber Fellowship</strong> — NYU Tandon School of Engineering (2024)</li>
               <li><strong>NYU Cyber Fellows Ambassador</strong> — Selected as ambassador for NYU's Cyber Fellows program</li>
-              <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, Advanced Consortium on Cooperation, Conflict, and Complexity (AC4)</li>
+              <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, Advanced Consortium for Cooperation, Conflict, and Complexity (AC4)</li>
               <li><strong>10 Under 10</strong> — Hamilton College Alumni Achievement Award recognizing outstanding early-career impact</li>
               <li><strong>Phi Sigma Iota</strong> — International Foreign Language Honor Society</li>
               <li><strong>IB Excellence Award</strong> — International Baccalaureate Program Distinction</li>
@@ -1541,7 +1540,7 @@
                 <p style="color: var(--navy-light); font-weight: 600;">M.Sc.</p>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation & Conflict Resolution</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2011</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute (AC4)</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute (Advanced Consortium for Cooperation, Conflict, and Complexity)</p>
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Hamilton College</h4>
@@ -1683,6 +1682,17 @@
               <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <p>Exploring the foundations of open economies, crowdsourcing, and collaborative innovation in emerging markets and technology ecosystems.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <div class="card">
+            <h3>World Crowdfunding Conference</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Guiyang, China · 2015 · 13,000 Attendees</p>
+            <div style="margin: 20px 0;">
+              <img src="https://cfpa.org/wp-content/uploads/2016/08/world_5.jpg" alt="World Crowdfunding Conference Guiyang 2015" style="width: 100%; border-radius: 8px;" loading="lazy" />
+            </div>
+            <p>Keynote address at the World Crowdfunding Conference in Guiyang, China, one of the largest global gatherings on crowdfunding and fintech innovation with 13,000 attendees, discussing international crowdfunding markets, regulatory harmonization, and cross-border capital access.</p>
           </div>
         </div>
 
@@ -1958,6 +1968,36 @@
     document.querySelectorAll('.card, .course-card, .publication, .stat-card').forEach(el => {
       observer.observe(el);
     });
+
+    // Active navigation highlighting based on scroll position
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('#mainNav a[href^="#"]');
+
+    function highlightNavigation() {
+      let currentSection = '';
+      const scrollPosition = window.scrollY + 100; // Offset for header
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href').substring(1);
+        if (href === currentSection) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    // Run on scroll and on page load
+    window.addEventListener('scroll', highlightNavigation);
+    window.addEventListener('load', highlightNavigation);
   </script>
 </body>
 </html>
