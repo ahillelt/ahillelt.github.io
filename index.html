@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alon Hillel‑Tuch · Cybersecurity Professor & AI Governance Expert</title>
+  <meta name="description" content="Industry Assistant Professor at NYU Tandon School of Engineering. Expert in cybersecurity, hardware security, AI governance, and AI safety. Former RocketHub co-founder and Stacked Capital managing partner. Research Fellow at Columbia's Earth Institute with expertise in conflict resolution. Congressional testimony on technology policy." />
+  <meta name="theme-color" content="#1e40af" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1e3a8a;
+      --navy-light: #3b82f6;
+      --cyan: #06b6d4;
+      --gold: #f59e0b;
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #e7f0ff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
+
+    a {
+      color: var(--navy-light);
+      text-decoration: none;
+      transition: color .2s ease;
+    }
+    a:hover { color: var(--cyan); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Navigation */
+    header.nav {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      font-size: 20px;
+    }
+    .brand .logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--navy), var(--cyan));
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      font-size: 20px;
+      box-shadow: var(--shadow-md);
+    }
+    nav { display: flex; gap: 4px; }
+    nav a {
+      padding: 10px 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all .2s ease;
+    }
+    nav a:hover {
+      color: var(--navy);
+      background: var(--bg-tertiary);
+    }
+
+    /* Mobile menu toggle */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--navy);
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%);
+      padding: 80px 0 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-text .eyebrow {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.15;
+      color: var(--navy);
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+    .tagline {
+      font-size: 19px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .tagline strong { color: var(--text); }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0;
+    }
+    .chip {
+      background: white;
+      color: var(--navy);
+      border: 1.5px solid var(--navy-light);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-weight: 700;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all .2s ease;
+      box-shadow: var(--shadow);
+    }
+    .btn.primary {
+      background: var(--navy);
+      color: white;
+      border: 2px solid var(--navy);
+    }
+    .btn.primary:hover {
+      background: var(--navy-light);
+      border-color: var(--navy-light);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .btn.secondary {
+      background: white;
+      color: var(--navy);
+      border: 2px solid var(--navy);
+    }
+    .btn.secondary:hover {
+      background: var(--navy);
+      color: white;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .portrait {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      display: grid;
+      place-items: center;
+    }
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .portrait svg {
+      color: var(--navy-light);
+    }
+
+    /* Stats */
+    .stats {
+      padding: 60px 0;
+      background: var(--bg-secondary);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 32px 24px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      transition: all .3s ease;
+      border: 1px solid var(--border);
+    }
+    .stat-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+    .stat-number {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+    }
+    .stat-label {
+      font-size: 15px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    /* Sections */
+    section { padding: 80px 0; }
+    .section-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 60px;
+    }
+    .section-title {
+      font-size: clamp(32px, 4vw, 44px);
+      color: var(--navy);
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Cards */
+    .grid { display: grid; gap: 28px; }
+    .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      transition: all .3s ease;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--navy-light);
+      transform: translateY(-4px);
+    }
+    .card h3 {
+      font-size: 24px;
+      color: var(--navy);
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+    .card h4 {
+      font-size: 18px;
+      color: var(--navy-light);
+      margin: 20px 0 12px;
+      font-weight: 700;
+    }
+    .card p {
+      color: var(--text-muted);
+      margin: 12px 0;
+      line-height: 1.7;
+    }
+    .card ul {
+      margin: 16px 0 0 24px;
+      color: var(--text-muted);
+    }
+    .card li {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+
+    /* Badges */
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .badge.cae {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .badge.capstone {
+      background: #ede9fe;
+      color: #5b21b6;
+      border: 1px solid #c4b5fd;
+    }
+    .badge.core {
+      background: #cffafe;
+      color: #155e75;
+      border: 1px solid #67e8f9;
+    }
+    .badge.grad {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    .badge.lab {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+    }
+
+    /* Course Cards */
+    .course-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+      transition: all .3s ease;
+    }
+    .course-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--navy-light);
+    }
+    .course-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+    .course-code {
+      font-family: 'Inter', monospace;
+      font-size: 13px;
+      color: var(--navy-light);
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .enrollment {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Year Tabs */
+    .year-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .year-tab {
+      padding: 12px 24px;
+      border-radius: 10px;
+      background: white;
+      border: 2px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s ease;
+      font-size: 15px;
+    }
+    .year-tab:hover {
+      border-color: var(--navy-light);
+      color: var(--navy);
+    }
+    .year-tab.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Publications */
+    .publication {
+      padding: 28px;
+      background: white;
+      border-left: 4px solid var(--navy-light);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      transition: all .3s ease;
+    }
+    .publication:hover {
+      box-shadow: var(--shadow-md);
+      border-left-color: var(--cyan);
+      transform: translateX(4px);
+    }
+    .pub-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .pub-authors {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .pub-venue {
+      font-size: 14px;
+      color: var(--navy-light);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .pub-abstract {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 12px 0;
+    }
+    .pub-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .pub-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--navy-light);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      transition: all .2s ease;
+    }
+    .pub-link:hover {
+      background: var(--navy);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .filter-tab {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: white;
+      border: 2px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .filter-tab:hover {
+      border-color: var(--navy-light);
+      color: var(--navy);
+    }
+    .filter-tab.active {
+      background: var(--navy-light);
+      border-color: var(--navy-light);
+      color: white;
+    }
+
+    /* Video */
+    .video-wrapper {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin: 20px 0;
+      border: 1px solid var(--border);
+    }
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Partnerships */
+    .logo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+    .partner-logo {
+      height: 40px;
+      opacity: .7;
+      transition: all .3s ease;
+      filter: grayscale(100%);
+    }
+    .partner-logo:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+      transform: scale(1.1);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 40px;
+      margin-top: 80px;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-section h4 {
+      color: var(--navy);
+      margin-bottom: 16px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .footer-section ul {
+      list-style: none;
+    }
+    .footer-section li {
+      margin: 10px 0;
+    }
+    .footer-section a {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    .footer-section a:hover {
+      color: var(--navy);
+    }
+    .footer-bottom {
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-in {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .year-content, .filter-content {
+      display: none;
+    }
+    .year-content.active, .filter-content.active {
+      display: block;
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; }
+      .course-header { flex-direction: column; align-items: start; }
+
+      nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        padding: 16px;
+        box-shadow: var(--shadow-md);
+      }
+      nav.active { display: flex; }
+      .menu-toggle { display: block; }
+    }
+
+    /* Accent sections */
+    .accent-bg {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Alon Hillel‑Tuch",
+    "url": "https://ahillelt.github.io/",
+    "affiliation": [{"@type":"CollegeOrUniversity","name":"NYU Tandon School of Engineering"}],
+    "jobTitle": "Industry Assistant Professor, Computer Science and Engineering",
+    "sameAs": [
+      "https://engineering.nyu.edu/faculty/alon-hillel-tuch",
+      "https://github.com/ahillelt",
+      "https://x.com/ahillelt",
+      "https://www.linkedin.com/in/ahillelt/"
+    ],
+    "knowsAbout": ["cybersecurity","hardware security","AI governance","AI safety","cryptography","conflict resolution","human‑AI interaction","resilience","socio‑technical systems","crowdfunding","fintech","technology policy"],
+    "alumniOf": ["New York University","Columbia University","Hamilton College"]
+  }
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="logo">AH</div>
+        <div>Alon Hillel‑Tuch</div>
+      </div>
+      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
+      <nav id="mainNav">
+        <a href="#about">About</a>
+        <a href="#research">Research</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#labs">Labs & Centers</a>
+        <a href="#industry">Industry</a>
+        <a href="#credentials">Credentials</a>
+        <a href="#press">Press</a>
+        <a href="#talks">Speaking</a>
+        <a href="#partnerships">Partnerships</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <span class="eyebrow">Academia × Industry Leadership</span>
+            <h1>Cybersecurity research, education, and AI governance</h1>
+            <p class="tagline">Industry Assistant Professor at <strong>NYU Tandon School of Engineering</strong>, specializing in <strong>cybersecurity</strong>, <strong>hardware security</strong>, <strong>AI governance</strong>, and <strong>AI safety</strong>. Former co-founder of <strong>RocketHub</strong> and Managing Partner at <strong>Stacked Capital</strong>. Research Fellow at Columbia's Earth Institute with expertise in conflict resolution and technology policy. Congressional testimony expert on financial innovation.</p>
+            <div class="chips">
+              <span class="chip">Hardware Security</span>
+              <span class="chip">Cryptography</span>
+              <span class="chip">AI Governance</span>
+              <span class="chip">AI Safety</span>
+              <span class="chip">Conflict Resolution</span>
+              <span class="chip">Tech Policy</span>
+              <span class="chip">Venture Capital</span>
+            </div>
+            <div class="cta">
+              <a href="#contact" class="btn primary">Get in Touch</a>
+              <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener">NYU Profile</a>
+            </div>
+          </div>
+          <div class="portrait">
+            <!-- Replace with actual photo -->
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.761 0 5-2.686 5-6S14.761 0 12 0 7 2.686 7 6s2.239 6 5 6Zm0 2c-4.418 0-8 2.91-8 6.5V24h16v-3.5C20 16.91 16.418 14 12 14Z" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Students Taught</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">18+</div>
+            <div class="stat-label">Years Industry</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">2</div>
+            <div class="stat-label">Congressional Testimonies</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">CAE</div>
+            <div class="stat-label">NSA Certified Programs</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">About</h2>
+          <p class="section-subtitle">Bridging academic rigor with real-world industry impact</p>
+        </div>
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>Academic Mission</h3>
+            <p>As Industry Assistant Professor at NYU Tandon School of Engineering, I teach graduate courses in cybersecurity and computer networking, mentor students through the OSIRIS Lab, and conduct research at the intersection of hardware security, cryptographic systems, <strong>AI governance</strong>, and AI safety.</p>
+            <p>My research explores physical hardware security, computational intelligence, and the societal implications of emerging technologies. Drawing on my background in <strong>conflict resolution</strong> from Columbia's Earth Institute, I examine how technical systems interact with human decision-making and governance structures.</p>
+            <h4>Research Focus</h4>
+            <p><strong>AI Governance & Policy:</strong> Developing frameworks for responsible AI deployment, examining governance mechanisms for AI systems, and advising on regulatory approaches that balance innovation with societal safety.</p>
+            <h4>Teaching Philosophy</h4>
+            <p>Security education must be experiential and hands-on. Students learn best by breaking systems, building defenses, and understanding the socio-technical context in which technology operates.</p>
+          </div>
+          <div class="card">
+            <h3>Industry Leadership</h3>
+            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
+            <p>As Managing Partner at <strong>Stacked Capital</strong>, invested in deep-tech ventures focusing on hardware security, AI infrastructure, and critical systems resilience.</p>
+            <p>Testified twice before U.S. House subcommittees on the JOBS Act implementation, and co-authored three whitepapers on crowdfunding regulation submitted to Congress, SEC, and FINRA.</p>
+            <h4>Consulting & Advisory</h4>
+            <p>Available for strategic consulting on security architecture, threat modeling, applied cryptography, and building security-conscious engineering cultures.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research -->
+    <section id="research" class="accent-bg">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Research & Publications</h2>
+          <p class="section-subtitle">Applied security research addressing real-world challenges</p>
+        </div>
+
+        <!-- Research Areas -->
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Hardware & Physical Security</h3>
+            <p>Fault injection attacks, side-channel analysis, hardware trojans, and practical defenses for embedded systems and IoT devices in resource-constrained environments.</p>
+          </div>
+          <div class="card">
+            <h3>Applied Cryptography</h3>
+            <p>Misuse-resistant cryptographic APIs, secure protocol design, and making strong cryptography accessible to developers through secure-by-default systems.</p>
+          </div>
+          <div class="card">
+            <h3>AI Governance & Safety</h3>
+            <p>Governance frameworks for responsible AI deployment, operational safety in AI systems, regulatory policy development, adversarial robustness, and designing decision-support tools aligned with human values. Combining technical expertise with conflict resolution methodologies to address AI alignment challenges.</p>
+          </div>
+          <div class="card">
+            <h3>Critical Infrastructure</h3>
+            <p>Failure modes in complex socio-technical systems, graceful degradation under attack, and recovery strategies for essential services.</p>
+          </div>
+          <div class="card">
+            <h3>Security Governance</h3>
+            <p>Policy frameworks, standards development, and incentive structures that encourage responsible innovation and security investment.</p>
+          </div>
+          <div class="card">
+            <h3>Education at Scale</h3>
+            <p>Curriculum design, hands-on lab development, and making advanced security concepts accessible to working professionals.</p>
+          </div>
+        </div>
+
+        <!-- Publications -->
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Papers Published</h3>
+
+          <div class="publication">
+            <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
+            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
+            <div class="pub-venue">Conference Paper · 2024</div>
+            <p class="pub-abstract">This work presents novel physical memory attack vectors and proposes a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems.</p>
+            <div class="pub-links">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+                🎓 Google Scholar
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Data Siphoning Through Advanced Persistent Transmission Attacks At The Physical Layer</div>
+            <div class="pub-authors">Alon Hillel-Tuch</div>
+            <div class="pub-venue">SSRN Electronic Journal · May 2021</div>
+            <p class="pub-abstract">This paper explores data exfiltration dynamics across complex networked systems, examining how sophisticated attackers establish persistent transmission flows at the physical layer that evade traditional network security detection mechanisms. Focus on nation-state level threats and defense strategies.</p>
+            <div class="pub-links">
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener">
+                📄 Read Paper (SSRN)
+              </a>
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+                🎓 Google Scholar
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Priority Based Soft-Solution for Operating System Integrity Due To Randomized Hardware Faults At The Transistor Level</div>
+            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmsted</div>
+            <div class="pub-venue">Conference Paper · December 2021</div>
+            <p class="pub-abstract">Proposes a priority-based software solution to maintain operating system integrity when facing randomized hardware faults at the transistor level, addressing critical reliability challenges in modern computing systems.</p>
+            <div class="pub-links">
+              <a href="https://www.researchgate.net/profile/Alon-Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
+                📄 ResearchGate
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Implementation of Crowdfunding in the United States: Regulatory and Market Challenges</div>
+            <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
+            <div class="pub-venue">Conference Paper · 2014</div>
+            <p class="pub-abstract">Analysis of crowdfunding platform implementation challenges following the JOBS Act passage, examining regulatory compliance frameworks, market structure evolution, and investor protection mechanisms in emerging equity crowdfunding markets.</p>
+            <div class="pub-links">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+                🎓 Google Scholar
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Crowdfunding Platform Architecture and Regulatory Frameworks</div>
+            <div class="pub-authors">Alon Hillel-Tuch, Vladimir Vukicevic</div>
+            <div class="pub-venue">Conference Paper · 2012</div>
+            <p class="pub-abstract">Explores technical and regulatory architectures for crowdfunding platforms, proposing frameworks for balancing innovation, market efficiency, and compliance with emerging securities regulations under the JOBS Act.</p>
+            <div class="pub-links">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+                🎓 Google Scholar
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Developing Focal Point Networks for State-Centered Genocide Prevention</div>
+            <div class="pub-authors">Alon Hillel-Tuch</div>
+            <div class="pub-venue">SSRN Electronic Journal · May 2011</div>
+            <p class="pub-abstract">Examines the development of focal point networks as mechanisms for state-centered genocide prevention, exploring coordination strategies and institutional frameworks for early intervention.</p>
+            <div class="pub-links">
+              <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=1820862" class="pub-link" target="_blank" rel="noopener">
+                📄 Read Paper (SSRN)
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured In -->
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Featured In</h3>
+
+          <div class="publication">
+            <div class="pub-title">IEEE The Institute: Crowdfunding Innovation and Entrepreneurship</div>
+            <div class="pub-authors">Featured Profile: Alon Hillel-Tuch</div>
+            <div class="pub-venue">IEEE The Institute · Volume 41, Issue 3</div>
+            <p class="pub-abstract">IEEE feature article on crowdfunding platform innovation, entrepreneurial technology development, and the intersection of engineering, business, and regulatory policy in emerging financial markets.</p>
+            <div class="pub-links">
+              <a href="https://ethw.org/w/images/8/8b/Tisep17.pdf" class="pub-link" target="_blank" rel="noopener">
+                📄 Read Article (PDF)
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Wired Magazine: Ways to Change the World</div>
+            <div class="pub-authors">Guest Editors: Bill Clinton & Bill Gates</div>
+            <div class="pub-venue">Wired Magazine · Special Edition</div>
+            <p class="pub-abstract">Featured in Wired Magazine's special "Ways to Change the World" edition guest-edited by Bill Clinton and Bill Gates, highlighting crowdfunding innovation and democratizing access to capital for entrepreneurs and changemakers globally.</p>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">AARP: Crowdfunding for Social Impact</div>
+            <div class="pub-authors">Featured Expert: Alon Hillel-Tuch</div>
+            <div class="pub-venue">AARP Publication</div>
+            <p class="pub-abstract">Featured expert commentary on crowdfunding platforms enabling social entrepreneurs and community-driven projects, exploring how technology democratizes capital access for purpose-driven ventures.</p>
+          </div>
+        </div>
+
+        <!-- Patents -->
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Patents</h3>
+
+          <div class="grid cols-2">
+            <div class="publication">
+              <div class="pub-title">Systems and Methods for Crowdfunding Creative Projects</div>
+              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
+              <div class="pub-venue">U.S. Patent</div>
+              <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, and community engagement systems for creative and entrepreneurial ventures.</p>
+              <div class="pub-links">
+                <a href="https://patents.google.com/" class="pub-link" target="_blank" rel="noopener">
+                  📄 View on Google Patents
+                </a>
+              </div>
+            </div>
+
+            <div class="publication">
+              <div class="pub-title">Equity Crowdfunding Platform and Regulatory Compliance System</div>
+              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
+              <div class="pub-venue">U.S. Patent</div>
+              <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency.</p>
+              <div class="pub-links">
+                <a href="https://patents.google.com/" class="pub-link" target="_blank" rel="noopener">
+                  📄 View on Google Patents
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Teaching -->
+    <section id="teaching">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Teaching</h2>
+          <p class="section-subtitle">Hands-on cybersecurity education preparing students for industry challenges</p>
+        </div>
+
+        <!-- Year Tabs -->
+        <div class="year-tabs">
+          <button class="year-tab active" onclick="switchYear('2025')">2025</button>
+          <button class="year-tab" onclick="switchYear('2024')">2024</button>
+          <button class="year-tab" onclick="switchYear('2023')">2023</button>
+          <button class="year-tab" onclick="switchYear('all')">All Years</button>
+        </div>
+
+        <!-- 2025 Courses -->
+        <div id="year-2025" class="year-content active">
+          <div class="course-card">
+            <div class="course-header">
+              <div>
+                <div class="course-code">CS-GY 6843</div>
+                <h3>Application Security</h3>
+              </div>
+              <div class="enrollment">~45 students</div>
+            </div>
+            <div class="badges">
+              <span class="badge core">Core Masters</span>
+              <span class="badge capstone">Capstone</span>
+              <span class="badge cae">CAE-Operations</span>
+              <span class="badge cae">CAE-Defense</span>
+              <span class="badge grad">Graduate</span>
+              <span class="badge lab">Hands-on Labs</span>
+            </div>
+            <p>Comprehensive coverage of secure software development, OWASP Top 10 vulnerabilities, exploit mitigation techniques, security testing, and integrating security into the SDLC. Students complete CTF challenges and build secure applications from scratch.</p>
+            <h4>Key Topics</h4>
+            <ul>
+              <li>Secure coding practices and defensive programming</li>
+              <li>Web application vulnerabilities (XSS, CSRF, SQLi, SSRF)</li>
+              <li>Authentication & authorization systems</li>
+              <li>Cryptographic implementation and API security</li>
+              <li>Security testing and static/dynamic analysis</li>
+            </ul>
+          </div>
+
+          <div class="course-card">
+            <div class="course-header">
+              <div>
+                <div class="course-code">CS-GY 6903</div>
+                <h3>Computer Networking</h3>
+              </div>
+              <div class="enrollment">~60 students</div>
+            </div>
+            <div class="badges">
+              <span class="badge cae">CAE-Operations</span>
+              <span class="badge cae">CAE-Defense</span>
+              <span class="badge grad">Graduate</span>
+              <span class="badge lab">Hands-on Labs</span>
+            </div>
+            <p>Complete study of network protocols, architectures, and security from physical to application layer. Emphasis on practical implementation, protocol analysis, and network security fundamentals.</p>
+            <h4>Key Topics</h4>
+            <ul>
+              <li>TCP/IP stack and protocol analysis</li>
+              <li>Routing algorithms and network architecture</li>
+              <li>Network security and encryption (TLS, VPNs)</li>
+              <li>Software-defined networking and cloud infrastructure</li>
+              <li>Performance analysis and troubleshooting</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2024 Courses -->
+        <div id="year-2024" class="year-content">
+          <div class="course-card">
+            <div class="course-header">
+              <div>
+                <div class="course-code">CS-GY 6843</div>
+                <h3>Application Security</h3>
+              </div>
+              <div class="enrollment">~50 students · Spring & Fall 2024</div>
+            </div>
+            <div class="badges">
+              <span class="badge core">Core Masters</span>
+              <span class="badge capstone">Capstone</span>
+              <span class="badge cae">CAE-Operations</span>
+              <span class="badge cae">CAE-Defense</span>
+              <span class="badge grad">Graduate</span>
+            </div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-header">
+              <div>
+                <div class="course-code">CS-GY 6903</div>
+                <h3>Computer Networking</h3>
+              </div>
+              <div class="enrollment">~55 students · Spring & Fall 2024</div>
+            </div>
+            <div class="badges">
+              <span class="badge cae">CAE-Operations</span>
+              <span class="badge cae">CAE-Defense</span>
+              <span class="badge grad">Graduate</span>
+              <span class="badge lab">Hands-on Labs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2023 Courses -->
+        <div id="year-2023" class="year-content">
+          <div class="course-card">
+            <div class="course-header">
+              <div>
+                <div class="course-code">CS-GY 6843</div>
+                <h3>Application Security</h3>
+              </div>
+              <div class="enrollment">~40 students · Fall 2023</div>
+            </div>
+            <div class="badges">
+              <span class="badge core">Core Masters</span>
+              <span class="badge grad">Graduate</span>
+            </div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-header">
+              <div>
+                <div class="course-code">CS-GY 6903</div>
+                <h3>Computer Networking</h3>
+              </div>
+              <div class="enrollment">~48 students · Spring 2023</div>
+            </div>
+            <div class="badges">
+              <span class="badge grad">Graduate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Years -->
+        <div id="year-all" class="year-content">
+          <div class="card">
+            <h3 style="margin-bottom: 24px;">All Courses by Year</h3>
+
+            <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">2025</h4>
+            <ul style="margin-left: 24px;">
+              <li><strong>Application Security (CS-GY 6843)</strong> — ~45 students</li>
+              <li><strong>Computer Networking (CS-GY 6903)</strong> — ~60 students</li>
+            </ul>
+            <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~105 students</p>
+
+            <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 12px;">2024</h4>
+            <ul style="margin-left: 24px;">
+              <li><strong>Application Security (CS-GY 6843)</strong> — ~50 students (Spring & Fall)</li>
+              <li><strong>Computer Networking (CS-GY 6903)</strong> — ~55 students (Spring & Fall)</li>
+            </ul>
+            <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~105 students</p>
+
+            <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 12px;">2023</h4>
+            <ul style="margin-left: 24px;">
+              <li><strong>Application Security (CS-GY 6843)</strong> — ~40 students (Fall)</li>
+              <li><strong>Computer Networking (CS-GY 6903)</strong> — ~48 students (Spring)</li>
+            </ul>
+            <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~88 students</p>
+
+            <div style="margin-top: 32px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
+              <h4 style="color: var(--navy); margin-bottom: 12px;">Course Overview</h4>
+              <p><strong>Application Security (CS-GY 6843)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified curriculum focusing on secure coding, web security, and application threat modeling</p>
+              <p style="margin-top: 12px;"><strong>Computer Networking (CS-GY 6903)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, emphasizing protocol analysis, network security, and hands-on labs</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 40px;">
+            <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 24px;">Student Success</h3>
+            <div class="grid cols-3">
+              <div class="card">
+                <h3>Industry Placements</h3>
+                <p>Alumni at Google, Microsoft, Meta, Amazon, Stripe, Palantir, Two Sigma, and leading cybersecurity firms.</p>
+              </div>
+              <div class="card">
+                <h3>Research Mentees</h3>
+                <p>Supervising independent research in hardware security, secure protocols, and AI safety with several conference publications.</p>
+              </div>
+              <div class="card">
+                <h3>Notable Projects</h3>
+                <p>Hardware trojan detection using ML, Signal protocol implementation with formal verification, and secure IoT frameworks.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Labs & Centers -->
+    <section id="labs" class="accent-bg">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Labs & Centers</h2>
+          <p class="section-subtitle">Leading cybersecurity research and education initiatives</p>
+        </div>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>OSIRIS Lab</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">NYU Tandon · Faculty Director</p>
+            <p>OSIRIS (Organization for Security and Intelligence Research In Systems) is NYU's student-run offensive security research lab. Students compete in international CTF competitions, conduct independent security research, and develop cutting-edge security tools.</p>
+            <h4>Lab Activities</h4>
+            <ul>
+              <li>Capture The Flag (CTF) competitions and training</li>
+              <li>Independent security research projects</li>
+              <li>Tool development and open-source contributions</li>
+              <li>Weekly seminars and workshops</li>
+              <li>Collaboration with industry security teams</li>
+            </ul>
+            <p style="margin-top: 16px;"><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener" style="font-weight: 700;">Explore OSIRIS Lab →</a></p>
+          </div>
+
+          <div class="card">
+            <h3>Center for Cyber Security (CCS)</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">NYU Tandon · Faculty Member</p>
+            <p>The Center for Cybersecurity at NYU Tandon is a hub for interdisciplinary research, education, and public engagement in cybersecurity. The center brings together faculty, students, and industry partners to address critical security challenges.</p>
+            <h4>Center Focus Areas</h4>
+            <ul>
+              <li>Applied cryptography and secure systems</li>
+              <li>Network and software security</li>
+              <li>Privacy-enhancing technologies</li>
+              <li>Security policy and governance</li>
+              <li>Industry partnerships and workforce development</li>
+            </ul>
+            <p style="margin-top: 16px;"><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener" style="font-weight: 700;">Visit CCS Website →</a></p>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <div class="card">
+            <h3>CAE Designations</h3>
+            <p>NYU Tandon holds prestigious National Security Agency (NSA) and Department of Homeland Security (DHS) designations as a Center of Academic Excellence in Cyber Defense (CAE-CD) and Cyber Operations (CAE-CO), recognizing our comprehensive cybersecurity curriculum and research excellence.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">
+              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Defense</div>
+              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Operations</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Industry -->
+    <section id="industry">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Industry Impact</h2>
+          <p class="section-subtitle">Entrepreneurship, venture capital, and technology policy leadership</p>
+        </div>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>RocketHub · Co-Founder, CFO & CTO</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2010 - 2015 · Acquired</p>
+            <p>Co-founded one of the first global crowdfunding platforms, pioneering equity crowdfunding under the JOBS Act. Facilitated over $50M in funding across 30,000+ projects serving 500K+ users.</p>
+            <h4>Key Achievements</h4>
+            <ul>
+              <li>Built secure fintech platform with zero major security incidents</li>
+              <li>Developed compliance frameworks for emerging crowdfunding regulations</li>
+              <li>Designed fraud detection and AML systems</li>
+              <li>Led partnerships with White House, U.S. State Department, Microsoft, Cisco, Chrysler, and Fulbright Foundation</li>
+              <li>Successfully exited through acquisition in 2015</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Stacked Capital · Managing Partner</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2015 - Present</p>
+            <p>Early-stage venture capital focused on deep tech: hardware, AI infrastructure, and resilient systems. Invested in companies building critical technologies at the intersection of security, scalability, and societal impact.</p>
+            <h4>Investment Focus</h4>
+            <ul>
+              <li>Hardware security and embedded systems</li>
+              <li>AI/ML infrastructure and operational safety</li>
+              <li>Critical infrastructure resilience</li>
+              <li>Developer tools and security-by-default platforms</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Strategic Partnerships</h3>
+          <div class="card">
+            <p style="text-align: center; margin-bottom: 32px; color: var(--text-muted);">Collaborated with leading institutions on innovation, entrepreneurship, security education, and technology policy:</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center;">
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">U.S. Department of State</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">White House</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Microsoft</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Cisco</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Chrysler</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Fulbright Foundation</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">American Express</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Additional Career Experience</h3>
+
+          <div class="grid cols-3">
+            <div class="card">
+              <h3>BCMS Corporate</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · PGT Department Head</p>
+              <p>Led the Portfolio and Global Trading department at BCMS Corporate, managing complex financial portfolios and implementing risk management strategies across international markets.</p>
+            </div>
+
+            <div class="card">
+              <h3>PlayerNet</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2009 - 2010 · Interim CTO</p>
+              <p>Served as Interim Chief Technology Officer, overseeing technology infrastructure, platform architecture, and engineering teams during critical growth phase.</p>
+            </div>
+
+            <div class="card">
+              <h3>HBK Capital Management</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 · Analyst</p>
+              <p>Financial analyst focused on quantitative trading strategies and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Awards & Credentials -->
+    <section id="credentials" class="accent-bg">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Awards & Credentials</h2>
+          <p class="section-subtitle">Recognition for academic excellence, industry leadership, and innovation</p>
+        </div>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>Academic Honors & Research Appointments</h3>
+            <ul style="margin-top: 16px;">
+              <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, advancing interdisciplinary research in conflict resolution, cooperation, and complex adaptive systems at the Advanced Consortium on Cooperation, Conflict, and Complexity (AC4)</li>
+              <li><strong>10 Under 10</strong> — Hamilton College Alumni Achievement Award recognizing outstanding early-career impact</li>
+              <li><strong>Phi Sigma Iota</strong> — International Foreign Language Honor Society</li>
+              <li><strong>IB Excellence Award</strong> — International Baccalaureate Program Distinction</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Professional Certifications & Appointments</h3>
+            <ul style="margin-top: 16px;">
+              <li><strong>FINRA Capital Markets Series</strong> — Guest Lecturer on Securities Regulation and Crowdfunding</li>
+              <li><strong>Forbes Technology Council</strong> — Founding Member contributing expert analysis on AI, cybersecurity, and innovation</li>
+              <li><strong>Congressional Expert Witness</strong> — Testified before U.S. House committees on technology policy (2012, 2014)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <div class="card">
+            <h3 style="text-align: center; margin-bottom: 24px;">Languages</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
+              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">English <span style="color: var(--text-muted); font-weight: 400;">(Native)</span></span>
+              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Dutch <span style="color: var(--text-muted); font-weight: 400;">(Fluent)</span></span>
+              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Mandarin Chinese <span style="color: var(--text-muted); font-weight: 400;">(Proficient)</span></span>
+              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">German <span style="color: var(--text-muted); font-weight: 400;">(Conversational)</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <div class="card">
+            <h3 style="text-align: center; margin-bottom: 20px;">Education</h3>
+            <div class="grid cols-3" style="margin-top: 24px;">
+              <div style="text-align: center; padding: 20px;">
+                <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">New York University</h4>
+                <p style="color: var(--navy-light); font-weight: 600;">M.Sc. Computer Science</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Cybersecurity & Hardware Security</p>
+              </div>
+              <div style="text-align: center; padding: 20px;">
+                <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Columbia University</h4>
+                <p style="color: var(--navy-light); font-weight: 600;">M.Sc.</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation & Conflict Resolution</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute</p>
+              </div>
+              <div style="text-align: center; padding: 20px;">
+                <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Hamilton College</h4>
+                <p style="color: var(--navy-light); font-weight: 600;">B.A.</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Government · Class of 2007</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Press & Testimony -->
+    <section id="press">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Press & Congressional Testimony</h2>
+          <p class="section-subtitle">Expert witness on technology policy, crowdfunding regulation, and financial innovation</p>
+        </div>
+
+        <div class="grid cols-2">
+          <article class="card">
+            <h3>U.S. House Oversight Committee</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://www.c-span.org/video/standalone/?280562" title="JOBS Act Implementation - Congressional Testimony" allowfullscreen></iframe>
+            </div>
+            <p>Testified on implementing the JOBS Act crowdfunding provisions, balancing innovation with investor protection in emerging fintech markets. Provided expert recommendations on regulatory thresholds and audit requirements.</p>
+            <div class="pub-links" style="margin-top: 16px;">
+              <a href="https://oversight.house.gov/wp-content/uploads/2012/06/6-26-12-TARP-Hillel-Tuch.pdf" class="pub-link" target="_blank" rel="noopener">
+                📄 Written Testimony
+              </a>
+              <a href="https://www.c-span.org/program/house-committee/jobs-act-implementation/280562" class="pub-link" target="_blank" rel="noopener">
+                📺 Watch on C-SPAN
+              </a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>U.S. House Financial Services Committee</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">March 5, 2014</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/105809391" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Provided expert statement on crowdfunding market structure, regulatory frameworks, and the role of technology platforms in democratizing access to capital while maintaining market integrity and investor protection.</p>
+            <h4>Key Policy Recommendations</h4>
+            <ul>
+              <li>Appropriate thresholds for financial audits</li>
+              <li>Platform accountability and transparency requirements</li>
+              <li>Balancing innovation with investor protection</li>
+              <li>International regulatory harmonization</li>
+            </ul>
+            <div class="pub-links" style="margin-top: 16px;">
+              <a href="https://financialservices.house.gov/uploadedfiles/hhrg-113-ba09-wstate-ahilleltuch-20140305.pdf" class="pub-link" target="_blank" rel="noopener">
+                📄 Written Statement
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px;">Media Interviews</h3>
+          <div class="grid cols-3">
+            <article class="card">
+              <h3>NPR Morning Edition</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">May 9, 2014</p>
+              <div class="video-wrapper">
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133615381" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              </div>
+              <p>Interview on NPR's Morning Edition discussing crowdfunding's role in entrepreneurship, regulatory challenges, and the balance between innovation and investor protection in emerging financial markets.</p>
+              <div class="pub-links" style="margin-top: 16px;">
+                <a href="https://www.npr.org/2014/05/09/310832193/crowdfunding-can-help-build-business-but-at-what-cost" class="pub-link" target="_blank" rel="noopener">
+                  🎙️ Listen on NPR
+                </a>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>CCTV Interview</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
+              <div class="video-wrapper">
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133625379" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              </div>
+              <p>International television interview discussing crowdfunding innovation, global market trends, and the democratization of access to capital for entrepreneurs worldwide.</p>
+            </article>
+
+            <article class="card">
+              <h3>Additional Media Coverage</h3>
+              <p style="margin-top: 16px;">Featured expert commentary on crowdfunding, fintech innovation, and technology policy across major media outlets including Bloomberg, Reuters, Wall Street Journal, and international business publications.</p>
+              <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Available for media interviews on cybersecurity, AI governance, technology policy, and financial innovation.</p>
+            </article>
+          </div>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px;">Media & Commentary</h3>
+          <div class="grid cols-3">
+            <div class="card">
+              <h3>Forbes Technology Council</h3>
+              <p>Founding member contributing expert analysis on AI risk, cybersecurity strategy, responsible innovation, and the intersection of technology policy and business.</p>
+              <p><a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" target="_blank" rel="noopener">Read Articles →</a></p>
+            </div>
+
+            <div class="card">
+              <h3>SEC Comment Letters</h3>
+              <p>Formal regulatory comments on proposed crowdfunding rules, providing practitioner perspective on market structure and investor protection mechanisms.</p>
+              <p><a href="https://www.sec.gov/comments/s7-09-13/s70913-206.pdf" target="_blank" rel="noopener">View Letters →</a></p>
+            </div>
+
+            <div class="card">
+              <h3>Whitepapers & Policy</h3>
+              <p>Co-authored three acclaimed whitepapers on JOBS Act implementation submitted to Congress, SEC, and FINRA, influencing crowdfunding policy development.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Speaking -->
+    <section id="talks" class="accent-bg">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Speaking & Presentations</h2>
+          <p class="section-subtitle">Keynotes and invited talks on security, innovation, and technology policy</p>
+        </div>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>TEDx: Emergence of an Alternate Path</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">TEDxNavesink</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Exploring technology adoption cycles, societal impacts, and how innovation creates alternate paths for human progress and social transformation.</p>
+          </div>
+
+          <div class="card">
+            <h3>The Future of Crowdfunding</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Campaigning Summit · Berlin</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/133619613" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Keynote on the evolution of crowdfunding platforms, regulatory frameworks, and the democratization of capital access for entrepreneurs and creators globally.</p>
+          </div>
+
+          <div class="card">
+            <h3>Open Economy Fundamentals</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">CrowdEconomy Conference · Minsk</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p>Exploring the foundations of open economies, crowdsourcing, and collaborative innovation in emerging markets and technology ecosystems.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <div class="card">
+            <h3>Available for Speaking Engagements</h3>
+            <p>I deliver keynotes and participate in panels on topics at the intersection of cybersecurity, technology policy, and responsible innovation.</p>
+            <h4>Speaking Topics</h4>
+            <ul>
+              <li>AI governance: policy frameworks for responsible deployment</li>
+              <li>AI safety and operational security frameworks</li>
+              <li>Hardware security and embedded systems threats</li>
+              <li>Conflict resolution in technology policy and AI alignment</li>
+              <li>Building security-conscious engineering cultures</li>
+              <li>Cryptography for developers: usable security</li>
+              <li>Technology policy and regulatory frameworks</li>
+              <li>From academia to industry: bridging research and practice</li>
+              <li>Critical infrastructure security and resilience</li>
+              <li>Crowdfunding, fintech, and financial innovation</li>
+            </ul>
+            <div class="pub-links" style="margin-top: 16px;">
+              <a href="#contact" class="pub-link">Request Speaking Engagement</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Past Engagements</h3>
+          <div class="grid cols-3">
+            <div class="card">
+              <h3>Academic Conferences</h3>
+              <p>Invited talks at security conferences, academic symposia, and university guest lectures on applied security research and education.</p>
+            </div>
+            <div class="card">
+              <h3>Industry Events</h3>
+              <p>American Express, Campaign Summit, Re.Comm, <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" target="_blank" rel="noopener">Make Innovation Workshop</a>, Maker Faire, and leading fintech and cybersecurity conferences.</p>
+            </div>
+            <div class="card">
+              <h3>Government & Policy</h3>
+              <p>Congressional testimony, regulatory panels, and policy roundtables on technology governance, crowdfunding, and security standards.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Partnership Projects -->
+    <section id="partnerships">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Partnership Projects</h2>
+          <p class="section-subtitle">Collaborative initiatives with leading brands and organizations</p>
+        </div>
+
+        <div class="grid cols-2">
+          <article class="card">
+            <h3>Beacon: Disaster Response Platform</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Salesforce Partnership</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/367493508" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Collaborated with Salesforce to develop Beacon, a technology platform for disaster response and resilience. Built critical communication infrastructure enabling coordination between emergency responders, relief organizations, and affected communities during crisis situations. Integrated secure data systems to maintain operational continuity under adverse conditions.</p>
+          </article>
+
+          <article class="card">
+            <h3>Ovation TV Creative Studio</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Ovation × will.i.am</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/148018050" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Partnered with Ovation TV and will.i.am to launch a creative studio initiative supporting emerging artists and innovators. Built crowdfunding infrastructure and digital platform connecting creators with audiences and funding opportunities.</p>
+          </article>
+
+          <article class="card">
+            <h3>Chrysler Innovation Challenge</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Chrysler Group</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/133416076" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Designed and executed Chrysler's innovation crowdfunding challenge, identifying and supporting automotive technology entrepreneurs. Platform enabled community-driven innovation in vehicle design, sustainability, and manufacturing processes.</p>
+          </article>
+
+          <article class="card">
+            <h3>A&E Network: Project Startup</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">A&E Television</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://player.vimeo.com/video/63913374" title="A&E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p>Technology partner for A&E's Project Startup, a reality show featuring entrepreneurs competing for funding and mentorship. Built the crowdfunding platform integrating viewer engagement with real capital deployment.</p>
+          </article>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Additional Partnerships</h3>
+
+          <div class="grid cols-3">
+            <div class="card">
+              <h3>YALI - Young African Leaders Initiative</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">White House × U.S. Department of State</p>
+              <p>Selected as technology partner for President Obama's Young African Leaders Initiative, building crowdfunding and entrepreneurship programs supporting the next generation of African innovators and changemakers across the continent.</p>
+            </div>
+
+            <div class="card">
+              <h3>Venture for America</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">American Express Innovation Fund</p>
+              <p>Partnered with Venture for America and American Express to support recent college graduates working in startups. Created funding mechanisms and mentorship programs connecting talented entrepreneurs with resources and capital.</p>
+            </div>
+
+            <div class="card">
+              <h3>FreshDirect: Next Big Food Thing</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">FreshDirect Partnership</p>
+              <p>Developed "Next Big Food Thing" crowdfunding initiative with FreshDirect, enabling food entrepreneurs and culinary innovators to bring new products to market through community-backed validation and distribution partnerships.</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 40px;">
+            <div class="card">
+              <h4 style="text-align: center; margin-bottom: 24px;">Additional Brand Collaborations</h4>
+              <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
+                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Microsoft/Bing</span>
+                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Gibson Guitars</span>
+                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Rémy Martin</span>
+                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Popular Science</span>
+                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Bon Appétit</span>
+                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Prezi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Get in Touch</h2>
+          <p class="section-subtitle">Open to research collaboration, consulting engagements, and speaking opportunities</p>
+        </div>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>Academic Collaboration</h3>
+            <p>For research collaboration, student projects, or academic partnerships:</p>
+            <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:ah5647@nyu.edu">ah5647@nyu.edu</a></p>
+            <p><strong>Office:</strong> NYU Tandon School of Engineering</p>
+            <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include a brief description of your research interests, goals, and timeline.</p>
+          </div>
+
+          <div class="card">
+            <h3>Industry & Consulting</h3>
+            <p>For consulting engagements, speaking invitations, or industry partnerships:</p>
+            <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:ah5647@nyu.edu">ah5647@nyu.edu</a></p>
+            <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include your organization, project scope, constraints, and expected outcomes.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 32px;">
+          <h3 style="text-align: center; margin-bottom: 24px;">Connect Online</h3>
+          <div class="cta" style="justify-content: center;">
+            <a href="https://github.com/ahillelt" target="_blank" class="btn secondary" rel="noopener">GitHub</a>
+            <a href="https://x.com/ahillelt" target="_blank" class="btn secondary" rel="noopener">X (Twitter)</a>
+            <a href="https://www.linkedin.com/in/ahillelt/" target="_blank" class="btn secondary" rel="noopener">LinkedIn</a>
+            <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener">NYU Profile</a>
+            <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" class="btn secondary" rel="noopener">Google Scholar</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#teaching">Teaching</a></li>
+            <li><a href="#labs">Labs & Centers</a></li>
+            <li><a href="#industry">Industry</a></li>
+            <li><a href="#credentials">Credentials</a></li>
+            <li><a href="#partnerships">Partnerships</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Academic</h4>
+          <ul>
+            <li><a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" rel="noopener">NYU Faculty Page</a></li>
+            <li><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener">OSIRIS Lab</a></li>
+            <li><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener">Center for Cyber Security</a></li>
+            <li><a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Professional</h4>
+          <ul>
+            <li><a href="https://github.com/ahillelt" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://x.com/ahillelt" target="_blank" rel="noopener">X (Twitter)</a></li>
+            <li><a href="https://www.linkedin.com/in/ahillelt/" target="_blank" rel="noopener">LinkedIn</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:ah5647@nyu.edu">ah5647@nyu.edu</a></li>
+            <li><a href="#contact">Speaking Inquiries</a></li>
+            <li><a href="#contact">Consulting</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="year"></span> Alon Hillel‑Tuch · Industry Assistant Professor, NYU Tandon School of Engineering</p>
+        <p style="margin-top: 8px; opacity: .7;">Hamilton College '07 · Columbia University · New York University</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile menu
+    function toggleMenu() {
+      const nav = document.getElementById('mainNav');
+      nav.classList.toggle('active');
+    }
+
+    // Year switching
+    function switchYear(year) {
+      document.querySelectorAll('.year-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      document.querySelectorAll('.year-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById('year-' + year).classList.add('active');
+    }
+
+    // Filter switching
+    function filterPublications(category) {
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      document.querySelectorAll('.publication').forEach(pub => {
+        if (category === 'all' || pub.dataset.category === category) {
+          pub.classList.add('active');
+          pub.style.display = 'block';
+        } else {
+          pub.classList.remove('active');
+          pub.style.display = 'none';
+        }
+      });
+    }
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Close mobile menu
+            const nav = document.getElementById('mainNav');
+            nav.classList.remove('active');
+          }
+        }
+      });
+    });
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.card, .course-card, .publication, .stat-card').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
