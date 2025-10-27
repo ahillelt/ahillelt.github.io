@@ -85,18 +85,24 @@
       font-size: 20px;
       box-shadow: var(--shadow-md);
     }
-    nav { display: flex; gap: 4px; }
+    nav { display: flex; gap: 2px; }
     nav a {
-      padding: 10px 16px;
+      padding: 10px 12px;
       font-weight: 600;
       color: var(--text-muted);
       border-radius: 8px;
-      font-size: 15px;
+      font-size: 14px;
       transition: all .2s ease;
     }
     nav a:hover {
       color: var(--navy);
       background: var(--bg-tertiary);
+    }
+    nav a.active {
+      color: var(--navy);
+      background: var(--cyan);
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(6, 182, 212, 0.3);
     }
 
     /* Mobile menu toggle */
@@ -768,7 +774,7 @@
           </div>
           <div class="card">
             <h3>Industry Leadership</h3>
-            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
+            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to a $15 million acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
             <p>As Managing Partner at <strong>Stacked Capital</strong>, invested in deep-tech ventures focusing on hardware security, AI infrastructure, and critical systems resilience.</p>
             <p>Testified twice before U.S. House subcommittees on the JOBS Act implementation, and co-authored three whitepapers on crowdfunding regulation submitted to Congress, SEC, and FINRA.</p>
             <h4>Consulting & Advisory</h4>
@@ -819,10 +825,10 @@
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Papers Published</h3>
 
           <div class="publication">
-            <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
-            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
-            <div class="pub-venue">Conference Paper · 2024</div>
-            <p class="pub-abstract">This work presents novel physical memory attack vectors and proposes a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems.</p>
+            <div class="pub-title">Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</div>
+            <div class="pub-authors">C. Shringi*, A. Hillel-Tuch, M. Rizwan* (*Student Researchers)</div>
+            <div class="pub-venue">World Congress in Computer Science, Computer Engineering, & Applied Computing (CSCE) · 2025</div>
+            <p class="pub-abstract">Novel workflow framework for autonomous red-team agents inspired by Git version control, enabling structured offensive security testing and validation processes. Research collaboration with student researchers advancing autonomous security testing methodologies.</p>
             <div class="pub-links">
               <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
@@ -831,14 +837,11 @@
           </div>
 
           <div class="publication">
-            <div class="pub-title">Data Siphoning Through Advanced Persistent Transmission Attacks At The Physical Layer</div>
-            <div class="pub-authors">Alon Hillel-Tuch</div>
-            <div class="pub-venue">SSRN Electronic Journal · May 2021</div>
-            <p class="pub-abstract">This paper explores data exfiltration dynamics across complex networked systems, examining how sophisticated attackers establish persistent transmission flows at the physical layer that evade traditional network security detection mechanisms. Focus on nation-state level threats and defense strategies.</p>
+            <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
+            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
+            <div class="pub-venue">Springer Transactions on Computational Science & Computational Intelligence · March 2024 (Extended from CSCE 2022)</div>
+            <p class="pub-abstract">Extended journal version presenting novel physical memory attack vectors and proposing a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems. Includes open-source proof-of-concept implementation released for research and industry adoption.</p>
             <div class="pub-links">
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener">
-                📄 Read Paper (SSRN)
-              </a>
               <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
               </a>
@@ -853,6 +856,22 @@
             <div class="pub-links">
               <a href="https://www.researchgate.net/profile/Alon-Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
                 📄 ResearchGate
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Data Siphoning Through Advanced Persistent Transmission Attacks At The Physical Layer</div>
+            <div class="pub-authors">Alon Hillel-Tuch</div>
+            <div class="pub-venue">SSRN Electronic Journal · May 2021</div>
+            <p class="pub-abstract">This paper explores data exfiltration dynamics across complex networked systems, examining how sophisticated attackers establish persistent transmission flows at the physical layer that evade traditional network security detection mechanisms. Focus on nation-state level threats and defense strategies.</p>
+            <p style="color: var(--navy-light); font-size: 14px; margin-top: 8px; font-weight: 600;">📊 Impact: 480+ downloads · 1,300+ abstract views on SSRN · Multiple citations</p>
+            <div class="pub-links">
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener">
+                📄 Read Paper (SSRN)
+              </a>
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+                🎓 Google Scholar
               </a>
             </div>
           </div>
@@ -892,6 +911,18 @@
               </a>
             </div>
           </div>
+
+          <div class="publication">
+            <div class="pub-title">Technical Book Reviewer: Security-Driven Software Development</div>
+            <div class="pub-authors">Author: Aspen Olmsted · Reviewer: Alon Hillel-Tuch</div>
+            <div class="pub-venue">Packt Publishing · 2024</div>
+            <p class="pub-abstract">Technical book reviewer for "Security-Driven Software Development: Learn to analyze and mitigate risks in your software projects." Provided expert review on security practices, threat modeling, and secure development methodologies for comprehensive software security guide.</p>
+            <div class="pub-links">
+              <a href="https://www.packtpub.com/product/security-driven-software-development/9781835460825" class="pub-link" target="_blank" rel="noopener">
+                📚 View Book
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Featured In -->
@@ -923,32 +954,85 @@
             <div class="pub-venue">AARP Publication</div>
             <p class="pub-abstract">Featured expert commentary on crowdfunding platforms enabling social entrepreneurs and community-driven projects, exploring how technology democratizes capital access for purpose-driven ventures.</p>
           </div>
+
+          <div class="publication">
+            <div class="pub-title">New York Times: A Year Late, S.E.C. Weighs In With 585 Pages of Crowdfunding Rules</div>
+            <div class="pub-authors">Featured Expert: Alon Hillel-Tuch</div>
+            <div class="pub-venue">The New York Times · October 28, 2013</div>
+            <p class="pub-abstract">Expert commentary on SEC's proposed crowdfunding regulations following the JOBS Act, analyzing the regulatory framework's impact on platforms and investors in the emerging crowdfunding industry.</p>
+            <div class="pub-links">
+              <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2013/10/28/a-year-late-s-e-c-weighs-in-with-585-pages-of-crowdfunding-rules/" class="pub-link" target="_blank" rel="noopener">
+                📰 Read on NY Times
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">New York Times: RocketHub Ponders Its Future in Crowdfunding</div>
+            <div class="pub-authors">Featured Profile: RocketHub & Alon Hillel-Tuch</div>
+            <div class="pub-venue">The New York Times · December 26, 2012</div>
+            <p class="pub-abstract">Profile of RocketHub's strategic positioning in the evolving crowdfunding landscape, examining platform innovation, regulatory challenges, and the future of democratized capital access for entrepreneurs and creators.</p>
+            <div class="pub-links">
+              <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2012/12/26/rockethub-ponders-its-future-in-crowdfunding/" class="pub-link" target="_blank" rel="noopener">
+                📰 Read on NY Times
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Entrepreneur Magazine: Watch This 8-Episode Crash Course in Crowdfunding</div>
+            <div class="pub-authors">Featured Expert: Alon Hillel-Tuch</div>
+            <div class="pub-venue">Entrepreneur Magazine</div>
+            <p class="pub-abstract">Eight-episode educational series on crowdfunding fundamentals, platform strategies, regulatory compliance, and best practices for entrepreneurs seeking to raise capital through crowdfunding campaigns.</p>
+            <div class="pub-links">
+              <a href="https://finance.yahoo.com/news/watch-8-episode-crash-course-182500584.html" class="pub-link" target="_blank" rel="noopener">
+                📺 Watch Series
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
+            <div class="pub-title">Forbes Technology Council: Published Articles</div>
+            <div class="pub-authors">Author: Alon Hillel-Tuch</div>
+            <div class="pub-venue">Forbes Technology Council · Founding Member</div>
+            <p class="pub-abstract">Series of published expert articles on AI governance, cybersecurity strategy, responsible innovation, technology policy, and the intersection of emerging technologies with business and societal impact. Founding member contributing regular analysis and thought leadership.</p>
+            <div class="pub-links">
+              <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
+                📝 Read Published Articles
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Patents -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Patents</h3>
+          <p style="text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 16px;">Foundational patents in crowdfunding infrastructure cited by major fintech companies including Square, Capital One, 3M, and cryptocurrency platforms</p>
 
           <div class="grid cols-2">
             <div class="publication">
-              <div class="pub-title">Systems and Methods for Crowdfunding Creative Projects</div>
+              <div class="pub-title">Offer Presentation for Crowdfunding</div>
               <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
-              <div class="pub-venue">U.S. Patent</div>
-              <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, and community engagement systems for creative and entrepreneurial ventures.</p>
+              <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014 · RocketHub Inc.</div>
+              <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, offer presentation systems, and community engagement systems for creative and entrepreneurial ventures.</p>
+              <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
+              <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Square (15+ patents on merchant financing), Capital One (social discovery), 3M (internal crowdfunding), Winklevoss/Gemini (20+ crypto patents), Givling, Angelsoft, and numerous fintech innovations</p>
               <div class="pub-links">
-                <a href="https://patents.google.com/" class="pub-link" target="_blank" rel="noopener">
-                  📄 View on Google Patents
+                <a href="https://patents.justia.com/patent/20140040157" class="pub-link" target="_blank" rel="noopener">
+                  📄 View Patent Application
                 </a>
               </div>
             </div>
 
             <div class="publication">
-              <div class="pub-title">Equity Crowdfunding Platform and Regulatory Compliance System</div>
+              <div class="pub-title">Beneficiary Crowdsourcing</div>
               <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
-              <div class="pub-venue">U.S. Patent</div>
-              <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency.</p>
+              <div class="pub-venue">USPTO Patent Application 20140279645A1 · Filed 2013 · RocketHub Inc.</div>
+              <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency. Includes beneficiary-focused crowdsourcing mechanisms.</p>
+              <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
+              <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Shanghai Baichou Financial (secondary crowdfunding markets), Heyue Group (fintech platforms), BitPagos/Ripio (crypto payments), and compliance-focused crowdfunding systems</p>
               <div class="pub-links">
-                <a href="https://patents.google.com/" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://patents.google.com/?inventor=Alon+Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
                   📄 View on Google Patents
                 </a>
               </div>
@@ -1122,9 +1206,15 @@
             <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~88 students</p>
 
             <div style="margin-top: 32px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-              <h4 style="color: var(--navy); margin-bottom: 12px;">Course Overview</h4>
-              <p><strong>Application Security (CS-GY 6843)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified curriculum focusing on secure coding, web security, and application threat modeling</p>
-              <p style="margin-top: 12px;"><strong>Computer Networking (CS-GY 6903)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, emphasizing protocol analysis, network security, and hands-on labs</p>
+              <h4 style="color: var(--navy); margin-bottom: 12px;">Course Development & Curriculum Innovation</h4>
+              <p><strong>Application Security (CS-GY 6843)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
+              <p style="margin-top: 12px;"><strong>Computer Networking (CS-GY 6903)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
+
+              <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Teaching Assistant & Mentorship Roles</h4>
+              <p>Served as Teaching Assistant for <strong>Internet Security & Privacy</strong>, <strong>Operating Systems</strong>, <strong>Computer Networking</strong>, and <strong>Bridge to Tandon</strong> programs. Mentored students through independent research projects resulting in multiple conference publications. Received overwhelmingly positive student evaluations highlighting hands-on approach, real-world application, and industry-relevant curriculum.</p>
+
+              <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Student Research & Publications</h4>
+              <p>Actively assist students in publishing research at academic conferences. Recent collaborations include: <em>Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</em> (CSCE 2025) with student researchers C. Shringi and M. Rizwan, demonstrating commitment to advancing student research capabilities and academic contributions.</p>
             </div>
           </div>
 
@@ -1213,7 +1303,7 @@
         <div class="grid cols-2">
           <div class="card">
             <h3>RocketHub · Co-Founder, CFO & CTO</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2010 - 2015 · Acquired</p>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2010 - 2015 · Acquired for $15M</p>
             <p>Co-founded one of the first global crowdfunding platforms, pioneering equity crowdfunding under the JOBS Act. Facilitated over $50M in funding across 30,000+ projects serving 500K+ users.</p>
             <h4>Key Achievements</h4>
             <ul>
@@ -1221,7 +1311,7 @@
               <li>Developed compliance frameworks for emerging crowdfunding regulations</li>
               <li>Designed fraud detection and AML systems</li>
               <li>Led partnerships with White House, U.S. State Department, Microsoft, Cisco, Chrysler, and Fulbright Foundation</li>
-              <li>Successfully exited through acquisition in 2015</li>
+              <li>Successfully exited through $15 million acquisition in 2015</li>
             </ul>
           </div>
 
@@ -1240,10 +1330,59 @@
         </div>
 
         <div style="margin-top: 60px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Strategic Partnerships</h3>
-          <div class="card">
-            <p style="text-align: center; margin-bottom: 32px; color: var(--text-muted);">Collaborated with leading institutions on innovation, entrepreneurship, security education, and technology policy:</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Private Consulting & Advisory</h3>
+          <div class="grid cols-2">
+            <div class="card">
+              <h3>TouchCast</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Business Strategy & Technical Modeling</p>
+              <p>Consulted from seed stage on business strategy, technical architecture, and market positioning. TouchCast was later acquired for $500M, validating the strategic foundation and technical roadmap developed during early-stage consulting.</p>
+            </div>
+
+            <div class="card">
+              <h3>Salesforce</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Innovation Consulting · 2017</p>
+              <p>Innovation consulting for Salesforce Ignite program. Developed human-first LLM platform for disaster response coordination, focusing on resilient communication infrastructure and AI-assisted emergency management systems.</p>
+            </div>
+
+            <div class="card">
+              <h3>GreenLightGo</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security Assessment & Business Development</p>
+              <p>Conducted comprehensive security assessment and business model development for emerging fintech platform. Provided strategic guidance on security architecture, regulatory compliance, and market positioning.</p>
+            </div>
+
+            <div class="card">
+              <h3>Bain Consulting</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security & Regulatory Project</p>
+              <p>Security and regulation-focused consulting project (confidential). Advised on complex regulatory compliance frameworks and security risk mitigation strategies for enterprise client.</p>
+            </div>
+
+            <div class="card">
+              <h3>American Express</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">OPEN Team Innovation Workshop</p>
+              <p>Led innovation consulting workshop for American Express OPEN team, focusing on emerging payment technologies, fraud prevention, and customer experience optimization for small business segment.</p>
+            </div>
+
+            <div class="card">
+              <h3>Keisuke Honda</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Market Entry</p>
+              <p>Consulted on Japanese venture market entry strategy, providing guidance on technology ecosystem dynamics, partnership development, and cultural considerations for successful market penetration.</p>
+            </div>
+
+            <div class="card">
+              <h3>Zombie Soup</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Strategic Advisor · AI/VR Startup</p>
+              <p>Strategic advisor for AI/VR startup, providing guidance on technology development, security architecture, market positioning, and strategic partnerships in emerging immersive technology sector.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 60px;">
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Partnerships</h3>
+
+          <div class="card" style="margin-bottom: 32px;">
+            <h4 style="text-align: center; margin-bottom: 24px; font-size: 20px; color: var(--navy);">Strategic Partnerships</h4>
+            <p style="text-align: center; margin-bottom: 24px; color: var(--text-muted);">Collaborated with leading institutions on innovation, entrepreneurship, security education, and technology policy:</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">U.S. Department of State</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">White House</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Microsoft</span>
@@ -1251,6 +1390,23 @@
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Chrysler</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Fulbright Foundation</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">American Express</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 style="text-align: center; margin-bottom: 24px; font-size: 20px; color: var(--navy);">Brand Collaborations</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Microsoft/Bing</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Goldman Sachs</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Cisco</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Whirlpool</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Gibson Guitars</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Rémy Martin</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Penn State</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">University of Utah</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Popular Science</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Bon Appétit</span>
+              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Prezi</span>
             </div>
           </div>
         </div>
@@ -1261,8 +1417,8 @@
           <div class="grid cols-3">
             <div class="card">
               <h3>BCMS Corporate</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · PGT Department Head</p>
-              <p>Led the Portfolio and Global Trading department at BCMS Corporate, managing complex financial portfolios and implementing risk management strategies across international markets.</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · Special Situations Manager & Head of Prospect Generation</p>
+              <p>Led 15-person Prospect Generation department, conducting M&A diligence that generated over $600M in offers. Member of North American Strategic Planning Committee. Managed complex special situations analysis and strategic transaction evaluation across multiple industries.</p>
             </div>
 
             <div class="card">
@@ -1273,8 +1429,8 @@
 
             <div class="card">
               <h3>HBK Capital Management</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 · Analyst</p>
-              <p>Financial analyst focused on quantitative trading strategies and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007</p>
+              <p>Quantitative trading and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
             </div>
           </div>
         </div>
@@ -1293,7 +1449,10 @@
           <div class="card">
             <h3>Academic Honors & Research Appointments</h3>
             <ul style="margin-top: 16px;">
-              <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, advancing interdisciplinary research in conflict resolution, cooperation, and complex adaptive systems at the Advanced Consortium on Cooperation, Conflict, and Complexity (AC4)</li>
+              <li><strong>Academic Excellence Award</strong> — NYU Tandon School of Engineering (2024)</li>
+              <li><strong>Cyber Fellowship</strong> — NYU Tandon School of Engineering (2024)</li>
+              <li><strong>NYU Cyber Fellows Ambassador</strong> — Selected as ambassador for NYU's Cyber Fellows program</li>
+              <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, Advanced Consortium for Cooperation, Conflict, and Complexity (AC4)</li>
               <li><strong>10 Under 10</strong> — Hamilton College Alumni Achievement Award recognizing outstanding early-career impact</li>
               <li><strong>Phi Sigma Iota</strong> — International Foreign Language Honor Society</li>
               <li><strong>IB Excellence Award</strong> — International Baccalaureate Program Distinction</li>
@@ -1301,11 +1460,22 @@
           </div>
 
           <div class="card">
-            <h3>Professional Certifications & Appointments</h3>
+            <h3>Professional Certifications & Leadership</h3>
             <ul style="margin-top: 16px;">
-              <li><strong>FINRA Capital Markets Series</strong> — Guest Lecturer on Securities Regulation and Crowdfunding</li>
-              <li><strong>Forbes Technology Council</strong> — Founding Member contributing expert analysis on AI, cybersecurity, and innovation</li>
-              <li><strong>Congressional Expert Witness</strong> — Testified before U.S. House committees on technology policy (2012, 2014)</li>
+              <li><strong>U.S. State Department Top Global Partner</strong> — RocketHub recognized as one of 12 top global partners in State of Global Partnerships Report (2015, Secretary John Kerry) for contributions to entrepreneurship and innovation</li>
+              <li><strong>NSA Cyber Operations Certificate</strong> — National Security Agency designation for advanced cyber operations training</li>
+              <li><strong>NSA Cyber Defense Certificate</strong> — National Security Agency designation for cyber defense expertise</li>
+              <li><strong>FINRA Capital Markets Series XVII Leader</strong> — Guest Lecturer on Securities Regulation and Crowdfunding, Award of Recognition from FINRA</li>
+              <li><strong>Six Sigma White & Yellow Belt</strong> — Process improvement and quality management certification</li>
+              <li><strong>Certified Associate Scrum Fundamentals (CASF)</strong> — Agile project management certification</li>
+              <li><strong>Bronze Lion at Cannes</strong> — Team award for virtual currency innovation with Wieden+Kennedy (2013)</li>
+              <li><strong>Board Member</strong> — Crowdfunding Professional Association</li>
+              <li><strong>Board Observer</strong> — Visionary Health</li>
+              <li><strong>Forbes Technology Council</strong> — Founding Council Member contributing expert analysis on AI governance, cybersecurity, and innovation</li>
+              <li><strong>IEEE New York Metropolitan Region</strong> — Professional Member</li>
+              <li><strong>New York Academy of Sciences</strong> — Member</li>
+              <li><strong>Association of Change Management Professionals (ACMP)</strong> — Member</li>
+              <li><strong>Congressional Expert Witness</strong> — Testified before U.S. House Oversight & Reform Committee (2012) and Financial Services Committee (2014)</li>
             </ul>
           </div>
         </div>
@@ -1315,9 +1485,40 @@
             <h3 style="text-align: center; margin-bottom: 24px;">Languages</h3>
             <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
               <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">English <span style="color: var(--text-muted); font-weight: 400;">(Native)</span></span>
-              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Dutch <span style="color: var(--text-muted); font-weight: 400;">(Fluent)</span></span>
-              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Mandarin Chinese <span style="color: var(--text-muted); font-weight: 400;">(Proficient)</span></span>
-              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">German <span style="color: var(--text-muted); font-weight: 400;">(Conversational)</span></span>
+              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Dutch <span style="color: var(--text-muted); font-weight: 400;">(Native Fluency)</span></span>
+              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Mandarin Chinese <span style="color: var(--text-muted); font-weight: 400;">(Conversational)</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <div class="card">
+            <h3 style="text-align: center; margin-bottom: 24px;">Technical Skills & Expertise</h3>
+
+            <div class="grid cols-2" style="margin-top: 24px;">
+              <div>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Programming & Development</h4>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Languages:</strong> C/C++, Python, Kotlin, LaTeX</p>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>AI/ML Frameworks:</strong> PyTorch, Keras, TensorFlow, scikit-learn</p>
+              </div>
+
+              <div>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security Tools & Frameworks</h4>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Testing Tools:</strong> Burp Suite, OWASP ZAP, Metasploit</p>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Cryptographic Libraries:</strong> libsodium, OpenSSL, LibreSSL, WolfCrypt, Bouncy Castle</p>
+              </div>
+
+              <div>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security & Risk Frameworks</h4>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Security Frameworks:</strong> MITRE ATT&CK, NIST SSDF, OWASP</p>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Compliance & Regulatory:</strong> PCI DSS, OFAC/AML, CFIUS, FINRA</p>
+              </div>
+
+              <div>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Cloud & Infrastructure</h4>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Cloud Platforms:</strong> AWS, Google Cloud, Azure</p>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Specialized Areas:</strong> Hardware Security, Embedded Systems, Secure Protocol Design</p>
+              </div>
             </div>
           </div>
         </div>
@@ -1328,19 +1529,25 @@
             <div class="grid cols-3" style="margin-top: 24px;">
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">New York University</h4>
-                <p style="color: var(--navy-light); font-weight: 600;">M.Sc. Computer Science</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Cybersecurity & Hardware Security</p>
+                <p style="color: var(--navy-light); font-weight: 600;">M.Sc. Cybersecurity</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Graduated 2024</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Academic Excellence Award · Cyber Fellowship</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">NSA Cyber Operations & Defense Certificates</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">NYU Cyber Fellows Ambassador</p>
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Columbia University</h4>
                 <p style="color: var(--navy-light); font-weight: 600;">M.Sc.</p>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation & Conflict Resolution</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2011</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute (Advanced Consortium for Cooperation, Conflict, and Complexity)</p>
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Hamilton College</h4>
                 <p style="color: var(--navy-light); font-weight: 600;">B.A.</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Government · Class of 2007</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Economics, Chinese Culture & Language</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2007</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Phi Sigma Iota Honor Society</p>
               </div>
             </div>
           </div>
@@ -1361,7 +1568,7 @@
             <h3>U.S. House Oversight Committee</h3>
             <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
             <div class="video-wrapper">
-              <iframe loading="lazy" src="https://www.c-span.org/video/standalone/?280562" title="JOBS Act Implementation - Congressional Testimony" allowfullscreen></iframe>
+              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
             </div>
             <p>Testified on implementing the JOBS Act crowdfunding provisions, balancing innovation with investor protection in emerging fintech markets. Provided expert recommendations on regulatory thresholds and audit requirements.</p>
             <div class="pub-links" style="margin-top: 16px;">
@@ -1429,28 +1636,6 @@
             </article>
           </div>
         </div>
-
-        <div style="margin-top: 60px;">
-          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px;">Media & Commentary</h3>
-          <div class="grid cols-3">
-            <div class="card">
-              <h3>Forbes Technology Council</h3>
-              <p>Founding member contributing expert analysis on AI risk, cybersecurity strategy, responsible innovation, and the intersection of technology policy and business.</p>
-              <p><a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" target="_blank" rel="noopener">Read Articles →</a></p>
-            </div>
-
-            <div class="card">
-              <h3>SEC Comment Letters</h3>
-              <p>Formal regulatory comments on proposed crowdfunding rules, providing practitioner perspective on market structure and investor protection mechanisms.</p>
-              <p><a href="https://www.sec.gov/comments/s7-09-13/s70913-206.pdf" target="_blank" rel="noopener">View Letters →</a></p>
-            </div>
-
-            <div class="card">
-              <h3>Whitepapers & Policy</h3>
-              <p>Co-authored three acclaimed whitepapers on JOBS Act implementation submitted to Congress, SEC, and FINRA, influencing crowdfunding policy development.</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -1459,10 +1644,10 @@
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Speaking & Presentations</h2>
-          <p class="section-subtitle">Keynotes and invited talks on security, innovation, and technology policy</p>
+          <p class="section-subtitle">50+ keynote presentations on security, innovation, and technology policy. Hosted White House Council on Jobs and Competitiveness. Featured as Top Global Partner of US government (2015, Secretary John Kerry).</p>
         </div>
 
-        <div class="grid cols-3">
+        <div class="grid cols-2">
           <div class="card">
             <h3>TEDx: Emergence of an Alternate Path</h3>
             <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">TEDxNavesink</p>
@@ -1470,6 +1655,15 @@
               <iframe loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
             <p>Exploring technology adoption cycles, societal impacts, and how innovation creates alternate paths for human progress and social transformation.</p>
+          </div>
+
+          <div class="card">
+            <h3>Augmented Intelligence (AI)</h3>
+            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Re.Comm.17 · Kitzbühel, Austria · 2017</p>
+            <div class="video-wrapper">
+              <iframe loading="lazy" src="https://www.youtube.com/embed/rMs4Mpojk3Q" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p>Keynote on augmented intelligence, human-AI collaboration, and the future of intelligent systems at the intersection of technology and human capability enhancement.</p>
           </div>
 
           <div class="card">
@@ -1485,7 +1679,7 @@
             <h3>Open Economy Fundamentals</h3>
             <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">CrowdEconomy Conference · Minsk</p>
             <div class="video-wrapper">
-              <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <p>Exploring the foundations of open economies, crowdsourcing, and collaborative innovation in emerging markets and technology ecosystems.</p>
           </div>
@@ -1494,7 +1688,7 @@
         <div style="margin-top: 40px;">
           <div class="card">
             <h3>Available for Speaking Engagements</h3>
-            <p>I deliver keynotes and participate in panels on topics at the intersection of cybersecurity, technology policy, and responsible innovation.</p>
+            <p>I deliver keynotes and participate in panels on topics at the intersection of cybersecurity, technology policy, and responsible innovation. Consulted for Time Magazine on AI influencers (Winter 2023).</p>
             <h4>Speaking Topics</h4>
             <ul>
               <li>AI governance: policy frameworks for responsible deployment</li>
@@ -1523,7 +1717,7 @@
             </div>
             <div class="card">
               <h3>Industry Events</h3>
-              <p>American Express, Campaign Summit, Re.Comm, <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" target="_blank" rel="noopener">Make Innovation Workshop</a>, Maker Faire, and leading fintech and cybersecurity conferences.</p>
+              <p>World Crowdfunding Conference (Guiyang, China, 2015 - 13,000 attendees, speaker and representative meeting with government officials and international delegates), American Express, Campaign Summit, Re.Comm, <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" target="_blank" rel="noopener">Make Innovation Workshop</a>, Maker Faire, and leading fintech and cybersecurity conferences.</p>
             </div>
             <div class="card">
               <h3>Government & Policy</h3>
@@ -1600,20 +1794,6 @@
               <h3>FreshDirect: Next Big Food Thing</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">FreshDirect Partnership</p>
               <p>Developed "Next Big Food Thing" crowdfunding initiative with FreshDirect, enabling food entrepreneurs and culinary innovators to bring new products to market through community-backed validation and distribution partnerships.</p>
-            </div>
-          </div>
-
-          <div style="margin-top: 40px;">
-            <div class="card">
-              <h4 style="text-align: center; margin-bottom: 24px;">Additional Brand Collaborations</h4>
-              <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
-                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Microsoft/Bing</span>
-                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Gibson Guitars</span>
-                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Rémy Martin</span>
-                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Popular Science</span>
-                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Bon Appétit</span>
-                <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Prezi</span>
-              </div>
             </div>
           </div>
         </div>
@@ -1777,6 +1957,36 @@
     document.querySelectorAll('.card, .course-card, .publication, .stat-card').forEach(el => {
       observer.observe(el);
     });
+
+    // Active navigation highlighting based on scroll position
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('#mainNav a[href^="#"]');
+
+    function highlightNavigation() {
+      let currentSection = '';
+      const scrollPosition = window.scrollY + 100; // Offset for header
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href').substring(1);
+        if (href === currentSection) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    // Run on scroll and on page load
+    window.addEventListener('scroll', highlightNavigation);
+    window.addEventListener('load', highlightNavigation);
   </script>
 </body>
 </html>
