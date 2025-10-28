@@ -85,16 +85,17 @@
       font-size: 20px;
       box-shadow: var(--shadow-md);
     }
-    nav { display: flex; gap: 2px; }
+    nav { display: flex; gap: 2px; flex-wrap: nowrap; }
     nav a {
-      padding: 10px 16px;
+      padding: 10px 12px;
       font-weight: 600;
       color: var(--text-muted);
       border-radius: 10px;
-      font-size: 14.5px;
+      font-size: 13px;
       letter-spacing: 0.01em;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+      white-space: nowrap;
     }
     nav a:hover {
       color: var(--navy);
@@ -195,6 +196,7 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 32px;
+      align-items: center;
     }
     .btn {
       display: inline-flex;
@@ -942,7 +944,8 @@
         <div style="margin-top: 80px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Press & Media Coverage</h3>
 
-          <div class="grid cols-3">
+          <!-- Featured TV/Video Coverage -->
+          <div class="grid cols-2">
             <article class="card">
               <h3>NPR Morning Edition</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">May 9, 2014</p>
@@ -958,34 +961,6 @@
             </article>
 
             <article class="card">
-              <h3>Forbes</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">November 16, 2012</p>
-              <p><strong>"CrowdFund Investing: Emphasis Turning to Implementation..."</strong></p>
-              <p>Interviewed by Alan Hall about the post-JOBS Act crowdfunding era. As RocketHub's co-founder/CFO, discussed moving from legislative passage to implementation, emphasizing the need for entrepreneur-friendly rules. Article highlighted RocketHub's mission and quoted perspective on how crowdfunding could democratize capital for startups.</p>
-            </article>
-
-            <article class="card">
-              <h3>The New York Times</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">December 26, 2012</p>
-              <p><strong>"RocketHub Ponders Its Future in Crowdfunding"</strong></p>
-              <p>Featured in NYT Boss blog piece by Peter Applebome profiling RocketHub's strategy amid a changing crowdfunding landscape. Quoted on the platform's plans post-JOBS Act, indicating thoughtful concern about staying competitive as crowdfunding evolved.</p>
-            </article>
-
-            <article class="card">
-              <h3>Entrepreneur Magazine</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">April 17, 2015</p>
-              <p><strong>"RocketHub Acquired for $15 Million"</strong></p>
-              <p>Extensively quoted by Catherine Clifford about the acquisition deal's significance. Assured that RocketHub was "by no means going away... it's being fed steroids" under EFactor. Described plans to expand services for entrepreneurs by combining crowdfunding with mentorship. Article widely circulated in startup circles.</p>
-            </article>
-
-            <article class="card">
-              <h3>Crain's New York Business</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">November 13, 2013</p>
-              <p><strong>"Equity crowdfunding sites court investors, startups"</strong></p>
-              <p>Quoted expressing excitement about democratized investing: "What I am excited about is allowing anyone to do what accredited investors do." Crain's noted RocketHub's role and optimism that everyday people could soon invest in startups like angels, thanks to regulatory changes.</p>
-            </article>
-
-            <article class="card">
               <h3>CCTV International</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
               <div class="video-wrapper">
@@ -995,6 +970,105 @@
             </article>
           </div>
 
+          <!-- Major Press Coverage -->
+          <div class="grid cols-3" style="margin-top: 40px;">
+            <article class="card">
+              <h3>IEEE The Institute</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Volume 41, Issue 3</p>
+              <p><strong>"Crowdfunding Innovation and Entrepreneurship"</strong></p>
+              <p>Featured profile on crowdfunding platform innovation, entrepreneurial technology development, and the intersection of engineering, business, and regulatory policy in emerging financial markets.</p>
+              <div class="pub-links" style="margin-top: 16px;">
+                <a href="https://ethw.org/w/images/8/8b/Tisep17.pdf" class="pub-link" target="_blank" rel="noopener">
+                  📄 Read Article (PDF)
+                </a>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Wired Magazine</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Special Edition</p>
+              <p><strong>"Ways to Change the World"</strong></p>
+              <p>Featured in Wired Magazine's special edition guest-edited by Bill Clinton and Bill Gates, highlighting crowdfunding innovation and democratizing access to capital for entrepreneurs and changemakers globally.</p>
+            </article>
+
+            <article class="card">
+              <h3>AARP</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Featured Expert</p>
+              <p><strong>"Crowdfunding for Social Impact"</strong></p>
+              <p>Expert commentary on crowdfunding platforms enabling social entrepreneurs and community-driven projects, exploring how technology democratizes capital access for purpose-driven ventures.</p>
+            </article>
+
+            <article class="card">
+              <h3>The New York Times</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">October 28, 2013</p>
+              <p><strong>"A Year Late, S.E.C. Weighs In With 585 Pages of Crowdfunding Rules"</strong></p>
+              <p>Expert commentary on SEC's proposed crowdfunding regulations following the JOBS Act, analyzing the regulatory framework's impact on platforms and investors in the emerging crowdfunding industry.</p>
+              <div class="pub-links" style="margin-top: 16px;">
+                <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2013/10/28/a-year-late-s-e-c-weighs-in-with-585-pages-of-crowdfunding-rules/" class="pub-link" target="_blank" rel="noopener">
+                  📰 Read on NY Times
+                </a>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>The New York Times</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">December 26, 2012</p>
+              <p><strong>"RocketHub Ponders Its Future in Crowdfunding"</strong></p>
+              <p>Featured in NYT Boss blog piece profiling RocketHub's strategic positioning in the evolving crowdfunding landscape, examining platform innovation, regulatory challenges, and the future of democratized capital access.</p>
+              <div class="pub-links" style="margin-top: 16px;">
+                <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2012/12/26/rockethub-ponders-its-future-in-crowdfunding/" class="pub-link" target="_blank" rel="noopener">
+                  📰 Read on NY Times
+                </a>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Entrepreneur Magazine</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Educational Series</p>
+              <p><strong>"8-Episode Crash Course in Crowdfunding"</strong></p>
+              <p>Eight-episode educational series on crowdfunding fundamentals, platform strategies, regulatory compliance, and best practices for entrepreneurs seeking to raise capital through crowdfunding campaigns.</p>
+              <div class="pub-links" style="margin-top: 16px;">
+                <a href="https://finance.yahoo.com/news/watch-8-episode-crash-course-182500584.html" class="pub-link" target="_blank" rel="noopener">
+                  📺 Watch Series
+                </a>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Entrepreneur Magazine</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">April 17, 2015</p>
+              <p><strong>"RocketHub Acquired for $15 Million"</strong></p>
+              <p>Extensively quoted about the acquisition deal's significance. Assured that RocketHub was "by no means going away... it's being fed steroids" under EFactor. Described plans to expand services for entrepreneurs by combining crowdfunding with mentorship.</p>
+            </article>
+
+            <article class="card">
+              <h3>Forbes</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">November 16, 2012</p>
+              <p><strong>"CrowdFund Investing: Emphasis Turning to Implementation"</strong></p>
+              <p>Interviewed by Alan Hall about the post-JOBS Act crowdfunding era. As RocketHub's co-founder/CFO, discussed moving from legislative passage to implementation, emphasizing the need for entrepreneur-friendly rules.</p>
+            </article>
+
+            <article class="card">
+              <h3>Crain's New York Business</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">November 13, 2013</p>
+              <p><strong>"Equity crowdfunding sites court investors, startups"</strong></p>
+              <p>Quoted expressing excitement about democratized investing: "What I am excited about is allowing anyone to do what accredited investors do." Crain's noted RocketHub's role and optimism that everyday people could soon invest in startups like angels.</p>
+            </article>
+
+            <article class="card">
+              <h3>Forbes Technology Council</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Founding Member</p>
+              <p><strong>Published Articles</strong></p>
+              <p>Series of published expert articles on AI governance, cybersecurity strategy, responsible innovation, technology policy, and the intersection of emerging technologies with business and societal impact.</p>
+              <div class="pub-links" style="margin-top: 16px;">
+                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
+                  📝 Read Articles
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <!-- Additional Coverage -->
           <div style="margin-top: 40px;">
             <div class="card">
               <h3>Additional Coverage</h3>
@@ -1011,7 +1085,7 @@
         <!-- Podcasts & Webinars -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Podcasts & Webinars</h3>
-          <div class="grid cols-3">
+          <div class="grid cols-2">
             <div class="card">
               <h3>Lunch & Learn Series</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Crowdfunding Professional Association · 2016</p>
@@ -1023,12 +1097,6 @@
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">October 2016</p>
               <p><strong>"How does an investor make money with equity crowdfunding?"</strong></p>
               <p>Audio interview for business advice media outlet. Explained equity crowdfunding models and ROI expectations in roundtable-style discussion, helping demystify crowdfunding for creatives and startups.</p>
-            </div>
-
-            <div class="card">
-              <h3>NYU Tandon Industry Panels</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2023–2024</p>
-              <p>Academic webinars and roundtables on tech policy and AI as adjunct professor and industry expert. Guest lectures on AI governance connecting cybersecurity research with real-world policy.</p>
             </div>
           </div>
         </div>
@@ -1382,6 +1450,18 @@
           </div>
 
           <div class="publication">
+            <div class="pub-title">Technical Book Reviewer: Security-Driven Software Development</div>
+            <div class="pub-authors">Author: Aspen Olmsted · Reviewer: Alon Hillel-Tuch</div>
+            <div class="pub-venue">Packt Publishing · 2024</div>
+            <p class="pub-abstract">Technical book reviewer for "Security-Driven Software Development: Learn to analyze and mitigate risks in your software projects." Provided expert review on security practices, threat modeling, and secure development methodologies for comprehensive software security guide.</p>
+            <div class="pub-links">
+              <a href="https://www.packtpub.com/product/security-driven-software-development/9781835460825" class="pub-link" target="_blank" rel="noopener">
+                📚 View Book
+              </a>
+            </div>
+          </div>
+
+          <div class="publication">
             <div class="pub-title">Priority Based Soft-Solution for Operating System Integrity Due To Randomized Hardware Faults At The Transistor Level</div>
             <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmsted</div>
             <div class="pub-venue">Conference Paper · December 2021</div>
@@ -1441,97 +1521,6 @@
             <div class="pub-links">
               <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=1820862" class="pub-link" target="_blank" rel="noopener">
                 📄 Read Paper (SSRN)
-              </a>
-            </div>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">Technical Book Reviewer: Security-Driven Software Development</div>
-            <div class="pub-authors">Author: Aspen Olmsted · Reviewer: Alon Hillel-Tuch</div>
-            <div class="pub-venue">Packt Publishing · 2024</div>
-            <p class="pub-abstract">Technical book reviewer for "Security-Driven Software Development: Learn to analyze and mitigate risks in your software projects." Provided expert review on security practices, threat modeling, and secure development methodologies for comprehensive software security guide.</p>
-            <div class="pub-links">
-              <a href="https://www.packtpub.com/product/security-driven-software-development/9781835460825" class="pub-link" target="_blank" rel="noopener">
-                📚 View Book
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Featured In -->
-        <div style="margin-top: 60px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Featured In</h3>
-
-          <div class="publication">
-            <div class="pub-title">IEEE The Institute: Crowdfunding Innovation and Entrepreneurship</div>
-            <div class="pub-authors">Featured Profile: Alon Hillel-Tuch</div>
-            <div class="pub-venue">IEEE The Institute · Volume 41, Issue 3</div>
-            <p class="pub-abstract">IEEE feature article on crowdfunding platform innovation, entrepreneurial technology development, and the intersection of engineering, business, and regulatory policy in emerging financial markets.</p>
-            <div class="pub-links">
-              <a href="https://ethw.org/w/images/8/8b/Tisep17.pdf" class="pub-link" target="_blank" rel="noopener">
-                📄 Read Article (PDF)
-              </a>
-            </div>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">Wired Magazine: Ways to Change the World</div>
-            <div class="pub-authors">Guest Editors: Bill Clinton & Bill Gates</div>
-            <div class="pub-venue">Wired Magazine · Special Edition</div>
-            <p class="pub-abstract">Featured in Wired Magazine's special "Ways to Change the World" edition guest-edited by Bill Clinton and Bill Gates, highlighting crowdfunding innovation and democratizing access to capital for entrepreneurs and changemakers globally.</p>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">AARP: Crowdfunding for Social Impact</div>
-            <div class="pub-authors">Featured Expert: Alon Hillel-Tuch</div>
-            <div class="pub-venue">AARP Publication</div>
-            <p class="pub-abstract">Featured expert commentary on crowdfunding platforms enabling social entrepreneurs and community-driven projects, exploring how technology democratizes capital access for purpose-driven ventures.</p>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">New York Times: A Year Late, S.E.C. Weighs In With 585 Pages of Crowdfunding Rules</div>
-            <div class="pub-authors">Featured Expert: Alon Hillel-Tuch</div>
-            <div class="pub-venue">The New York Times · October 28, 2013</div>
-            <p class="pub-abstract">Expert commentary on SEC's proposed crowdfunding regulations following the JOBS Act, analyzing the regulatory framework's impact on platforms and investors in the emerging crowdfunding industry.</p>
-            <div class="pub-links">
-              <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2013/10/28/a-year-late-s-e-c-weighs-in-with-585-pages-of-crowdfunding-rules/" class="pub-link" target="_blank" rel="noopener">
-                📰 Read on NY Times
-              </a>
-            </div>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">New York Times: RocketHub Ponders Its Future in Crowdfunding</div>
-            <div class="pub-authors">Featured Profile: RocketHub & Alon Hillel-Tuch</div>
-            <div class="pub-venue">The New York Times · December 26, 2012</div>
-            <p class="pub-abstract">Profile of RocketHub's strategic positioning in the evolving crowdfunding landscape, examining platform innovation, regulatory challenges, and the future of democratized capital access for entrepreneurs and creators.</p>
-            <div class="pub-links">
-              <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2012/12/26/rockethub-ponders-its-future-in-crowdfunding/" class="pub-link" target="_blank" rel="noopener">
-                📰 Read on NY Times
-              </a>
-            </div>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">Entrepreneur Magazine: Watch This 8-Episode Crash Course in Crowdfunding</div>
-            <div class="pub-authors">Featured Expert: Alon Hillel-Tuch</div>
-            <div class="pub-venue">Entrepreneur Magazine</div>
-            <p class="pub-abstract">Eight-episode educational series on crowdfunding fundamentals, platform strategies, regulatory compliance, and best practices for entrepreneurs seeking to raise capital through crowdfunding campaigns.</p>
-            <div class="pub-links">
-              <a href="https://finance.yahoo.com/news/watch-8-episode-crash-course-182500584.html" class="pub-link" target="_blank" rel="noopener">
-                📺 Watch Series
-              </a>
-            </div>
-          </div>
-
-          <div class="publication">
-            <div class="pub-title">Forbes Technology Council: Published Articles</div>
-            <div class="pub-authors">Author: Alon Hillel-Tuch</div>
-            <div class="pub-venue">Forbes Technology Council · Founding Member</div>
-            <p class="pub-abstract">Series of published expert articles on AI governance, cybersecurity strategy, responsible innovation, technology policy, and the intersection of emerging technologies with business and societal impact. Founding member contributing regular analysis and thought leadership.</p>
-            <div class="pub-links">
-              <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
-                📝 Read Published Articles
               </a>
             </div>
           </div>
@@ -1660,36 +1649,27 @@
         </div>
 
         <div style="margin-top: 60px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Partnerships</h3>
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 16px;">Partnerships & Collaborations</h3>
+          <p style="text-align: center; margin-bottom: 32px; color: var(--text-muted); font-size: 16px;">Collaborated with leading institutions, corporations, and organizations on innovation, entrepreneurship, and technology policy</p>
 
-          <div class="card" style="margin-bottom: 32px;">
-            <h4 style="text-align: center; margin-bottom: 24px; font-size: 20px; color: var(--navy);">Strategic Partnerships</h4>
-            <p style="text-align: center; margin-bottom: 24px; color: var(--text-muted);">Collaborated with leading institutions on innovation, entrepreneurship, security education, and technology policy:</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
+          <div class="card">
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">U.S. Department of State</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">White House</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Microsoft</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Cisco</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Chrysler</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Fulbright Foundation</span>
               <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">American Express</span>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4 style="text-align: center; margin-bottom: 24px; font-size: 20px; color: var(--navy);">Brand Collaborations</h4>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Microsoft/Bing</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Goldman Sachs</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Cisco</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Whirlpool</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Gibson Guitars</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Rémy Martin</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Penn State</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">University of Utah</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Popular Science</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Bon Appétit</span>
-              <span style="padding: 8px 16px; background: var(--bg-secondary); border-radius: 8px; font-weight: 500; color: var(--text); font-size: 14px;">Prezi</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Goldman Sachs</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Chrysler</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Whirlpool</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Gibson Guitars</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Rémy Martin</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Penn State</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">University of Utah</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Popular Science</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Bon Appétit</span>
+              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Prezi</span>
             </div>
           </div>
         </div>
