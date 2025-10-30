@@ -1341,6 +1341,17 @@
           </div>
           <div id="details-container"></div>
         </div>
+
+        <!-- Course Development & Curriculum Innovation -->
+        <div style="margin-top: 48px;">
+          <div class="card">
+            <h3>Course Development & Curriculum Innovation</h3>
+
+            <p style="margin-top: 20px;"><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
+
+            <p style="margin-top: 16px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1980,18 +1991,6 @@
     }
 
     // Year switching
-    function switchYear(year) {
-      document.querySelectorAll('.year-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      event.target.classList.add('active');
-
-      document.querySelectorAll('.year-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      document.getElementById('year-' + year).classList.add('active');
-    }
-
     // Filter switching
     function filterPublications(category) {
       document.querySelectorAll('.filter-tab').forEach(tab => {
@@ -2073,10 +2072,19 @@
     // Load and render courses from CSV
     async function loadCourses() {
       try {
-        const response = await fetch('courses.csv');
-        const csvText = await response.text();
-        const courses = parseCSV(csvText);
-        renderCourses(courses);
+        // Load both CSV files
+        const [historyResponse, catalogResponse] = await Promise.all([
+          fetch('courses_history.csv'),
+          fetch('courses_catalog.csv')
+        ]);
+
+        const historyText = await historyResponse.text();
+        const catalogText = await catalogResponse.text();
+
+        const courseHistory = parseCSV(historyText);
+        const courseCatalog = parseCSV(catalogText);
+
+        renderCourses(courseHistory, courseCatalog);
       } catch (error) {
         console.error('Error loading courses:', error);
       }
@@ -2128,20 +2136,20 @@
       event.target.classList.add('active');
     }
 
-    function renderCourses(courses) {
-      const years = [...new Set(courses.map(c => c.year))].sort((a, b) => b - a);
+    function renderCourses(courseHistory, courseCatalog) {
+      const years = [...new Set(courseHistory.map(c => c.year))].sort((a, b) => b - a);
 
       // Render Course History View (simple table)
-      renderHistoryView(courses, years);
+      renderHistoryView(courseHistory);
 
-      // Render Course Details View (full cards with year tabs)
-      renderDetailsView(courses, years);
+      // Render Course Details View (unique courses only)
+      renderDetailsView(courseCatalog);
     }
 
-    function renderHistoryView(courses, years) {
+    function renderHistoryView(courses) {
       const container = document.querySelector('#history-container');
       let html = '<table class="course-table"><thead><tr>';
-      html += '<th>Year</th><th>Semester</th><th>Course Code</th><th>Course Title</th><th>Enrollment</th><th>Role</th>';
+      html += '<th>Year</th><th>Semester</th><th>Course Title</th><th>Enrollment</th><th>Role</th>';
       html += '</tr></thead><tbody>';
 
       courses.forEach(course => {
@@ -2150,7 +2158,6 @@
         html += `<tr>
           <td>${course.year}</td>
           <td>${course.semester}</td>
-          <td class="course-code-cell">${course.course_code}</td>
           <td><strong>${course.course_title}</strong></td>
           <td class="enrollment-cell">${enrollment}</td>
           <td>${role}</td>
@@ -2174,51 +2181,21 @@
       container.innerHTML = html;
     }
 
-    function renderDetailsView(courses, years) {
+    function renderDetailsView(courses) {
       const container = document.querySelector('#details-container');
 
-      // Update year tabs
+      // Hide year tabs since we're showing unique courses only
       const yearTabsContainer = document.querySelector('#view-details .year-tabs');
-      const allYearsTab = yearTabsContainer.querySelector('button:last-child');
-      yearTabsContainer.innerHTML = '';
-      years.forEach((year, index) => {
-        const tab = document.createElement('button');
-        tab.className = `year-tab${index === 0 ? ' active' : ''}`;
-        tab.onclick = () => switchYear(year);
-        tab.textContent = year;
-        yearTabsContainer.appendChild(tab);
-      });
-      yearTabsContainer.appendChild(allYearsTab);
+      yearTabsContainer.style.display = 'none';
 
-      // Render year sections
+      // Render unique courses
       container.innerHTML = '';
-      years.forEach((year, index) => {
-        const yearCourses = courses.filter(c => c.year === year);
-        const yearSection = createYearSection(year, yearCourses, index === 0);
-        container.appendChild(yearSection);
-      });
-
-      // Render "All Years" section
-      const allYearsSection = createAllYearsSection(courses, years);
-      container.appendChild(allYearsSection);
-    }
-
-    function createYearSection(year, courses, isActive) {
-      const section = document.createElement('div');
-      section.id = `year-${year}`;
-      section.className = `year-content${isActive ? ' active' : ''}`;
-
       courses.forEach(course => {
         const card = document.createElement('div');
         card.className = 'course-card';
 
-        const badges = course.badges.split('|').filter(b => b);
+        const badges = course.badges ? course.badges.split('|').filter(b => b) : [];
         const keyTopics = course.key_topics ? course.key_topics.split('|').filter(t => t) : [];
-
-        const enrollment = course.enrollment
-          ? `${course.enrollment} students · `
-          : '';
-        const semester = course.semester || '';
 
         card.innerHTML = `
           <div class="course-header">
@@ -2226,7 +2203,6 @@
               <div class="course-code">${course.course_code}</div>
               <h3>${course.course_title}</h3>
             </div>
-            <div class="enrollment">${enrollment}${semester} ${year}</div>
           </div>
           <div class="badges">
             ${badges.map(badge => {
@@ -2234,7 +2210,7 @@
               return `<span class="badge ${className}">${badge}</span>`;
             }).join('\n            ')}
           </div>
-          <p>${course.description}</p>
+          ${course.description ? `<p>${course.description}</p>` : ''}
           ${keyTopics.length > 0 ? `
           <h4>Key Topics</h4>
           <ul>
@@ -2243,79 +2219,8 @@
           ` : ''}
         `;
 
-        section.appendChild(card);
+        container.appendChild(card);
       });
-
-      return section;
-    }
-
-    function createAllYearsSection(courses, years) {
-      const section = document.createElement('div');
-      section.id = 'year-all';
-      section.className = 'year-content';
-
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      let html = '<h3 style="margin-bottom: 24px;">All Courses by Year</h3>\n\n';
-
-      years.forEach(year => {
-        const yearCourses = courses.filter(c => c.year === year);
-        const totalStudents = yearCourses.reduce((sum, c) => {
-          const match = c.enrollment ? c.enrollment.match(/~?(\d+)/) : null;
-          return sum + (match ? parseInt(match[1]) : 0);
-        }, 0);
-
-        html += `<h4 style="color: var(--navy); margin-top: ${year === years[0] ? '20px' : '24px'}; margin-bottom: 12px;">${year}</h4>\n`;
-        html += '<ul style="margin-left: 24px;">\n';
-
-        yearCourses.forEach(course => {
-          const enrollment = course.enrollment ? ` — ${course.enrollment} students` : '';
-          const semester = course.semester ? ` (${course.semester})` : '';
-          html += `  <li><strong>${course.course_title} (${course.course_code})</strong>${enrollment}${semester}</li>\n`;
-        });
-
-        html += '</ul>\n';
-        if (totalStudents > 0) {
-          html += `<p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~${totalStudents} students</p>\n\n`;
-        }
-      });
-
-      html += `
-        <div style="margin-top: 32px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-          <h4 style="color: var(--navy); margin-bottom: 12px;">Course Development & Curriculum Innovation</h4>
-          <p><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
-          <p style="margin-top: 12px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
-
-          <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Teaching Assistant & Mentorship Roles</h4>
-          <p>Served as Teaching Assistant for <strong>Internet Security & Privacy</strong>, <strong>Operating Systems</strong>, <strong>Computer Networking</strong>, and <strong>Bridge to Tandon</strong> programs. Mentored students through independent research projects resulting in multiple conference publications. Received overwhelmingly positive student evaluations highlighting hands-on approach, real-world application, and industry-relevant curriculum.</p>
-
-          <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Student Research & Publications</h4>
-          <p>Actively assist students in publishing research at academic conferences. Recent collaborations include: <em>Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</em> (CSCE 2025) with student researchers C. Shringi and M. Rizwan, demonstrating commitment to advancing student research capabilities and academic contributions.</p>
-        </div>
-
-        <div style="margin-top: 40px;">
-          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 24px;">Student Success</h3>
-          <div class="grid cols-3">
-            <div class="card">
-              <h3>Industry Placements</h3>
-              <p>Alumni at Google, Microsoft, Meta, Amazon, Stripe, Palantir, Two Sigma, and leading cybersecurity firms.</p>
-            </div>
-            <div class="card">
-              <h3>Research Mentees</h3>
-              <p>Supervising independent research in hardware security, secure protocols, and AI safety with several conference publications.</p>
-            </div>
-            <div class="card">
-              <h3>Notable Projects</h3>
-              <p>Hardware trojan detection using ML, Signal protocol implementation with formal verification, and secure IoT frameworks.</p>
-            </div>
-          </div>
-        </div>
-      `;
-
-      card.innerHTML = html;
-      section.appendChild(card);
-      return section;
     }
 
     // Load courses on page load

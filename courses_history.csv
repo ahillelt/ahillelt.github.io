@@ -1,0 +1,21 @@
+year,semester,course_title,enrollment,role
+2026,Spring,Application Security,,Faculty
+2026,Spring,AI Governance,,Faculty
+2026,Spring,Cyber Resiliency Management,,Faculty
+2026,Spring,Information Systems Security Engineering and Management,,Faculty
+2025,Fall,Application Security,89,Faculty
+2025,Spring,Application Security,90,Faculty
+2025,Fall,Computer Networking,134,Faculty
+2025,Summer,Computer Networking,40,Faculty
+2024,Spring,Computer Networking,124,Head TA
+2024,Fall,Application Security,121,Faculty
+2024,Summer,Computer Networking,33,Faculty
+2023,Fall,Computer Networking,134,Head TA
+2023,Spring,Computer Networking,114,Head TA
+2022,Spring,Information Security & Privacy,323,Head TA
+2021,Summer,Bridge to Tandon,239,Co-Head TA
+2022,Fall,Intro to Operating Systems,104,Head TA
+2022,Summer,Intro to Operating Systems,133,Head TA
+2022,Spring,Intro to Operating Systems,64,Head TA
+2023,Summer,Intro to Operating Systems,139,Head TA
+2022,Fall,Computer Networking,123,Head TA
