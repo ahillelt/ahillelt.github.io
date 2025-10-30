@@ -310,7 +310,11 @@
     }
 
     /* Cards */
-    .grid { display: grid; gap: 28px; }
+    .grid { 
+      display: grid; 
+      gap: 28px; 
+      align-items: start;
+    }
     .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
     .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
 
@@ -323,6 +327,7 @@
       transition: all .3s ease;
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
     .card.video-card {
       display: grid;
@@ -366,6 +371,11 @@
       color: var(--navy-light);
       margin: 20px 0 12px;
       font-weight: 700;
+    }
+    .card > p:first-of-type {
+      color: var(--text-muted);
+      margin: 0 0 12px 0;
+      line-height: 1.7;
     }
     .card p {
       color: var(--text-muted);
@@ -1906,7 +1916,7 @@
           <div class="card">
             <h3>Academic Collaboration</h3>
             <p>For research collaboration, student projects, or academic partnerships:</p>
-            <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:ah5647@nyu.edu">ah5647@nyu.edu</a></p>
+            <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:ah5647@nyu.edu">alon [dot] h [at] nyu [dot] edu</a></p>
             <p><strong>Office:</strong> NYU Tandon School of Engineering</p>
             <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include a brief description of your research interests, goals, and timeline.</p>
           </div>
@@ -1914,7 +1924,7 @@
           <div class="card">
             <h3>Industry & Consulting</h3>
             <p>For consulting engagements, speaking invitations, or industry partnerships:</p>
-            <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:ah5647@nyu.edu">ah5647@nyu.edu</a></p>
+            <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:alon.hilleltuch@gmail.com">alon [dot] hilleltuch [at] gmail [dot] com</a></p>
             <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include your organization, project scope, constraints, and expected outcomes.</p>
           </div>
         </div>
@@ -1967,7 +1977,7 @@
         <div class="footer-section">
           <h4>Contact</h4>
           <ul>
-            <li><a href="mailto:ah5647@nyu.edu">ah5647@nyu.edu</a></li>
+            <li><a href="mailto:ah5647@nyu.edu">alon [dot] h [at] nyu [dot] edu</a></li>
             <li><a href="#contact">Speaking Inquiries</a></li>
             <li><a href="#contact">Consulting</a></li>
           </ul>
