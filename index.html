@@ -330,7 +330,7 @@
       grid-template-columns: 1fr;
     }
     .card.video-card h3 {
-      min-height: 2.4em;
+      min-height: 3.6em;
       display: flex;
       align-items: flex-start;
     }
@@ -346,6 +346,9 @@
     }
     .card.industry-card > p:first-of-type {
       min-height: 1.7em;
+    }
+    .card.industry-card > p:nth-of-type(2) {
+      min-height: 5.5em;
     }
     .card:hover {
       box-shadow: var(--shadow-lg);
@@ -470,6 +473,49 @@
       border: 1px solid #6ee7b7;
     }
 
+    /* Course Table */
+    .course-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .course-table th {
+      background: var(--navy);
+      color: white;
+      padding: 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .course-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+    .course-table tr:last-child td {
+      border-bottom: none;
+    }
+    .course-table tr:hover {
+      background: var(--bg-secondary);
+    }
+    .course-table .course-code-cell {
+      font-family: 'Inter', monospace;
+      font-weight: 700;
+      color: var(--navy-light);
+      white-space: nowrap;
+    }
+    .course-table .enrollment-cell {
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
     /* Course Cards */
     .course-card {
       background: var(--bg-secondary);
@@ -501,6 +547,41 @@
       font-size: 14px;
       color: var(--text-muted);
       font-weight: 600;
+    }
+
+    /* View Tabs */
+    .view-tabs {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 32px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .view-tab {
+      padding: 16px 32px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .3s ease;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    .view-tab:hover {
+      color: var(--navy);
+    }
+    .view-tab.active {
+      color: var(--navy);
+      border-bottom-color: var(--navy);
+    }
+    .view-content {
+      display: none;
+    }
+    .view-content.active {
+      display: block;
     }
 
     /* Year Tabs */
@@ -1225,265 +1306,40 @@
           <p class="section-subtitle">Hands-on cybersecurity education preparing students for industry challenges</p>
         </div>
 
-        <!-- Year Tabs -->
-        <div class="year-tabs">
-          <button class="year-tab active" onclick="switchYear('2026')">2026</button>
-          <button class="year-tab" onclick="switchYear('2025')">2025</button>
-          <button class="year-tab" onclick="switchYear('2024')">2024</button>
-          <button class="year-tab" onclick="switchYear('2023')">2023</button>
-          <button class="year-tab" onclick="switchYear('all')">All Years</button>
-        </div>
-
-        <!-- 2026 Courses -->
-        <div id="year-2026" class="year-content active">
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 9163</div>
-                <h3>Application Security</h3>
-              </div>
-              <div class="enrollment">Spring 2026</div>
-            </div>
-            <div class="badges">
-              <span class="badge core">Core Masters</span>
-              <span class="badge capstone">Capstone</span>
-              <span class="badge cae">CAE-Operations</span>
-              <span class="badge cae">CAE-Defense</span>
-              <span class="badge grad">Graduate</span>
-              <span class="badge lab">Hands-on Labs</span>
-            </div>
-            <p>Comprehensive coverage of secure software development, OWASP Top 10 vulnerabilities, exploit mitigation techniques, security testing, and integrating security into the SDLC. Students complete CTF challenges and build secure applications from scratch.</p>
-          </div>
-
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 9215</div>
-                <h3>AI Governance</h3>
-              </div>
-              <div class="enrollment">Spring 2026</div>
-            </div>
-            <div class="badges">
-              <span class="badge special">Special Topics</span>
-              <span class="badge depth">Depth Elective</span>
-              <span class="badge grad">Graduate</span>
-            </div>
-            <p>Policy frameworks for responsible AI deployment, operational safety in AI systems, regulatory policy development, adversarial robustness, and designing decision-support tools aligned with human values.</p>
-          </div>
-
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 9215</div>
-                <h3>Cyber Resiliency Management</h3>
-              </div>
-              <div class="enrollment">Spring 2026</div>
-            </div>
-            <div class="badges">
-              <span class="badge special">Special Topics</span>
-              <span class="badge depth">Depth Elective</span>
-              <span class="badge grad">Graduate</span>
-            </div>
-            <p>Comprehensive study of organizational resilience against cyber threats, including incident response planning, business continuity, recovery strategies, and building robust security operations.</p>
-          </div>
-
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 6803</div>
-                <h3>Information Systems Security Engineering and Management</h3>
-              </div>
-              <div class="enrollment">Spring 2026</div>
-            </div>
-            <div class="badges">
-              <span class="badge capstone">Capstone</span>
-              <span class="badge depth">Depth Elective</span>
-              <span class="badge cae">CAE-Operations</span>
-              <span class="badge grad">Graduate</span>
-              <span class="badge lab">Hands-on Labs</span>
-            </div>
-            <p>Capstone course covering comprehensive security engineering principles, risk management frameworks, security architecture design, and integrating security across the enterprise.</p>
-          </div>
-        </div>
-
-        <!-- 2025 Courses -->
-        <div id="year-2025" class="year-content">
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 9163</div>
-                <h3>Application Security</h3>
-              </div>
-              <div class="enrollment">Fall & Spring 2025</div>
-            </div>
-            <div class="badges">
-              <span class="badge core">Core Masters</span>
-              <span class="badge capstone">Capstone</span>
-              <span class="badge cae">CAE-Operations</span>
-              <span class="badge cae">CAE-Defense</span>
-              <span class="badge grad">Graduate</span>
-              <span class="badge lab">Hands-on Labs</span>
-            </div>
-            <p>Comprehensive coverage of secure software development, OWASP Top 10 vulnerabilities, exploit mitigation techniques, security testing, and integrating security into the SDLC. Students complete CTF challenges and build secure applications from scratch.</p>
-            <h4>Key Topics</h4>
-            <ul>
-              <li>Secure coding practices and defensive programming</li>
-              <li>Web application vulnerabilities (XSS, CSRF, SQLi, SSRF)</li>
-              <li>Authentication & authorization systems</li>
-              <li>Cryptographic implementation and API security</li>
-              <li>Security testing and static/dynamic analysis</li>
-            </ul>
-          </div>
-
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 6843</div>
-                <h3>Computer Networking</h3>
-              </div>
-              <div class="enrollment">Fall & Summer 2025</div>
-            </div>
-            <div class="badges">
-              <span class="badge breadth">Breadth Elective</span>
-              <span class="badge cae">CAE-Operations</span>
-              <span class="badge cae">CAE-Defense</span>
-              <span class="badge grad">Graduate</span>
-              <span class="badge lab">Hands-on Labs</span>
-            </div>
-            <p>Complete study of network protocols, architectures, and security from physical to application layer. Emphasis on practical implementation, protocol analysis, and network security fundamentals.</p>
-            <h4>Key Topics</h4>
-            <ul>
-              <li>TCP/IP stack and protocol analysis</li>
-              <li>Routing algorithms and network architecture</li>
-              <li>Network security and encryption (TLS, VPNs)</li>
-              <li>Software-defined networking and cloud infrastructure</li>
-              <li>Performance analysis and troubleshooting</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- 2024 Courses -->
-        <div id="year-2024" class="year-content">
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 9163</div>
-                <h3>Application Security</h3>
-              </div>
-              <div class="enrollment">~50 students · Spring & Fall 2024</div>
-            </div>
-            <div class="badges">
-              <span class="badge core">Core Masters</span>
-              <span class="badge capstone">Capstone</span>
-              <span class="badge cae">CAE-Operations</span>
-              <span class="badge cae">CAE-Defense</span>
-              <span class="badge grad">Graduate</span>
-            </div>
-          </div>
-
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 6843</div>
-                <h3>Computer Networking</h3>
-              </div>
-              <div class="enrollment">~55 students · Summer 2024</div>
-            </div>
-            <div class="badges">
-              <span class="badge cae">CAE-Operations</span>
-              <span class="badge cae">CAE-Defense</span>
-              <span class="badge grad">Graduate</span>
-              <span class="badge lab">Hands-on Labs</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2023 Courses -->
-        <div id="year-2023" class="year-content">
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 9163</div>
-                <h3>Application Security</h3>
-              </div>
-              <div class="enrollment">~40 students · Fall 2023</div>
-            </div>
-            <div class="badges">
-              <span class="badge core">Core Masters</span>
-              <span class="badge grad">Graduate</span>
-            </div>
-          </div>
-
-          <div class="course-card">
-            <div class="course-header">
-              <div>
-                <div class="course-code">CS-GY 6843</div>
-                <h3>Computer Networking</h3>
-              </div>
-              <div class="enrollment">~48 students · Spring 2023</div>
-            </div>
-            <div class="badges">
-              <span class="badge grad">Graduate</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- All Years -->
-        <div id="year-all" class="year-content">
+        <!-- CAE Designations -->
+        <div style="margin-bottom: 48px;">
           <div class="card">
-            <h3 style="margin-bottom: 24px;">All Courses by Year</h3>
-
-            <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">2025</h4>
-            <ul style="margin-left: 24px;">
-              <li><strong>Application Security (CS-GY 9163)</strong> — ~45 students</li>
-              <li><strong>Computer Networking (CS-GY 6843)</strong> — ~60 students</li>
-            </ul>
-            <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~105 students</p>
-
-            <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 12px;">2024</h4>
-            <ul style="margin-left: 24px;">
-              <li><strong>Application Security (CS-GY 9163)</strong> — ~50 students (Spring & Fall)</li>
-              <li><strong>Computer Networking (CS-GY 6843)</strong> — ~55 students (Summer)</li>
-            </ul>
-            <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~105 students</p>
-
-            <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 12px;">2023</h4>
-            <ul style="margin-left: 24px;">
-              <li><strong>Application Security (CS-GY 9163)</strong> — ~40 students (Fall)</li>
-              <li><strong>Computer Networking (CS-GY 6843)</strong> — ~48 students (Spring)</li>
-            </ul>
-            <p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~88 students</p>
-
-            <div style="margin-top: 32px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-              <h4 style="color: var(--navy); margin-bottom: 12px;">Course Development & Curriculum Innovation</h4>
-              <p><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
-              <p style="margin-top: 12px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
-
-              <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Teaching Assistant & Mentorship Roles</h4>
-              <p>Served as Teaching Assistant for <strong>Internet Security & Privacy</strong>, <strong>Operating Systems</strong>, <strong>Computer Networking</strong>, and <strong>Bridge to Tandon</strong> programs. Mentored students through independent research projects resulting in multiple conference publications. Received overwhelmingly positive student evaluations highlighting hands-on approach, real-world application, and industry-relevant curriculum.</p>
-
-              <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Student Research & Publications</h4>
-              <p>Actively assist students in publishing research at academic conferences. Recent collaborations include: <em>Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</em> (CSCE 2025) with student researchers C. Shringi and M. Rizwan, demonstrating commitment to advancing student research capabilities and academic contributions.</p>
+            <h3>CAE Designations</h3>
+            <p>NYU Tandon holds prestigious National Security Agency (NSA) and Department of Homeland Security (DHS) designations as a Center of Academic Excellence in Cyber Defense (CAE-CD) and Cyber Operations (CAE-CO), recognizing our comprehensive cybersecurity curriculum and research excellence.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">
+              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Defense</div>
+              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Operations</div>
             </div>
           </div>
+        </div>
 
-          <div style="margin-top: 40px;">
-            <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 24px;">Student Success</h3>
-            <div class="grid cols-3">
-              <div class="card">
-                <h3>Industry Placements</h3>
-                <p>Alumni at Google, Microsoft, Meta, Amazon, Stripe, Palantir, Two Sigma, and leading cybersecurity firms.</p>
-              </div>
-              <div class="card">
-                <h3>Research Mentees</h3>
-                <p>Supervising independent research in hardware security, secure protocols, and AI safety with several conference publications.</p>
-              </div>
-              <div class="card">
-                <h3>Notable Projects</h3>
-                <p>Hardware trojan detection using ML, Signal protocol implementation with formal verification, and secure IoT frameworks.</p>
-              </div>
-            </div>
+        <!-- View Tabs -->
+        <div class="view-tabs">
+          <button class="view-tab active" onclick="switchView('history')">Course History</button>
+          <button class="view-tab" onclick="switchView('details')">Course Details</button>
+        </div>
+
+        <!-- Course History View -->
+        <div id="view-history" class="view-content active">
+          <div id="history-container"></div>
+        </div>
+
+        <!-- Course Details View -->
+        <div id="view-details" class="view-content">
+          <!-- Year Tabs -->
+          <div class="year-tabs">
+            <button class="year-tab active" onclick="switchYear('2026')">2026</button>
+            <button class="year-tab" onclick="switchYear('2025')">2025</button>
+            <button class="year-tab" onclick="switchYear('2024')">2024</button>
+            <button class="year-tab" onclick="switchYear('2023')">2023</button>
+            <button class="year-tab" onclick="switchYear('all')">All Years</button>
           </div>
+          <div id="details-container"></div>
         </div>
       </div>
     </section>
@@ -1525,17 +1381,6 @@
               <li>Industry partnerships and workforce development</li>
             </ul>
             <p style="margin-top: 16px;"><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener" style="font-weight: 700;">Visit CCS Website →</a></p>
-          </div>
-        </div>
-
-        <div style="margin-top: 40px;">
-          <div class="card">
-            <h3>CAE Designations</h3>
-            <p>NYU Tandon holds prestigious National Security Agency (NSA) and Department of Homeland Security (DHS) designations as a Center of Academic Excellence in Cyber Defense (CAE-CD) and Cyber Operations (CAE-CO), recognizing our comprehensive cybersecurity curriculum and research excellence.</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">
-              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Defense</div>
-              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Operations</div>
-            </div>
           </div>
         </div>
       </div>
@@ -2274,11 +2119,66 @@
       return result;
     }
 
+    // Switch between views
+    function switchView(view) {
+      document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.view-content').forEach(content => content.classList.remove('active'));
+
+      document.querySelector(`#view-${view}`).classList.add('active');
+      event.target.classList.add('active');
+    }
+
     function renderCourses(courses) {
       const years = [...new Set(courses.map(c => c.year))].sort((a, b) => b - a);
 
+      // Render Course History View (simple table)
+      renderHistoryView(courses, years);
+
+      // Render Course Details View (full cards with year tabs)
+      renderDetailsView(courses, years);
+    }
+
+    function renderHistoryView(courses, years) {
+      const container = document.querySelector('#history-container');
+      let html = '<table class="course-table"><thead><tr>';
+      html += '<th>Year</th><th>Semester</th><th>Course Code</th><th>Course Title</th><th>Enrollment</th><th>Role</th>';
+      html += '</tr></thead><tbody>';
+
+      courses.forEach(course => {
+        const enrollment = course.enrollment || 'TBD';
+        const role = course.role || 'Instructor';
+        html += `<tr>
+          <td>${course.year}</td>
+          <td>${course.semester}</td>
+          <td class="course-code-cell">${course.course_code}</td>
+          <td><strong>${course.course_title}</strong></td>
+          <td class="enrollment-cell">${enrollment}</td>
+          <td>${role}</td>
+        </tr>`;
+      });
+
+      html += '</tbody></table>';
+
+      // Add aggregated stats
+      const totalEnrollment = courses.reduce((sum, c) => {
+        const match = c.enrollment ? c.enrollment.match(/~?(\d+)/) : null;
+        return sum + (match ? parseInt(match[1]) : 0);
+      }, 0);
+
+      html += `<div style="margin-top: 24px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
+        <h3 style="color: var(--navy); margin-bottom: 16px;">Teaching Summary</h3>
+        <p><strong>Total Students Taught:</strong> ~${totalEnrollment} students across all courses</p>
+        <p style="margin-top: 12px;"><strong>Primary Courses:</strong> Application Security (CS-GY 9163), Computer Networking (CS-GY 6843), AI Governance (CS-GY 9215), Cyber Resiliency Management (CS-GY 9215), ISSEM (CS-GY 6803)</p>
+      </div>`;
+
+      container.innerHTML = html;
+    }
+
+    function renderDetailsView(courses, years) {
+      const container = document.querySelector('#details-container');
+
       // Update year tabs
-      const yearTabsContainer = document.querySelector('.year-tabs');
+      const yearTabsContainer = document.querySelector('#view-details .year-tabs');
       const allYearsTab = yearTabsContainer.querySelector('button:last-child');
       yearTabsContainer.innerHTML = '';
       years.forEach((year, index) => {
@@ -2290,25 +2190,17 @@
       });
       yearTabsContainer.appendChild(allYearsTab);
 
-      // Clear existing content
-      document.querySelectorAll('[id^="year-"]').forEach(el => {
-        if (el.id !== 'year-all' && el.id !== 'year') {
-          el.remove();
-        }
-      });
-
       // Render year sections
-      const container = document.querySelector('#year-all').parentNode;
-      const allYearsSection = document.querySelector('#year-all');
-
+      container.innerHTML = '';
       years.forEach((year, index) => {
         const yearCourses = courses.filter(c => c.year === year);
         const yearSection = createYearSection(year, yearCourses, index === 0);
-        container.insertBefore(yearSection, allYearsSection);
+        container.appendChild(yearSection);
       });
 
       // Render "All Years" section
-      renderAllYearsSection(courses, years);
+      const allYearsSection = createAllYearsSection(courses, years);
+      container.appendChild(allYearsSection);
     }
 
     function createYearSection(year, courses, isActive) {
@@ -2357,14 +2249,20 @@
       return section;
     }
 
-    function renderAllYearsSection(courses, years) {
-      const allYearsSection = document.querySelector('#year-all .card');
+    function createAllYearsSection(courses, years) {
+      const section = document.createElement('div');
+      section.id = 'year-all';
+      section.className = 'year-content';
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
       let html = '<h3 style="margin-bottom: 24px;">All Courses by Year</h3>\n\n';
 
       years.forEach(year => {
         const yearCourses = courses.filter(c => c.year === year);
         const totalStudents = yearCourses.reduce((sum, c) => {
-          const match = c.enrollment.match(/~?(\d+)/);
+          const match = c.enrollment ? c.enrollment.match(/~?(\d+)/) : null;
           return sum + (match ? parseInt(match[1]) : 0);
         }, 0);
 
@@ -2391,10 +2289,33 @@
 
           <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Teaching Assistant & Mentorship Roles</h4>
           <p>Served as Teaching Assistant for <strong>Internet Security & Privacy</strong>, <strong>Operating Systems</strong>, <strong>Computer Networking</strong>, and <strong>Bridge to Tandon</strong> programs. Mentored students through independent research projects resulting in multiple conference publications. Received overwhelmingly positive student evaluations highlighting hands-on approach, real-world application, and industry-relevant curriculum.</p>
+
+          <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Student Research & Publications</h4>
+          <p>Actively assist students in publishing research at academic conferences. Recent collaborations include: <em>Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</em> (CSCE 2025) with student researchers C. Shringi and M. Rizwan, demonstrating commitment to advancing student research capabilities and academic contributions.</p>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 24px;">Student Success</h3>
+          <div class="grid cols-3">
+            <div class="card">
+              <h3>Industry Placements</h3>
+              <p>Alumni at Google, Microsoft, Meta, Amazon, Stripe, Palantir, Two Sigma, and leading cybersecurity firms.</p>
+            </div>
+            <div class="card">
+              <h3>Research Mentees</h3>
+              <p>Supervising independent research in hardware security, secure protocols, and AI safety with several conference publications.</p>
+            </div>
+            <div class="card">
+              <h3>Notable Projects</h3>
+              <p>Hardware trojan detection using ML, Signal protocol implementation with formal verification, and secure IoT frameworks.</p>
+            </div>
+          </div>
         </div>
       `;
 
-      allYearsSection.innerHTML = html;
+      card.innerHTML = html;
+      section.appendChild(card);
+      return section;
     }
 
     // Load courses on page load
