@@ -2183,6 +2183,181 @@
     // Run on scroll and on page load
     window.addEventListener('scroll', highlightNavigation);
     window.addEventListener('load', highlightNavigation);
+
+    // Load and render courses from CSV
+    async function loadCourses() {
+      try {
+        const response = await fetch('courses.csv');
+        const csvText = await response.text();
+        const courses = parseCSV(csvText);
+        renderCourses(courses);
+      } catch (error) {
+        console.error('Error loading courses:', error);
+      }
+    }
+
+    function parseCSV(csvText) {
+      const lines = csvText.trim().split('\n');
+      const headers = lines[0].split(',');
+      const courses = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        const course = {};
+        headers.forEach((header, index) => {
+          course[header] = values[index] || '';
+        });
+        courses.push(course);
+      }
+
+      return courses;
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let insideQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === ',' && !insideQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current);
+      return result;
+    }
+
+    function renderCourses(courses) {
+      const years = [...new Set(courses.map(c => c.year))].sort((a, b) => b - a);
+
+      // Update year tabs
+      const yearTabsContainer = document.querySelector('.year-tabs');
+      const allYearsTab = yearTabsContainer.querySelector('button:last-child');
+      yearTabsContainer.innerHTML = '';
+      years.forEach((year, index) => {
+        const tab = document.createElement('button');
+        tab.className = `year-tab${index === 0 ? ' active' : ''}`;
+        tab.onclick = () => switchYear(year);
+        tab.textContent = year;
+        yearTabsContainer.appendChild(tab);
+      });
+      yearTabsContainer.appendChild(allYearsTab);
+
+      // Clear existing content
+      document.querySelectorAll('[id^="year-"]').forEach(el => {
+        if (el.id !== 'year-all' && el.id !== 'year') {
+          el.remove();
+        }
+      });
+
+      // Render year sections
+      const container = document.querySelector('#year-all').parentNode;
+      const allYearsSection = document.querySelector('#year-all');
+
+      years.forEach((year, index) => {
+        const yearCourses = courses.filter(c => c.year === year);
+        const yearSection = createYearSection(year, yearCourses, index === 0);
+        container.insertBefore(yearSection, allYearsSection);
+      });
+
+      // Render "All Years" section
+      renderAllYearsSection(courses, years);
+    }
+
+    function createYearSection(year, courses, isActive) {
+      const section = document.createElement('div');
+      section.id = `year-${year}`;
+      section.className = `year-content${isActive ? ' active' : ''}`;
+
+      courses.forEach(course => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+
+        const badges = course.badges.split('|').filter(b => b);
+        const keyTopics = course.key_topics ? course.key_topics.split('|').filter(t => t) : [];
+
+        const enrollment = course.enrollment
+          ? `${course.enrollment} students · `
+          : '';
+        const semester = course.semester || '';
+
+        card.innerHTML = `
+          <div class="course-header">
+            <div>
+              <div class="course-code">${course.course_code}</div>
+              <h3>${course.course_title}</h3>
+            </div>
+            <div class="enrollment">${enrollment}${semester} ${year}</div>
+          </div>
+          <div class="badges">
+            ${badges.map(badge => {
+              const className = badge.toLowerCase().replace(/[^a-z]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+              return `<span class="badge ${className}">${badge}</span>`;
+            }).join('\n            ')}
+          </div>
+          <p>${course.description}</p>
+          ${keyTopics.length > 0 ? `
+          <h4>Key Topics</h4>
+          <ul>
+            ${keyTopics.map(topic => `<li>${topic}</li>`).join('\n            ')}
+          </ul>
+          ` : ''}
+        `;
+
+        section.appendChild(card);
+      });
+
+      return section;
+    }
+
+    function renderAllYearsSection(courses, years) {
+      const allYearsSection = document.querySelector('#year-all .card');
+      let html = '<h3 style="margin-bottom: 24px;">All Courses by Year</h3>\n\n';
+
+      years.forEach(year => {
+        const yearCourses = courses.filter(c => c.year === year);
+        const totalStudents = yearCourses.reduce((sum, c) => {
+          const match = c.enrollment.match(/~?(\d+)/);
+          return sum + (match ? parseInt(match[1]) : 0);
+        }, 0);
+
+        html += `<h4 style="color: var(--navy); margin-top: ${year === years[0] ? '20px' : '24px'}; margin-bottom: 12px;">${year}</h4>\n`;
+        html += '<ul style="margin-left: 24px;">\n';
+
+        yearCourses.forEach(course => {
+          const enrollment = course.enrollment ? ` — ${course.enrollment} students` : '';
+          const semester = course.semester ? ` (${course.semester})` : '';
+          html += `  <li><strong>${course.course_title} (${course.course_code})</strong>${enrollment}${semester}</li>\n`;
+        });
+
+        html += '</ul>\n';
+        if (totalStudents > 0) {
+          html += `<p style="margin-top: 8px; color: var(--text-muted); font-weight: 600;">Total: ~${totalStudents} students</p>\n\n`;
+        }
+      });
+
+      html += `
+        <div style="margin-top: 32px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
+          <h4 style="color: var(--navy); margin-bottom: 12px;">Course Development & Curriculum Innovation</h4>
+          <p><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
+          <p style="margin-top: 12px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
+
+          <h4 style="color: var(--navy); margin-top: 20px; margin-bottom: 12px;">Teaching Assistant & Mentorship Roles</h4>
+          <p>Served as Teaching Assistant for <strong>Internet Security & Privacy</strong>, <strong>Operating Systems</strong>, <strong>Computer Networking</strong>, and <strong>Bridge to Tandon</strong> programs. Mentored students through independent research projects resulting in multiple conference publications. Received overwhelmingly positive student evaluations highlighting hands-on approach, real-world application, and industry-relevant curriculum.</p>
+        </div>
+      `;
+
+      allYearsSection.innerHTML = html;
+    }
+
+    // Load courses on page load
+    window.addEventListener('load', loadCourses);
   </script>
 </body>
 </html>
