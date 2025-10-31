@@ -348,19 +348,6 @@
       display: flex;
       flex-direction: column;
     }
-    .card.industry-card h3 {
-      min-height: 2.6em; /* Industry card titles are typically shorter */
-    }
-    .card.industry-card > p:first-of-type {
-      min-height: 1.5em; /* Date subtitle */
-      display: flex;
-      align-items: flex-start;
-    }
-    .card.industry-card > p:nth-of-type(2) {
-      min-height: 10.2em; /* Description paragraph - matches other cards */
-      display: flex;
-      align-items: flex-start;
-    }
     .card:hover {
       box-shadow: var(--shadow-lg);
       border-color: var(--navy-light);
@@ -372,9 +359,6 @@
       margin: 0 0 16px 0;
       font-weight: 800;
       line-height: 1.3;
-      min-height: 3.9em; /* ~93px - Ensures all titles take same vertical space */
-      display: flex;
-      align-items: flex-start;
     }
     .card h4 {
       font-size: 18px;
@@ -386,22 +370,6 @@
       color: var(--text-muted);
       margin: 0 0 16px 0;
       line-height: 1.7;
-    }
-    /* Colored subtitle paragraphs - ensure consistent height */
-    .card > p[style*="color: var(--navy-light)"] {
-      margin: 0 0 16px 0;
-      line-height: 1.5;
-      min-height: 3em; /* ~45px - Ensures all subtitles take same vertical space */
-      display: flex;
-      align-items: flex-start;
-    }
-    /* First body paragraph after subtitle - ensure consistent height */
-    .card > p[style*="color: var(--navy-light)"] + p {
-      min-height: 10.2em; /* ~173px - Ensures all first paragraphs take same vertical space */
-      line-height: 1.7;
-      margin: 0 0 16px 0;
-      display: flex;
-      align-items: flex-start;
     }
     .card p {
       color: var(--text-muted);
