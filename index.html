@@ -371,6 +371,12 @@
       margin: 0 0 16px 0;
       line-height: 1.7;
     }
+    /* Colored subtitle paragraphs - min-height to align body text */
+    .card > p[style*="color: var(--navy-light)"] {
+      margin: 0 0 16px 0;
+      line-height: 1.5;
+      min-height: 4.5em; /* Accommodates up to 3 lines, aligns body text */
+    }
     .card p {
       color: var(--text-muted);
       margin: 0 0 12px 0;
