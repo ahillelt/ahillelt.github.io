@@ -356,26 +356,26 @@
     .card h3 {
       font-size: 24px;
       color: var(--navy);
-      margin: 0 0 16px 0;
+      margin: 0 0 8px 0;
       font-weight: 800;
       line-height: 1.3;
     }
     .card h4 {
       font-size: 18px;
       color: var(--navy-light);
-      margin: 20px 0 12px;
+      margin: 20px 0 8px;
       font-weight: 700;
     }
     .card > p:first-of-type {
       color: var(--text-muted);
-      margin: 0 0 16px 0;
+      margin: 0 0 12px 0;
       line-height: 1.7;
     }
-    /* Colored subtitle paragraphs - min-height to align body text */
+    /* Colored subtitle paragraphs - reduced spacing for tighter alignment */
     .card > p[style*="color: var(--navy-light)"] {
-      margin: 0 0 16px 0;
-      line-height: 1.5;
-      min-height: 4.5em; /* Accommodates up to 3 lines, aligns body text */
+      margin: 0 0 12px 0;
+      line-height: 1.4;
+      min-height: auto;
     }
     .card p {
       color: var(--text-muted);
@@ -935,7 +935,7 @@
       <div class="container">
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-number">500+</div>
+            <div class="stat-number" id="students-taught-stat">500+</div>
             <div class="stat-label">Students Taught</div>
           </div>
           <div class="stat-card">
@@ -947,8 +947,8 @@
             <div class="stat-label">Congressional Testimonies</div>
           </div>
           <div class="stat-card">
-            <div class="stat-number">CAE</div>
-            <div class="stat-label">NSA Certified Programs</div>
+            <div class="stat-number">2</div>
+            <div class="stat-label">US Patents</div>
           </div>
         </div>
       </div>
@@ -973,7 +973,7 @@
           </div>
           <div class="card">
             <h3>Industry Leadership</h3>
-            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to a $15 million acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
+            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to an acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
             <p>As Managing Partner at <strong>Stacked Capital</strong>, invested in deep-tech ventures focusing on hardware security, AI infrastructure, and critical systems resilience.</p>
             <p>Testified twice before U.S. House subcommittees on the JOBS Act implementation, and co-authored three whitepapers on crowdfunding regulation submitted to Congress, SEC, and FINRA.</p>
             <h4>Consulting & Advisory</h4>
@@ -1137,6 +1137,19 @@
             </article>
 
             <article class="card">
+              <h3>Forbes Technology Council</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Founding Member</p>
+              <div id="forbes-articles-container">
+                <p><em>Loading articles...</em></p>
+              </div>
+              <div class="pub-links">
+                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
+                  📝 View All Articles
+                </a>
+              </div>
+            </article>
+
+            <article class="card">
               <h3>CCTV International</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
               <div class="video-wrapper">
@@ -1230,18 +1243,6 @@
               <p><strong>"Equity crowdfunding sites court investors, startups"</strong></p>
               <p>Quoted expressing excitement about democratized investing: "What I am excited about is allowing anyone to do what accredited investors do." Crain's noted RocketHub's role and optimism that everyday people could soon invest in startups like angels.</p>
             </article>
-
-            <article class="card">
-              <h3>Forbes Technology Council</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Founding Member</p>
-              <p><strong>Published Articles</strong></p>
-              <p>Series of published expert articles on AI governance, cybersecurity strategy, responsible innovation, technology policy, and the intersection of emerging technologies with business and societal impact.</p>
-              <div class="pub-links">
-                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
-                  📝 Read Articles
-                </a>
-              </div>
-            </article>
           </div>
 
           <!-- Additional Coverage -->
@@ -1249,7 +1250,7 @@
             <div class="card">
               <h3>Additional Coverage</h3>
               <p style="margin-bottom: 16px;"><strong>Featured in:</strong> Fortune, Bloomberg, Reuters, Wall Street Journal, China Daily, and international business publications</p>
-              <p style="color: var(--text-muted);">Expert commentary on crowdfunding, fintech innovation, technology policy, AI governance, and cybersecurity. Consulted by TIME Magazine for "100 Most Influential People in AI" list (Winter 2023).</p>
+              <p style="color: var(--text-muted);">Expert commentary on crowdfunding, fintech innovation, technology policy, AI governance, and cybersecurity. Consulted by TIME Magazine for <a href="https://time.com/collection/time100-ai/" target="_blank" rel="noopener">"100 Most Influential People in AI" list (Winter 2023)</a>.</p>
               <p style="margin-top: 16px; color: var(--navy-light); font-weight: 600;">Available for media interviews on cybersecurity, AI governance, technology policy, and financial innovation.</p>
               <div class="pub-links">
                 <a href="#contact" class="pub-link">Media Inquiries</a>
@@ -1363,6 +1364,12 @@
             <p style="margin-top: 20px;"><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
 
             <p style="margin-top: 16px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
+
+            <p style="margin-top: 16px;"><strong>AI Governance & Resiliency (CS-GY 9215)</strong> — Created on-campus in-person course content, lecture materials, exams, and assignments. Translated core knowledge units from an accredited online version to a robust on-campus version of the course, focusing on responsible AI development, policy frameworks, and organizational resilience.</p>
+
+            <p style="margin-top: 16px;"><strong>Cyber Resilience (CS-GY 9215)</strong> — Created on-campus in-person course content, lecture materials, exams, and assignments. Translated core knowledge units from an accredited online version to a robust on-campus version of the course, emphasizing organizational security posture, incident response, and business continuity.</p>
+
+            <p style="margin-top: 16px;"><strong>ISSEM (CS-GY 6803)</strong> — Information Systems Security Engineering & Management. Created on-campus in-person course content, lecture materials, exams, and assignments. Translated core knowledge units from an accredited online version to a robust on-campus version of the course, covering security architecture, risk management, and enterprise security governance.</p>
           </div>
         </div>
       </div>
@@ -1559,7 +1566,7 @@
           <div class="grid cols-2">
             <div class="publication">
               <div class="pub-title">Offer Presentation for Crowdfunding</div>
-              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
+              <div class="pub-authors">Alon Hillel-Tuch, Jed Cohen, Brian Meece</div>
               <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, offer presentation systems, and community engagement systems for creative and entrepreneurial ventures.</p>
               <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
@@ -1573,7 +1580,7 @@
 
             <div class="publication">
               <div class="pub-title">Beneficiary Crowdsourcing</div>
-              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
+              <div class="pub-authors">Alon Hillel-Tuch, Jed Cohen, Brian Meece</div>
               <div class="pub-venue">USPTO Patent Application 20140279645A1 · Filed 2013 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency. Includes beneficiary-focused crowdsourcing mechanisms.</p>
               <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
@@ -1799,12 +1806,13 @@
 
         <div class="grid cols-2">
           <div class="card">
-            <h3>Academic Honors & Research Appointments</h3>
+            <h3>Academic Honors, Research Appointments & Awards</h3>
             <ul style="margin-top: 16px;">
               <li><strong>Academic Excellence Award</strong> — NYU Tandon School of Engineering (2024)</li>
               <li><strong>Cyber Fellowship</strong> — NYU Tandon School of Engineering (2024)</li>
               <li><strong>NYU Cyber Fellows Ambassador</strong> — Selected as ambassador for NYU's Cyber Fellows program</li>
               <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, Advanced Consortium for Cooperation, Conflict, and Complexity (AC4)</li>
+              <li><strong>Bronze Lion at Cannes</strong> — Team award for virtual currency innovation with Wieden+Kennedy (2013)</li>
               <li><strong>10 Under 10</strong> — Hamilton College Alumni Achievement Award recognizing outstanding early-career impact</li>
               <li><strong>Phi Sigma Iota</strong> — International Foreign Language Honor Society</li>
               <li><strong>IB Excellence Award</strong> — International Baccalaureate Program Distinction</li>
@@ -1820,7 +1828,6 @@
               <li><strong>FINRA Capital Markets Series XVII Leader</strong> — Guest Lecturer on Securities Regulation and Crowdfunding, Award of Recognition from FINRA</li>
               <li><strong>Six Sigma White & Yellow Belt</strong> — Process improvement and quality management certification</li>
               <li><strong>Certified Associate Scrum Fundamentals (CASF)</strong> — Agile project management certification</li>
-              <li><strong>Bronze Lion at Cannes</strong> — Team award for virtual currency innovation with Wieden+Kennedy (2013)</li>
               <li><strong>Board Member</strong> — Crowdfunding Professional Association</li>
               <li><strong>Board Observer</strong> — Visionary Health</li>
               <li><strong>Forbes Technology Council</strong> — Founding Council Member contributing expert analysis on AI governance, cybersecurity, and innovation</li>
@@ -1988,7 +1995,7 @@
       </div>
       <div class="footer-bottom">
         <p>© <span id="year"></span> Alon Hillel‑Tuch · Industry Assistant Professor, NYU Tandon School of Engineering</p>
-        <p style="margin-top: 8px; opacity: .7;">Hamilton College '07 · Columbia University · New York University</p>
+        <p style="margin-top: 8px; opacity: .7;">Hamilton College · Columbia University · New York University</p>
       </div>
     </div>
   </footer>
@@ -2192,6 +2199,12 @@
       </div>`;
 
       container.innerHTML = html;
+
+      // Update the students taught stat card
+      const statElement = document.getElementById('students-taught-stat');
+      if (statElement) {
+        statElement.textContent = `${totalEnrollment}+`;
+      }
     }
 
     function renderDetailsView(courses) {
@@ -2238,6 +2251,40 @@
 
     // Load courses on page load
     window.addEventListener('load', loadCourses);
+
+    // Populate Forbes Technology Council articles
+    function populateForbesArticles() {
+      const container = document.getElementById('forbes-articles-container');
+      if (!container) return;
+
+      // Article data - update this list with actual articles from Forbes Council profile
+      // Listed in order from newest to oldest
+      const articles = [
+        {
+          title: "Expert articles on AI governance, cybersecurity strategy, and responsible innovation",
+          note: "Articles available at Forbes Technology Council profile"
+        }
+        // Add more articles here as they are published
+        // Format: { title: "Article Title", date: "Month Year", url: "https://..." }
+      ];
+
+      let html = '<div style="margin-top: 12px;">';
+      articles.forEach(article => {
+        if (article.url) {
+          html += `<p style="margin-bottom: 8px;"><a href="${article.url}" target="_blank" rel="noopener" style="color: var(--text);">• ${article.title}</a>`;
+          if (article.date) html += ` <span style="color: var(--text-muted); font-size: 14px;">(${article.date})</span>`;
+          html += `</p>`;
+        } else {
+          html += `<p style="margin-bottom: 8px; color: var(--text-muted);">${article.note || article.title}</p>`;
+        }
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    // Populate Forbes articles on page load
+    window.addEventListener('load', populateForbesArticles);
   </script>
 </body>
 </html>
