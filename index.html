@@ -693,6 +693,35 @@
       box-shadow: var(--shadow-md);
     }
 
+    /* Forbes article links - elegant hover effect */
+    .forbes-article-link {
+      display: block;
+      padding: 10px 14px;
+      margin: 0 -14px 6px -14px;
+      border-radius: 8px;
+      color: var(--text) !important;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      border-left: 3px solid transparent;
+    }
+    .forbes-article-link:hover {
+      background: var(--bg-tertiary);
+      border-left-color: var(--navy-light);
+      color: var(--navy) !important;
+      transform: translateX(4px);
+      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.08);
+    }
+    .forbes-article-link .article-date {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .forbes-article-link:hover .article-date {
+      color: var(--navy-light);
+    }
+
     /* Filter Tabs */
     .filter-tabs {
       display: flex;
@@ -1138,7 +1167,8 @@
 
             <article class="card">
               <h3>Forbes Technology Council</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Founding Member</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 12px;">Founding Member</p>
+              <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 16px;">Forbes Technology Council is a professional organization for senior-level technology executives, including founders, partners, and CEOs of technology companies, C-level executives such as CTOs and CIOs, and VPs of technology teams. As a <strong style="color: var(--text);">founding member</strong> and ongoing contributor, providing expert analysis and thought leadership for the member community on AI governance, cybersecurity, and technology innovation.</p>
               <div id="forbes-articles-container">
                 <p><em>Loading articles...</em></p>
               </div>
@@ -2292,20 +2322,21 @@
         }).filter(article => article.title); // Filter out empty rows
 
         // Render articles
-        let html = '<div style="margin-top: 12px;">';
+        let html = '<div style="margin-top: 8px;">';
 
         if (articles.length === 0) {
-          html += '<p style="color: var(--text-muted);">Expert articles on AI governance, cybersecurity strategy, responsible innovation, and technology policy.</p>';
+          html += '<p style="color: var(--text-muted); padding: 10px 0;">Expert articles on AI governance, cybersecurity strategy, responsible innovation, and technology policy.</p>';
         } else {
           articles.forEach(article => {
             if (article.url && article.url !== '""' && article.url !== '') {
-              html += `<p style="margin-bottom: 8px;"><a href="${article.url}" target="_blank" rel="noopener" style="color: var(--text);">• ${article.title}</a>`;
+              html += `<a href="${article.url}" target="_blank" rel="noopener" class="forbes-article-link">`;
+              html += `<span style="display: block;">• ${article.title}</span>`;
               if (article.date && article.date !== '""' && article.date !== '') {
-                html += ` <span style="color: var(--text-muted); font-size: 14px;">(${article.date})</span>`;
+                html += `<span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">${article.date}</span>`;
               }
-              html += `</p>`;
+              html += `</a>`;
             } else {
-              html += `<p style="margin-bottom: 8px; color: var(--text-muted);">${article.title}</p>`;
+              html += `<p style="margin-bottom: 8px; padding: 10px 0; color: var(--text-muted);">${article.title}</p>`;
             }
           });
         }
