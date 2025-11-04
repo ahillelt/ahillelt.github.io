@@ -2252,35 +2252,70 @@
     // Load courses on page load
     window.addEventListener('load', loadCourses);
 
-    // Populate Forbes Technology Council articles
-    function populateForbesArticles() {
+    // Populate Forbes Technology Council articles from CSV
+    async function populateForbesArticles() {
       const container = document.getElementById('forbes-articles-container');
       if (!container) return;
 
-      // Article data - update this list with actual articles from Forbes Council profile
-      // Listed in order from newest to oldest
-      const articles = [
-        {
-          title: "Expert articles on AI governance, cybersecurity strategy, and responsible innovation",
-          note: "Articles available at Forbes Technology Council profile"
-        }
-        // Add more articles here as they are published
-        // Format: { title: "Article Title", date: "Month Year", url: "https://..." }
-      ];
+      try {
+        const response = await fetch('forbes_articles.csv');
+        const text = await response.text();
 
-      let html = '<div style="margin-top: 12px;">';
-      articles.forEach(article => {
-        if (article.url) {
-          html += `<p style="margin-bottom: 8px;"><a href="${article.url}" target="_blank" rel="noopener" style="color: var(--text);">• ${article.title}</a>`;
-          if (article.date) html += ` <span style="color: var(--text-muted); font-size: 14px;">(${article.date})</span>`;
-          html += `</p>`;
+        // Parse CSV
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+
+        const articles = lines.slice(1).map(line => {
+          // Handle quoted fields that may contain commas
+          const values = [];
+          let current = '';
+          let inQuotes = false;
+
+          for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+              inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+              values.push(current.trim());
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+          values.push(current.trim());
+
+          const article = {};
+          headers.forEach((header, i) => {
+            article[header] = values[i] || '';
+          });
+          return article;
+        }).filter(article => article.title); // Filter out empty rows
+
+        // Render articles
+        let html = '<div style="margin-top: 12px;">';
+
+        if (articles.length === 0) {
+          html += '<p style="color: var(--text-muted);">Expert articles on AI governance, cybersecurity strategy, responsible innovation, and technology policy.</p>';
         } else {
-          html += `<p style="margin-bottom: 8px; color: var(--text-muted);">${article.note || article.title}</p>`;
+          articles.forEach(article => {
+            if (article.url && article.url !== '""' && article.url !== '') {
+              html += `<p style="margin-bottom: 8px;"><a href="${article.url}" target="_blank" rel="noopener" style="color: var(--text);">• ${article.title}</a>`;
+              if (article.date && article.date !== '""' && article.date !== '') {
+                html += ` <span style="color: var(--text-muted); font-size: 14px;">(${article.date})</span>`;
+              }
+              html += `</p>`;
+            } else {
+              html += `<p style="margin-bottom: 8px; color: var(--text-muted);">${article.title}</p>`;
+            }
+          });
         }
-      });
-      html += '</div>';
 
-      container.innerHTML = html;
+        html += '</div>';
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading Forbes articles:', error);
+        container.innerHTML = '<p style="color: var(--text-muted); margin-top: 12px;">Expert articles on AI governance, cybersecurity strategy, responsible innovation, and technology policy.</p>';
+      }
     }
 
     // Populate Forbes articles on page load
