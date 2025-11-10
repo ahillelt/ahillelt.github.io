@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<!-- saved from url=(0027)https://ahillelt.github.io/ -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert</title>
-  <meta name="description" content="Industry Assistant Professor at NYU Tandon School of Engineering. Expert in cybersecurity, hardware security, AI governance, and AI safety. Former RocketHub co-founder and Stacked Capital managing partner. Research Fellow at Columbia&#39;s Earth Institute with expertise in conflict resolution. Congressional testimony on technology policy.">
-  <meta name="theme-color" content="#1e40af">
-  <link rel="preconnect" href="https://fonts.googleapis.com/">
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-  <link href="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/css2" rel="stylesheet">
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alon Hillel‑Tuch · Cybersecurity Professor & AI Governance Expert</title>
+  <meta name="description" content="Industry Assistant Professor at NYU Tandon School of Engineering. Expert in cybersecurity, hardware security, AI governance, and AI safety. Former RocketHub co-founder and Stacked Capital managing partner. Research Fellow at Columbia's Earth Institute with expertise in conflict resolution. Congressional testimony on technology policy." />
+  <meta name="theme-color" content="#1e40af" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --navy: #1e3a8a;
@@ -196,7 +196,7 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 32px;
-      align-items: stretch;
+      align-items: center;
     }
     .btn {
       display: inline-flex;
@@ -210,8 +210,6 @@
       transition: all .2s ease;
       box-shadow: var(--shadow);
       min-width: 160px;
-      flex: 1 1 auto;
-      max-width: 200px;
     }
     .btn.primary {
       background: var(--navy);
@@ -330,12 +328,11 @@
       display: flex;
       flex-direction: column;
       height: 100%;
-      min-height: 100%;
     }
     .card.video-card {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      grid-template-columns: 1fr;
     }
     .card.video-card h3 {
       min-height: 3.6em;
@@ -350,7 +347,6 @@
     .card.industry-card {
       display: flex;
       flex-direction: column;
-      height: 100%;
     }
     .card:hover {
       box-shadow: var(--shadow-lg);
@@ -360,26 +356,26 @@
     .card h3 {
       font-size: 24px;
       color: var(--navy);
-      margin: 0 0 8px 0;
+      margin: 0 0 16px 0;
       font-weight: 800;
       line-height: 1.3;
     }
     .card h4 {
       font-size: 18px;
       color: var(--navy-light);
-      margin: 20px 0 8px;
+      margin: 20px 0 12px;
       font-weight: 700;
     }
     .card > p:first-of-type {
       color: var(--text-muted);
-      margin: 0 0 12px 0;
+      margin: 0 0 16px 0;
       line-height: 1.7;
     }
-    /* Colored subtitle paragraphs - reduced spacing for tighter alignment */
+    /* Colored subtitle paragraphs - min-height to align body text */
     .card > p[style*="color: var(--navy-light)"] {
-      margin: 0 0 12px 0;
-      line-height: 1.4;
-      min-height: auto;
+      margin: 0 0 16px 0;
+      line-height: 1.5;
+      min-height: 4.5em; /* Accommodates up to 3 lines, aligns body text */
     }
     .card p {
       color: var(--text-muted);
@@ -389,15 +385,9 @@
     .card p:last-child {
       margin-bottom: 0;
     }
-    /* Push last paragraph with links to bottom */
-    .card > p:last-child {
-      margin-top: auto;
-      padding-top: 8px;
-    }
     .card ul {
       margin: 16px 0 0 24px;
       color: var(--text-muted);
-      flex-grow: 1;
     }
     .card li {
       margin: 8px 0;
@@ -703,35 +693,6 @@
       box-shadow: var(--shadow-md);
     }
 
-    /* Forbes article links - elegant hover effect */
-    .forbes-article-link {
-      display: block;
-      padding: 10px 14px;
-      margin: 0 -14px 6px -14px;
-      border-radius: 8px;
-      color: var(--text) !important;
-      text-decoration: none;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      border-left: 3px solid transparent;
-    }
-    .forbes-article-link:hover {
-      background: var(--bg-tertiary);
-      border-left-color: var(--navy-light);
-      color: var(--navy) !important;
-      transform: translateX(4px);
-      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.08);
-    }
-    .forbes-article-link .article-date {
-      color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-    .forbes-article-link:hover .article-date {
-      color: var(--navy-light);
-    }
-
     /* Filter Tabs */
     .filter-tabs {
       display: flex;
@@ -924,14 +885,14 @@
       </div>
       <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
       <nav id="mainNav">
-        <a href="https://ahillelt.github.io/#about" class="">About</a>
-        <a href="https://ahillelt.github.io/#press" class="">Press &amp; Speaking</a>
-        <a href="https://ahillelt.github.io/#teaching">Teaching</a>
-        <a href="https://ahillelt.github.io/#labs">Labs &amp; Centers</a>
-        <a href="https://ahillelt.github.io/#research">Research</a>
-        <a href="https://ahillelt.github.io/#industry">Industry</a>
-        <a href="https://ahillelt.github.io/#credentials">Credentials</a>
-        <a href="https://ahillelt.github.io/#contact">Contact</a>
+        <a href="#about">About</a>
+        <a href="#press">Press & Speaking</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#labs">Labs & Centers</a>
+        <a href="#research">Research</a>
+        <a href="#industry">Industry</a>
+        <a href="#credentials">Credentials</a>
+        <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -955,14 +916,14 @@
               <span class="chip">Venture Capital</span>
             </div>
             <div class="cta">
-              <a href="https://ahillelt.github.io/#contact" class="btn primary">Get in Touch</a>
+              <a href="#contact" class="btn primary">Get in Touch</a>
               <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener">NYU Profile</a>
             </div>
           </div>
           <div class="portrait">
             <!-- Replace with actual photo -->
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 12c2.761 0 5-2.686 5-6S14.761 0 12 0 7 2.686 7 6s2.239 6 5 6Zm0 2c-4.418 0-8 2.91-8 6.5V24h16v-3.5C20 16.91 16.418 14 12 14Z" fill="currentColor"></path>
+              <path d="M12 12c2.761 0 5-2.686 5-6S14.761 0 12 0 7 2.686 7 6s2.239 6 5 6Zm0 2c-4.418 0-8 2.91-8 6.5V24h16v-3.5C20 16.91 16.418 14 12 14Z" fill="currentColor"/>
             </svg>
           </div>
         </div>
@@ -973,21 +934,21 @@
     <section class="stats">
       <div class="container">
         <div class="stats-grid">
-          <div class="stat-card fade-in">
-            <div class="stat-number" id="students-taught-stat">2004+</div>
+          <div class="stat-card">
+            <div class="stat-number">500+</div>
             <div class="stat-label">Students Taught</div>
           </div>
-          <div class="stat-card fade-in">
+          <div class="stat-card">
             <div class="stat-number">18+</div>
             <div class="stat-label">Years Industry</div>
           </div>
-          <div class="stat-card fade-in">
+          <div class="stat-card">
             <div class="stat-number">2</div>
             <div class="stat-label">Congressional Testimonies</div>
           </div>
-          <div class="stat-card fade-in">
-            <div class="stat-number">100+</div>
-            <div class="stat-label">Patent Citations</div>
+          <div class="stat-card">
+            <div class="stat-number">CAE</div>
+            <div class="stat-label">NSA Certified Programs</div>
           </div>
         </div>
       </div>
@@ -1001,21 +962,21 @@
           <p class="section-subtitle">Academic research, teaching, and industry experience</p>
         </div>
         <div class="grid cols-2">
-          <div class="card fade-in">
+          <div class="card">
             <h3>Academic Mission</h3>
             <p>As Industry Assistant Professor at NYU Tandon School of Engineering, I teach graduate courses in cybersecurity and computer networking, mentor students through the OSIRIS Lab, and conduct research at the intersection of hardware security, cryptographic systems, <strong>AI governance</strong>, and AI safety.</p>
             <p>My research explores physical hardware security, computational intelligence, and the societal implications of emerging technologies. Drawing on my background in <strong>conflict resolution</strong> from Columbia's Earth Institute, I examine how technical systems interact with human decision-making and governance structures.</p>
             <h4>Research Focus</h4>
-            <p><strong>AI Governance &amp; Policy:</strong> Developing frameworks for responsible AI deployment, examining governance mechanisms for AI systems, and advising on regulatory approaches that balance innovation with societal safety.</p>
+            <p><strong>AI Governance & Policy:</strong> Developing frameworks for responsible AI deployment, examining governance mechanisms for AI systems, and advising on regulatory approaches that balance innovation with societal safety.</p>
             <h4>Teaching Philosophy</h4>
             <p>Security education must be experiential and hands-on. Students learn best by breaking systems, building defenses, and understanding the socio-technical context in which technology operates.</p>
           </div>
-          <div class="card fade-in">
+          <div class="card">
             <h3>Industry Leadership</h3>
-            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to an acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
+            <p>Over 18 years in emerging technology, entrepreneurship, regulation, and public policy. Co-founded <strong>RocketHub</strong>, one of the first global crowdfunding platforms, guiding it to a $15 million acquisition in 2015 after facilitating over $50M in funding across 30,000+ projects.</p>
             <p>As Managing Partner at <strong>Stacked Capital</strong>, invested in deep-tech ventures focusing on hardware security, AI infrastructure, and critical systems resilience.</p>
             <p>Testified twice before U.S. House subcommittees on the JOBS Act implementation, and co-authored three whitepapers on crowdfunding regulation submitted to Congress, SEC, and FINRA.</p>
-            <h4>Consulting &amp; Advisory</h4>
+            <h4>Consulting & Advisory</h4>
             <p>Available for strategic consulting on security architecture, threat modeling, applied cryptography, and building security-conscious engineering cultures.</p>
           </div>
         </div>
@@ -1026,18 +987,18 @@
     <section id="press" class="accent-bg">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Press &amp; Speaking</h2>
+          <h2 class="section-title">Press & Speaking</h2>
           <p class="section-subtitle">Congressional testimony · International keynotes · Expert commentary on technology policy, AI governance, and financial innovation</p>
         </div>
 
         <!-- Congressional Testimony -->
         <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Congressional Testimony</h3>
         <div class="grid cols-2">
-          <article class="card fade-in">
+          <article class="card">
             <h3>U.S. House Oversight Committee</h3>
             <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
             <div class="video-wrapper">
-              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen=""></iframe></div>
+              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
             </div>
             <p>Testified on implementing the JOBS Act crowdfunding provisions, balancing innovation with investor protection in emerging fintech markets. Recommended raising crowdfunding cap from $1M to $5M to better support startups.</p>
             <div class="pub-links">
@@ -1050,11 +1011,11 @@
             </div>
           </article>
 
-          <article class="card fade-in">
+          <article class="card">
             <h3>U.S. House Financial Services Committee</h3>
             <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">March 5, 2014</p>
             <div class="video-wrapper">
-              <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/105809391.html" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+              <iframe loading="lazy" src="https://player.vimeo.com/video/105809391" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
             <p>Provided expert statement on crowdfunding market structure, regulatory frameworks, and the role of technology platforms in democratizing access to capital while maintaining market integrity and investor protection. Warned that overly strict compliance requirements could "limit the rate we're able to domestically innovate and create jobs."</p>
             <div class="pub-links">
@@ -1067,42 +1028,42 @@
 
         <!-- Keynotes & Speaking -->
         <div style="margin-top: 80px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 8px;">Keynotes &amp; Speaking Engagements</h3>
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 8px;">Keynotes & Speaking Engagements</h3>
           <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 16px;">50+ keynote presentations on security, innovation, and technology policy · Featured as Top Global Partner of US government (2015, Secretary John Kerry)</p>
 
           <div class="grid cols-2">
-            <div class="card video-card fade-in">
+            <div class="card video-card">
               <h3>TEDx: Emergence of an Alternate Path</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">TEDxNavesink · September 20, 2013</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/133619019.html" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Delivered talk outlining the ethos of crowdfunding as a disruptive technology enabling grassroots innovation. Emphasized that "some of the best innovations and ideas happen at the grassroots level" as platforms like RocketHub incubate new ideas. Exploring how technology adoption cycles create alternate paths for human progress and social transformation.</p>
             </div>
 
-            <div class="card video-card fade-in">
+            <div class="card video-card">
               <h3>Augmented Intelligence (AI)</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Real Estate Leaders Summit · Re.Comm.17 · Kitzbühel, Austria · November 22–24, 2017</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/rMs4Mpojk3Q.html" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://www.youtube.com/embed/rMs4Mpojk3Q" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               </div>
               <p>International keynote examining human-AI collaboration and future intelligent systems. Shared stage with Wikipedia's Jimmy Wales and UK politician Nigel Farage. Austrian press noted presence as one of 11 renowned international speakers who "enthused 230 participants" at this elite gathering of global real estate and tech leaders.</p>
             </div>
 
-            <div class="card video-card fade-in">
+            <div class="card video-card">
               <h3>The Future of Crowdfunding: What the Next 5 Years Will Bring</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Campaigning Summit · Berlin · May 22, 2015</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/133619613.html" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133619613" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Conference keynote exploring the evolving crowdfunding landscape and predicted industry developments. Event dedicated to mobilization and engagement trends listed Hillel-Tuch (Co-Founder of RocketHub) among its outstanding international lineup. 9-minute keynote available via Campaigning Summit YouTube channel.</p>
             </div>
 
-            <div class="card video-card fade-in">
+            <div class="card video-card">
               <h3>Open Economy Fundamentals</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">CrowdEconomy Conference · Minsk · c.2014</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/Drr9wpJLgFE.html" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Featured speaker at Belarus conference on open innovation. Explored open economies, crowdsourcing, and collaborative innovation in emerging markets and technology ecosystems.</p>
             </div>
@@ -1128,12 +1089,12 @@
 
         <!-- Academic & Legal Panels -->
         <div style="margin-top: 60px;">
-          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Academic &amp; Legal Forums</h3>
+          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Academic & Legal Forums</h3>
           <div class="grid cols-2">
             <article class="card">
               <h3>Fordham Law School Symposium</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Fordham Journal of Corporate &amp; Financial Law · Vol. 20, 2015</p>
-              <p><strong>JOBS Act: The Terrible Twos - General Solicitation &amp; Crowdfunding, The Next Frontier of Securities Regulation</strong></p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Fordham Journal of Corporate & Financial Law · Vol. 20, 2015</p>
+              <p><strong>JOBS Act: The Terrible Twos - General Solicitation & Crowdfunding, The Next Frontier of Securities Regulation</strong></p>
               <p>Panelist alongside SEC Commissioner Troy A. Paredes, Congressman Patrick McHenry, and other leading securities law experts. Examined general solicitation rules and crowdfunding regulations two years after the JOBS Act passage, providing industry perspective on regulatory implementation challenges.</p>
               <div class="pub-links">
                 <a href="https://ir.lawnet.fordham.edu/jcfl/vol20/iss2/7/" class="pub-link" target="_blank" rel="noopener">
@@ -1145,7 +1106,7 @@
             <article class="card">
               <h3>Connecticut Bar Association CLE Program</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Technology Law Committee · 2012-2013</p>
-              <p>Featured panelist at CLE program about the federal "Jumpstarting Our Business Startups" (JOBS) Act. Panel held at Carmen Anthony Steakhouse in New Haven, attended by 28 attorneys. Spoke as representative of RocketHub.com (one of the online exchanges seeking approval) about lobbying in support of the JOBS Act. Joined by Henry M. Beck Jr. (Halloran &amp; Sage LLP) discussing SEC regulation pitfalls and patent agent Mark Nowotarski on crowdfunding success stories.</p>
+              <p>Featured panelist at CLE program about the federal "Jumpstarting Our Business Startups" (JOBS) Act. Panel held at Carmen Anthony Steakhouse in New Haven, attended by 28 attorneys. Spoke as representative of RocketHub.com (one of the online exchanges seeking approval) about lobbying in support of the JOBS Act. Joined by Henry M. Beck Jr. (Halloran & Sage LLP) discussing SEC regulation pitfalls and patent agent Mark Nowotarski on crowdfunding success stories.</p>
               <div class="pub-links">
                 <a href="https://www.ctbar.org/docs/default-source/publications/annual-reports/2012-2013_annual_report.pdf" class="pub-link" target="_blank" rel="noopener">
                   📄 CBA Annual Report
@@ -1157,7 +1118,7 @@
 
         <!-- Press Coverage -->
         <div style="margin-top: 80px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Press &amp; Media Coverage</h3>
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Press & Media Coverage</h3>
 
           <!-- Featured TV/Video Coverage -->
           <div class="grid cols-2">
@@ -1165,7 +1126,7 @@
               <h3>NPR Morning Edition</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">May 9, 2014</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/133615381.html" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133615381" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Featured on NPR's Morning Edition arguing that overly strict SEC auditing requirements would place "too big a financial burden" on startups and could "limit the rate we're able to domestically innovate and create jobs."</p>
               <div class="pub-links">
@@ -1176,22 +1137,10 @@
             </article>
 
             <article class="card">
-              <h3>Forbes Technology Council</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 12px;">Founding Member</p>
-              <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 16px;">Forbes Technology Council is a professional organization for senior-level technology executives, including founders, partners, and CEOs of technology companies, C-level executives such as CTOs and CIOs, and VPs of technology teams. As a <strong style="color: var(--text);">founding member</strong> and ongoing contributor, providing expert analysis and thought leadership for the member community on AI governance, cybersecurity, and technology innovation.</p>
-              <div id="forbes-articles-container"><div style="margin-top: 8px;"><a href="https://www.forbes.com/sites/forbestechcouncil/2024/07/10/companies-are-killing-themselves-with-ai-a-hidden-crisis/" target="_blank" rel="noopener" class="forbes-article-link"><span style="display: block;">• Companies Are Killing Themselves With AI: A Hidden Crisis</span><span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">July, 2024</span></a><a href="https://www.forbes.com/sites/forbestechcouncil/2024/04/19/generative-ais-challenges-to-cybersecurity/" target="_blank" rel="noopener" class="forbes-article-link"><span style="display: block;">• Generative AI's Challenges To Cybersecurity</span><span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">April, 2024</span></a><a href="https://www.forbes.com/sites/forbestechcouncil/2024/03/22/the-paradox-of-corporate-ventures-why-so-many-fail/" target="_blank" rel="noopener" class="forbes-article-link"><span style="display: block;">• The Paradox Of Corporate Ventures: Why So Many Fail</span><span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">March, 2024</span></a><a href="https://www.forbes.com/sites/forbestechcouncil/2019/11/01/is-venture-capital-drinking-its-own-kool-aid/" target="_blank" rel="noopener" class="forbes-article-link"><span style="display: block;">• Is Venture Capital Drinking Its Own Kool-Aid?</span><span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">November, 2019</span></a><a href="https://www.forbes.com/sites/forbestechcouncil/2019/10/11/six-ways-your-early-start-up-data-can-be-misleading/" target="_blank" rel="noopener" class="forbes-article-link"><span style="display: block;">• Six Ways Your Early Start-Up Data Can Be Misleading</span><span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">October, 2019</span></a><a href="https://www.forbes.com/sites/forbestechcouncil/2019/09/24/why-the-best-technology-doesnt-always-win/" target="_blank" rel="noopener" class="forbes-article-link"><span style="display: block;">• Why The Best Technology Doesn’t Always Win</span><span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">September, 2019</span></a></div></div>
-              <div class="pub-links">
-                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
-                  📝 View All Articles
-                </a>
-              </div>
-            </article>
-
-            <article class="card">
               <h3>CCTV International</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/133625379.html" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133625379" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>International television interview discussing crowdfunding innovation, global market trends, and the democratization of access to capital for entrepreneurs worldwide.</p>
             </article>
@@ -1281,6 +1230,18 @@
               <p><strong>"Equity crowdfunding sites court investors, startups"</strong></p>
               <p>Quoted expressing excitement about democratized investing: "What I am excited about is allowing anyone to do what accredited investors do." Crain's noted RocketHub's role and optimism that everyday people could soon invest in startups like angels.</p>
             </article>
+
+            <article class="card">
+              <h3>Forbes Technology Council</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Founding Member</p>
+              <p><strong>Published Articles</strong></p>
+              <p>Series of published expert articles on AI governance, cybersecurity strategy, responsible innovation, technology policy, and the intersection of emerging technologies with business and societal impact.</p>
+              <div class="pub-links">
+                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
+                  📝 Read Articles
+                </a>
+              </div>
+            </article>
           </div>
 
           <!-- Additional Coverage -->
@@ -1288,10 +1249,10 @@
             <div class="card">
               <h3>Additional Coverage</h3>
               <p style="margin-bottom: 16px;"><strong>Featured in:</strong> Fortune, Bloomberg, Reuters, Wall Street Journal, China Daily, and international business publications</p>
-              <p style="color: var(--text-muted);">Expert commentary on crowdfunding, fintech innovation, technology policy, AI governance, and cybersecurity. Consulted by TIME Magazine for <a href="https://time.com/collection/time100-ai/" target="_blank" rel="noopener">"100 Most Influential People in AI" list (Winter 2023)</a>.</p>
+              <p style="color: var(--text-muted);">Expert commentary on crowdfunding, fintech innovation, technology policy, AI governance, and cybersecurity. Consulted by TIME Magazine for "100 Most Influential People in AI" list (Winter 2023).</p>
               <p style="margin-top: 16px; color: var(--navy-light); font-weight: 600;">Available for media interviews on cybersecurity, AI governance, technology policy, and financial innovation.</p>
               <div class="pub-links">
-                <a href="https://ahillelt.github.io/#contact" class="pub-link">Media Inquiries</a>
+                <a href="#contact" class="pub-link">Media Inquiries</a>
               </div>
             </div>
           </div>
@@ -1299,12 +1260,12 @@
 
         <!-- Podcasts & Webinars -->
         <div style="margin-top: 60px;">
-          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Podcasts &amp; Webinars</h3>
+          <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Podcasts & Webinars</h3>
           <div class="grid cols-2">
             <div class="card">
-              <h3>Lunch &amp; Learn Series</h3>
+              <h3>Lunch & Learn Series</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Crowdfunding Professional Association · 2016</p>
-              <p>Featured guest in CfPA's webinar series. Session billed "Lunch &amp; Learn with Alon Hillel-Tuch (Co-founder of RocketHub)", sharing industry insights on crowdfunding trends and best practices for entrepreneurs and investors.</p>
+              <p>Featured guest in CfPA's webinar series. Session billed "Lunch & Learn with Alon Hillel-Tuch (Co-founder of RocketHub)", sharing industry insights on crowdfunding trends and best practices for entrepreneurs and investors.</p>
             </div>
 
             <div class="card">
@@ -1343,7 +1304,7 @@
               </div>
             </div>
             <div class="pub-links" style="margin-top: 24px;">
-              <a href="https://ahillelt.github.io/#contact" class="pub-link">Request Speaking Engagement</a>
+              <a href="#contact" class="pub-link">Request Speaking Engagement</a>
             </div>
           </div>
         </div>
@@ -1372,304 +1333,36 @@
 
         <!-- View Tabs -->
         <div class="view-tabs">
-          <button class="view-tab active" onclick="switchView(&#39;history&#39;)">Course History</button>
-          <button class="view-tab" onclick="switchView(&#39;details&#39;)">Course Details</button>
+          <button class="view-tab active" onclick="switchView('history')">Course History</button>
+          <button class="view-tab" onclick="switchView('details')">Course Details</button>
         </div>
 
         <!-- Course History View -->
         <div id="view-history" class="view-content active">
-          <div id="history-container"><table class="course-table"><thead><tr><th>Year</th><th>Semester</th><th>Course Title</th><th>Enrollment</th><th>Role</th></tr></thead><tbody><tr>
-          <td>2026</td>
-          <td>Spring</td>
-          <td><strong>Application Security</strong></td>
-          <td class="enrollment-cell">TBD</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2026</td>
-          <td>Spring</td>
-          <td><strong>AI Governance</strong></td>
-          <td class="enrollment-cell">TBD</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2026</td>
-          <td>Spring</td>
-          <td><strong>Cyber Resiliency Management</strong></td>
-          <td class="enrollment-cell">TBD</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2026</td>
-          <td>Spring</td>
-          <td><strong>Information Systems Security Engineering and Management</strong></td>
-          <td class="enrollment-cell">TBD</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2025</td>
-          <td>Fall</td>
-          <td><strong>Application Security</strong></td>
-          <td class="enrollment-cell">89</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2025</td>
-          <td>Fall</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">134</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2025</td>
-          <td>Summer</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">40</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2025</td>
-          <td>Spring</td>
-          <td><strong>Application Security</strong></td>
-          <td class="enrollment-cell">90</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2024</td>
-          <td>Fall</td>
-          <td><strong>Application Security</strong></td>
-          <td class="enrollment-cell">121</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2024</td>
-          <td>Summer</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">33</td>
-          <td>Faculty</td>
-        </tr><tr>
-          <td>2024</td>
-          <td>Spring</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">124</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2023</td>
-          <td>Fall</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">134</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2023</td>
-          <td>Summer</td>
-          <td><strong>Intro to Operating Systems</strong></td>
-          <td class="enrollment-cell">139</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2023</td>
-          <td>Spring</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">114</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2022</td>
-          <td>Fall</td>
-          <td><strong>Computer Networking</strong></td>
-          <td class="enrollment-cell">123</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2022</td>
-          <td>Fall</td>
-          <td><strong>Intro to Operating Systems</strong></td>
-          <td class="enrollment-cell">104</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2022</td>
-          <td>Summer</td>
-          <td><strong>Intro to Operating Systems</strong></td>
-          <td class="enrollment-cell">133</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2022</td>
-          <td>Spring</td>
-          <td><strong>Information Security &amp; Privacy</strong></td>
-          <td class="enrollment-cell">323</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2022</td>
-          <td>Spring</td>
-          <td><strong>Intro to Operating Systems</strong></td>
-          <td class="enrollment-cell">64</td>
-          <td>Head TA</td>
-        </tr><tr>
-          <td>2021</td>
-          <td>Summer</td>
-          <td><strong>Bridge to Tandon</strong></td>
-          <td class="enrollment-cell">239</td>
-          <td>Co-Head TA</td>
-        </tr></tbody></table><div style="margin-top: 24px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
-        <h3 style="color: var(--navy); margin-bottom: 16px;">Teaching Summary</h3>
-        <p><strong>Total Students Taught:</strong> ~2004 students across all courses</p>
-        <p style="margin-top: 12px;"><strong>Primary Courses:</strong> Application Security (CS-GY 9163), Computer Networking (CS-GY 6843), AI Governance (CS-GY 9215), Cyber Resiliency Management (CS-GY 9215), ISSEM (CS-GY 6803)</p>
-      </div></div>
+          <div id="history-container"></div>
         </div>
 
         <!-- Course Details View -->
         <div id="view-details" class="view-content">
           <!-- Year Tabs -->
-          <div class="year-tabs" style="display: none;">
-            <button class="year-tab active" onclick="switchYear(&#39;2026&#39;)">2026</button>
-            <button class="year-tab" onclick="switchYear(&#39;2025&#39;)">2025</button>
-            <button class="year-tab" onclick="switchYear(&#39;2024&#39;)">2024</button>
-            <button class="year-tab" onclick="switchYear(&#39;2023&#39;)">2023</button>
-            <button class="year-tab" onclick="switchYear(&#39;all&#39;)">All Years</button>
+          <div class="year-tabs">
+            <button class="year-tab active" onclick="switchYear('2026')">2026</button>
+            <button class="year-tab" onclick="switchYear('2025')">2025</button>
+            <button class="year-tab" onclick="switchYear('2024')">2024</button>
+            <button class="year-tab" onclick="switchYear('2023')">2023</button>
+            <button class="year-tab" onclick="switchYear('all')">All Years</button>
           </div>
-          <div id="details-container"><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 9163</div>
-              <h3>Application Security</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge core-masters">Core Masters</span>
-            <span class="badge capstone">Capstone</span>
-            <span class="badge cae-operations">CAE-Operations</span>
-            <span class="badge cae-defense">CAE-Defense</span>
-            <span class="badge graduate">Graduate</span>
-            <span class="badge hands-on-labs">Hands-on Labs</span>
-          </div>
-          <p>Comprehensive coverage of secure software development, OWASP Top 10 vulnerabilities, exploit mitigation techniques, security testing, and integrating security into the SDLC. Students complete CTF challenges and build secure applications from scratch.</p>
-          
-          <h4>Key Topics</h4>
-          <ul>
-            <li>Secure coding practices and defensive programming</li>
-            <li>Web application vulnerabilities (XSS, CSRF, SQLi, SSRF)</li>
-            <li>Authentication &amp; authorization systems</li>
-            <li>Cryptographic implementation and API security</li>
-            <li>Security testing and static/dynamic analysis</li>
-          </ul>
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 9215</div>
-              <h3>AI Governance</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge special-topics">Special Topics</span>
-            <span class="badge depth-elective">Depth Elective</span>
-            <span class="badge graduate">Graduate</span>
-          </div>
-          <p>Policy frameworks for responsible AI deployment, operational safety in AI systems, regulatory policy development, adversarial robustness, and designing decision-support tools aligned with human values.</p>
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 9215</div>
-              <h3>Cyber Resiliency Management</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge special-topics">Special Topics</span>
-            <span class="badge depth-elective">Depth Elective</span>
-            <span class="badge graduate">Graduate</span>
-          </div>
-          <p>Comprehensive study of organizational resilience against cyber threats, including incident response planning, business continuity, recovery strategies, and building robust security operations.</p>
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 6803</div>
-              <h3>Information Systems Security Engineering and Management</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge capstone">Capstone</span>
-            <span class="badge depth-elective">Depth Elective</span>
-            <span class="badge cae-operations">CAE-Operations</span>
-            <span class="badge graduate">Graduate</span>
-            <span class="badge hands-on-labs">Hands-on Labs</span>
-          </div>
-          <p>Capstone course covering comprehensive security engineering principles, risk management frameworks, security architecture design, and integrating security across the enterprise.</p>
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 6843</div>
-              <h3>Computer Networking</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge breadth-elective">Breadth Elective</span>
-            <span class="badge cae-operations">CAE-Operations</span>
-            <span class="badge cae-defense">CAE-Defense</span>
-            <span class="badge graduate">Graduate</span>
-            <span class="badge hands-on-labs">Hands-on Labs</span>
-          </div>
-          <p>Complete study of network protocols, architectures, and security from physical to application layer. Emphasis on practical implementation, protocol analysis, and network security fundamentals.</p>
-          
-          <h4>Key Topics</h4>
-          <ul>
-            <li>TCP/IP stack and protocol analysis</li>
-            <li>Routing algorithms and network architecture</li>
-            <li>Network security and encryption (TLS, VPNs)</li>
-            <li>Software-defined networking and cloud infrastructure</li>
-            <li>Performance analysis and troubleshooting</li>
-          </ul>
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 6813</div>
-              <h3>Information Security &amp; Privacy</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge cae-operations">CAE-Operations</span>
-            <span class="badge cae-defense">CAE-Defense</span>
-            <span class="badge graduate">Graduate</span>
-            <span class="badge hands-on-labs">Hands-on Labs</span>
-            <span class="badge core-masters">Core Masters</span>
-          </div>
-          
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CS-GY 6233</div>
-              <h3>Intro to Operating Systems</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge cae-operations">CAE-Operations</span>
-            <span class="badge cae-defense">CAE-Defense</span>
-            <span class="badge graduate">Graduate</span>
-            <span class="badge hands-on-labs">Hands-on Labs</span>
-          </div>
-          
-          
-        </div><div class="course-card">
-          <div class="course-header">
-            <div>
-              <div class="course-code">CSBR-NY</div>
-              <h3>Bridge to Tandon</h3>
-            </div>
-          </div>
-          <div class="badges">
-            <span class="badge nyu-stem-preparatory-course">NYU STEM Preparatory Course</span>
-          </div>
-          
-          
-        </div></div>
+          <div id="details-container"></div>
         </div>
 
         <!-- Course Development & Curriculum Innovation -->
         <div style="margin-top: 48px;">
           <div class="card">
-            <h3>Course Development &amp; Curriculum Innovation</h3>
+            <h3>Course Development & Curriculum Innovation</h3>
 
-            <p style="margin-top: 20px;"><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&amp;CK, NIST SSDF).</p>
+            <p style="margin-top: 20px;"><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
 
             <p style="margin-top: 16px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
-
-            <p style="margin-top: 16px;"><strong>AI Governance &amp; Resiliency (CS-GY 9215)</strong> — Created on-campus in-person course content, lecture materials, exams, and assignments. Translated core knowledge units from an accredited online version to a robust on-campus version of the course, focusing on responsible AI development, policy frameworks, and organizational resilience.</p>
-
-            <p style="margin-top: 16px;"><strong>Cyber Resilience (CS-GY 9215)</strong> — Created on-campus in-person course content, lecture materials, exams, and assignments. Translated core knowledge units from an accredited online version to a robust on-campus version of the course, emphasizing organizational security posture, incident response, and business continuity.</p>
-
-            <p style="margin-top: 16px;"><strong>ISSEM (CS-GY 6803)</strong> — Information Systems Security Engineering &amp; Management. Created on-campus in-person course content, lecture materials, exams, and assignments. Translated core knowledge units from an accredited online version to a robust on-campus version of the course, covering security architecture, risk management, and enterprise security governance.</p>
           </div>
         </div>
       </div>
@@ -1679,7 +1372,7 @@
     <section id="labs" class="accent-bg">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Labs &amp; Centers</h2>
+          <h2 class="section-title">Labs & Centers</h2>
           <p class="section-subtitle">Leading cybersecurity research and education initiatives</p>
         </div>
 
@@ -1721,14 +1414,14 @@
     <section id="research">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Research &amp; Publications</h2>
+          <h2 class="section-title">Research & Publications</h2>
           <p class="section-subtitle">Applied security research addressing real-world challenges</p>
         </div>
 
         <!-- Research Areas -->
         <div class="grid cols-3">
           <div class="card">
-            <h3>Hardware &amp; Physical Security</h3>
+            <h3>Hardware & Physical Security</h3>
             <p>Fault injection attacks, side-channel analysis, hardware trojans, and practical defenses for embedded systems and IoT devices in resource-constrained environments.</p>
           </div>
           <div class="card">
@@ -1736,7 +1429,7 @@
             <p>Misuse-resistant cryptographic APIs, secure protocol design, and making strong cryptography accessible to developers through secure-by-default systems.</p>
           </div>
           <div class="card">
-            <h3>AI Governance &amp; Safety</h3>
+            <h3>AI Governance & Safety</h3>
             <p>Governance frameworks for responsible AI deployment, operational safety in AI systems, regulatory policy development, adversarial robustness, and designing decision-support tools aligned with human values. Combining technical expertise with conflict resolution methodologies to address AI alignment challenges.</p>
           </div>
           <div class="card">
@@ -1760,10 +1453,10 @@
           <div class="publication">
             <div class="pub-title">Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</div>
             <div class="pub-authors">C. Shringi*, A. Hillel-Tuch, M. Rizwan* (*Student Researchers)</div>
-            <div class="pub-venue">World Congress in Computer Science, Computer Engineering, &amp; Applied Computing (CSCE) · 2025</div>
+            <div class="pub-venue">World Congress in Computer Science, Computer Engineering, & Applied Computing (CSCE) · 2025</div>
             <p class="pub-abstract">Novel workflow framework for autonomous red-team agents inspired by Git version control, enabling structured offensive security testing and validation processes. Research collaboration with student researchers advancing autonomous security testing methodologies.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
               </a>
             </div>
@@ -1772,10 +1465,10 @@
           <div class="publication">
             <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
             <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
-            <div class="pub-venue">Springer Transactions on Computational Science &amp; Computational Intelligence · March 2024 (Extended from CSCE 2022)</div>
+            <div class="pub-venue">Springer Transactions on Computational Science & Computational Intelligence · March 2024 (Extended from CSCE 2022)</div>
             <p class="pub-abstract">Extended journal version presenting novel physical memory attack vectors and proposing a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems. Includes open-source proof-of-concept implementation released for research and industry adoption.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
               </a>
             </div>
@@ -1815,7 +1508,7 @@
               <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener">
                 📄 Read Paper (SSRN)
               </a>
-              <a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
               </a>
             </div>
@@ -1827,7 +1520,7 @@
             <div class="pub-venue">Conference Paper · 2014</div>
             <p class="pub-abstract">Analysis of crowdfunding platform implementation challenges following the JOBS Act passage, examining regulatory compliance frameworks, market structure evolution, and investor protection mechanisms in emerging equity crowdfunding markets.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
               </a>
             </div>
@@ -1839,7 +1532,7 @@
             <div class="pub-venue">Conference Paper · 2012</div>
             <p class="pub-abstract">Explores technical and regulatory architectures for crowdfunding platforms, proposing frameworks for balancing innovation, market efficiency, and compliance with emerging securities regulations under the JOBS Act.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
                 🎓 Google Scholar
               </a>
             </div>
@@ -1866,7 +1559,7 @@
           <div class="grid cols-2">
             <div class="publication">
               <div class="pub-title">Offer Presentation for Crowdfunding</div>
-              <div class="pub-authors">Alon Hillel-Tuch, Jed Cohen, Brian Meece</div>
+              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
               <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, offer presentation systems, and community engagement systems for creative and entrepreneurial ventures.</p>
               <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
@@ -1880,7 +1573,7 @@
 
             <div class="publication">
               <div class="pub-title">Beneficiary Crowdsourcing</div>
-              <div class="pub-authors">Alon Hillel-Tuch, Jed Cohen, Brian Meece</div>
+              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
               <div class="pub-venue">USPTO Patent Application 20140279645A1 · Filed 2013 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency. Includes beneficiary-focused crowdsourcing mechanisms.</p>
               <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
@@ -1906,7 +1599,7 @@
 
         <div class="grid cols-2">
           <div class="card industry-card">
-            <h3>RocketHub · Co-Founder, CFO &amp; CTO</h3>
+            <h3>RocketHub · Co-Founder, CFO & CTO</h3>
             <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2010 - 2015 · Acquired</p>
             <p>Co-founded one of the first global crowdfunding platforms, pioneering equity crowdfunding under the JOBS Act. Facilitated over $50M in funding across 30,000+ projects serving 500K+ users.</p>
             <h4>Key Achievements</h4>
@@ -1941,7 +1634,7 @@
               <h3>Beacon: Disaster Response Platform</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Salesforce Partnership</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/367493508.html" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/367493508" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Collaborated with Salesforce to develop Beacon, a technology platform for disaster response and resilience. Built critical communication infrastructure enabling coordination between emergency responders, relief organizations, and affected communities during crisis situations. Integrated secure data systems to maintain operational continuity under adverse conditions.</p>
             </article>
@@ -1950,7 +1643,7 @@
               <h3>Ovation TV Creative Studio</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Ovation × will.i.am</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/148018050.html" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/148018050" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Partnered with Ovation TV and will.i.am to launch a creative studio initiative supporting emerging artists and innovators. Built crowdfunding infrastructure and digital platform connecting creators with audiences and funding opportunities.</p>
             </article>
@@ -1959,18 +1652,18 @@
               <h3>Chrysler Innovation Challenge</h3>
               <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Chrysler Group</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/133416076.html" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/133416076" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Designed and executed Chrysler's innovation crowdfunding challenge, identifying and supporting automotive technology entrepreneurs. Platform enabled community-driven innovation in vehicle design, sustainability, and manufacturing processes.</p>
             </article>
 
             <article class="card">
-              <h3>A&amp;E Network: Project Startup</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">A&amp;E Television</p>
+              <h3>A&E Network: Project Startup</h3>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">A&E Television</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="./Alon Hillel‑Tuch · Cybersecurity Professor &amp; AI Governance Expert_files/63913374.html" title="A&amp;E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe>
+                <iframe loading="lazy" src="https://player.vimeo.com/video/63913374" title="A&E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
-              <p>Technology partner for A&amp;E's Project Startup, a reality show featuring entrepreneurs competing for funding and mentorship. Built the crowdfunding platform integrating viewer engagement with real capital deployment.</p>
+              <p>Technology partner for A&E's Project Startup, a reality show featuring entrepreneurs competing for funding and mentorship. Built the crowdfunding platform integrating viewer engagement with real capital deployment.</p>
             </article>
           </div>
 
@@ -1998,7 +1691,7 @@
         </div>
 
         <div style="margin-top: 60px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 16px;">Partnerships &amp; Collaborations</h3>
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 16px;">Partnerships & Collaborations</h3>
           <p style="text-align: center; margin-bottom: 32px; color: var(--text-muted); font-size: 16px;">Collaborated with leading institutions, corporations, and organizations on innovation, entrepreneurship, and technology policy</p>
 
           <div class="card">
@@ -2024,11 +1717,11 @@
         </div>
 
         <div style="margin-top: 60px;">
-          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Private Consulting &amp; Advisory</h3>
+          <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Private Consulting & Advisory</h3>
           <div class="grid cols-2">
             <div class="card">
               <h3>TouchCast</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Business Strategy &amp; Technical Modeling</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Business Strategy & Technical Modeling</p>
               <p>Consulted from seed stage on business strategy, technical architecture, and market positioning. TouchCast was later acquired for $500M, validating the strategic foundation and technical roadmap developed during early-stage consulting.</p>
             </div>
 
@@ -2040,13 +1733,13 @@
 
             <div class="card">
               <h3>GreenLightGo</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security Assessment &amp; Business Development</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security Assessment & Business Development</p>
               <p>Conducted comprehensive security assessment and business model development for emerging fintech platform. Provided strategic guidance on security architecture, regulatory compliance, and market positioning.</p>
             </div>
 
             <div class="card">
               <h3>Bain Consulting</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security &amp; Regulatory Project</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security & Regulatory Project</p>
               <p>Security and regulation-focused consulting project (confidential). Advised on complex regulatory compliance frameworks and security risk mitigation strategies for enterprise client.</p>
             </div>
 
@@ -2076,8 +1769,8 @@
           <div class="grid cols-3">
             <div class="card">
               <h3>BCMS Corporate</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · Special Situations Manager &amp; Head of Prospect Generation</p>
-              <p>Led 15-person Prospect Generation department, conducting M&amp;A diligence that generated over $600M in offers. Member of North American Strategic Planning Committee. Managed complex special situations analysis and strategic transaction evaluation across multiple industries.</p>
+              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · Special Situations Manager & Head of Prospect Generation</p>
+              <p>Led 15-person Prospect Generation department, conducting M&A diligence that generated over $600M in offers. Member of North American Strategic Planning Committee. Managed complex special situations analysis and strategic transaction evaluation across multiple industries.</p>
             </div>
 
             <div class="card">
@@ -2100,20 +1793,18 @@
     <section id="credentials">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Awards &amp; Credentials</h2>
+          <h2 class="section-title">Awards & Credentials</h2>
           <p class="section-subtitle">Recognition for academic excellence, industry leadership, and innovation</p>
         </div>
 
         <div class="grid cols-2">
           <div class="card">
-            <h3>Academic Honors, Research Appointments &amp; Awards</h3>
+            <h3>Academic Honors & Research Appointments</h3>
             <ul style="margin-top: 16px;">
               <li><strong>Academic Excellence Award</strong> — NYU Tandon School of Engineering (2024)</li>
               <li><strong>Cyber Fellowship</strong> — NYU Tandon School of Engineering (2024)</li>
               <li><strong>NYU Cyber Fellows Ambassador</strong> — Selected as ambassador for NYU's Cyber Fellows program</li>
               <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, Advanced Consortium for Cooperation, Conflict, and Complexity (AC4)</li>
-              <li><strong><a href="https://2009-2017.state.gov/s/partnerships/releases/reports/2015/238828.htm" target="_blank" rel="noopener" style="color: var(--navy);">U.S. State Department Top Global Partner</a></strong> — RocketHub recognized as one of 12 top global partners in State of Global Partnerships Report (2015, Secretary John Kerry) for contributions to entrepreneurship and innovation</li>
-              <li><strong>Bronze Lion at Cannes</strong> — Team award for virtual currency innovation with Wieden+Kennedy (2013)</li>
               <li><strong>10 Under 10</strong> — Hamilton College Alumni Achievement Award recognizing outstanding early-career impact</li>
               <li><strong>Phi Sigma Iota</strong> — International Foreign Language Honor Society</li>
               <li><strong>IB Excellence Award</strong> — International Baccalaureate Program Distinction</li>
@@ -2121,20 +1812,22 @@
           </div>
 
           <div class="card">
-            <h3>Professional Certifications &amp; Leadership</h3>
+            <h3>Professional Certifications & Leadership</h3>
             <ul style="margin-top: 16px;">
+              <li><strong>U.S. State Department Top Global Partner</strong> — RocketHub recognized as one of 12 top global partners in State of Global Partnerships Report (2015, Secretary John Kerry) for contributions to entrepreneurship and innovation</li>
               <li><strong>NSA Cyber Operations Certificate</strong> — National Security Agency designation for advanced cyber operations training</li>
               <li><strong>NSA Cyber Defense Certificate</strong> — National Security Agency designation for cyber defense expertise</li>
               <li><strong>FINRA Capital Markets Series XVII Leader</strong> — Guest Lecturer on Securities Regulation and Crowdfunding, Award of Recognition from FINRA</li>
-              <li><strong>Six Sigma White &amp; Yellow Belt</strong> — Process improvement and quality management certification</li>
+              <li><strong>Six Sigma White & Yellow Belt</strong> — Process improvement and quality management certification</li>
               <li><strong>Certified Associate Scrum Fundamentals (CASF)</strong> — Agile project management certification</li>
+              <li><strong>Bronze Lion at Cannes</strong> — Team award for virtual currency innovation with Wieden+Kennedy (2013)</li>
               <li><strong>Board Member</strong> — Crowdfunding Professional Association</li>
               <li><strong>Board Observer</strong> — Visionary Health</li>
               <li><strong>Forbes Technology Council</strong> — Founding Council Member contributing expert analysis on AI governance, cybersecurity, and innovation</li>
               <li><strong>IEEE New York Metropolitan Region</strong> — Professional Member</li>
               <li><strong>New York Academy of Sciences</strong> — Member</li>
               <li><strong>Association of Change Management Professionals (ACMP)</strong> — Member</li>
-              <li><strong>Congressional Expert Witness</strong> — Testified before U.S. House Oversight &amp; Reform Committee (2012) and Financial Services Committee (2014)</li>
+              <li><strong>Congressional Expert Witness</strong> — Testified before U.S. House Oversight & Reform Committee (2012) and Financial Services Committee (2014)</li>
             </ul>
           </div>
         </div>
@@ -2152,29 +1845,29 @@
 
         <div style="margin-top: 40px;">
           <div class="card">
-            <h3 style="text-align: center; margin-bottom: 24px;">Technical Skills &amp; Expertise</h3>
+            <h3 style="text-align: center; margin-bottom: 24px;">Technical Skills & Expertise</h3>
 
             <div class="grid cols-2" style="margin-top: 24px;">
               <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Programming &amp; Development</h4>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Programming & Development</h4>
                 <p style="color: var(--text-muted); line-height: 1.8;"><strong>Languages:</strong> C/C++, Python, Kotlin, LaTeX</p>
                 <p style="color: var(--text-muted); line-height: 1.8;"><strong>AI/ML Frameworks:</strong> PyTorch, Keras, TensorFlow, scikit-learn</p>
               </div>
 
               <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security Tools &amp; Frameworks</h4>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security Tools & Frameworks</h4>
                 <p style="color: var(--text-muted); line-height: 1.8;"><strong>Testing Tools:</strong> Burp Suite, OWASP ZAP, Metasploit</p>
                 <p style="color: var(--text-muted); line-height: 1.8;"><strong>Cryptographic Libraries:</strong> libsodium, OpenSSL, LibreSSL, WolfCrypt, Bouncy Castle</p>
               </div>
 
               <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security &amp; Risk Frameworks</h4>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Security Frameworks:</strong> MITRE ATT&amp;CK, NIST SSDF, OWASP</p>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Compliance &amp; Regulatory:</strong> PCI DSS, OFAC/AML, CFIUS, FINRA</p>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security & Risk Frameworks</h4>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Security Frameworks:</strong> MITRE ATT&CK, NIST SSDF, OWASP</p>
+                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Compliance & Regulatory:</strong> PCI DSS, OFAC/AML, CFIUS, FINRA</p>
               </div>
 
               <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Cloud &amp; Infrastructure</h4>
+                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Cloud & Infrastructure</h4>
                 <p style="color: var(--text-muted); line-height: 1.8;"><strong>Cloud Platforms:</strong> AWS, Google Cloud, Azure</p>
                 <p style="color: var(--text-muted); line-height: 1.8;"><strong>Specialized Areas:</strong> Hardware Security, Embedded Systems, Secure Protocol Design</p>
               </div>
@@ -2191,20 +1884,20 @@
                 <p style="color: var(--navy-light); font-weight: 600;">M.Sc. Cybersecurity</p>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Graduated 2024</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Academic Excellence Award · Cyber Fellowship</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">NSA Cyber Operations &amp; Defense Certificates</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">NSA Cyber Operations & Defense Certificates</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">NYU Cyber Fellows Ambassador</p>
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Columbia University</h4>
                 <p style="color: var(--navy-light); font-weight: 600;">M.Sc.</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation &amp; Conflict Resolution</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation & Conflict Resolution</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2011</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute (Advanced Consortium for Cooperation, Conflict, and Complexity)</p>
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Hamilton College</h4>
                 <p style="color: var(--navy-light); font-weight: 600;">B.A.</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Economics, Chinese Culture &amp; Language</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Economics, Chinese Culture & Language</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2007</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Phi Sigma Iota Honor Society</p>
               </div>
@@ -2232,7 +1925,7 @@
           </div>
 
           <div class="card">
-            <h3>Industry &amp; Consulting</h3>
+            <h3>Industry & Consulting</h3>
             <p>For consulting engagements, speaking invitations, or industry partnerships:</p>
             <p style="margin-top: 16px;"><strong>Email:</strong> alon [dot] hilleltuch [at] gmail [dot] com</p>
             <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include your organization, project scope, constraints, and expected outcomes.</p>
@@ -2246,7 +1939,7 @@
             <a href="https://x.com/ahillelt" target="_blank" class="btn secondary" rel="noopener">X (Twitter)</a>
             <a href="https://www.linkedin.com/in/ahillelt/" target="_blank" class="btn secondary" rel="noopener">LinkedIn</a>
             <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener">NYU Profile</a>
-            <a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" target="_blank" class="btn secondary" rel="noopener">Google Scholar</a>
+            <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" class="btn secondary" rel="noopener">Google Scholar</a>
           </div>
         </div>
       </div>
@@ -2259,12 +1952,12 @@
         <div class="footer-section">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="https://ahillelt.github.io/#about">About</a></li>
-            <li><a href="https://ahillelt.github.io/#research">Research</a></li>
-            <li><a href="https://ahillelt.github.io/#teaching">Teaching</a></li>
-            <li><a href="https://ahillelt.github.io/#labs">Labs &amp; Centers</a></li>
-            <li><a href="https://ahillelt.github.io/#industry">Industry</a></li>
-            <li><a href="https://ahillelt.github.io/#credentials">Credentials</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#teaching">Teaching</a></li>
+            <li><a href="#labs">Labs & Centers</a></li>
+            <li><a href="#industry">Industry</a></li>
+            <li><a href="#credentials">Credentials</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -2273,7 +1966,7 @@
             <li><a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" rel="noopener">NYU Faculty Page</a></li>
             <li><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener">OSIRIS Lab</a></li>
             <li><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener">Center for Cyber Security</a></li>
-            <li><a href="https://scholar.google.com/citations?hl=en&amp;user=yxEpRBIAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
+            <li><a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -2288,14 +1981,14 @@
           <h4>Contact</h4>
           <ul>
             <li>alon [dot] h [at] nyu [dot] edu</li>
-            <li><a href="https://ahillelt.github.io/#contact">Speaking Inquiries</a></li>
-            <li><a href="https://ahillelt.github.io/#contact">Consulting</a></li>
+            <li><a href="#contact">Speaking Inquiries</a></li>
+            <li><a href="#contact">Consulting</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© <span id="year">2025</span> Alon Hillel‑Tuch · Industry Assistant Professor, NYU Tandon School of Engineering</p>
-        <p style="margin-top: 8px; opacity: .7;">Hamilton College · Columbia University · New York University</p>
+        <p>© <span id="year"></span> Alon Hillel‑Tuch · Industry Assistant Professor, NYU Tandon School of Engineering</p>
+        <p style="margin-top: 8px; opacity: .7;">Hamilton College '07 · Columbia University · New York University</p>
       </div>
     </div>
   </footer>
@@ -2499,12 +2192,6 @@
       </div>`;
 
       container.innerHTML = html;
-
-      // Update the students taught stat card
-      const statElement = document.getElementById('students-taught-stat');
-      if (statElement) {
-        statElement.textContent = `${totalEnrollment}+`;
-      }
     }
 
     function renderDetailsView(courses) {
@@ -2551,77 +2238,6 @@
 
     // Load courses on page load
     window.addEventListener('load', loadCourses);
-
-    // Populate Forbes Technology Council articles from CSV
-    async function populateForbesArticles() {
-      const container = document.getElementById('forbes-articles-container');
-      if (!container) return;
-
-      try {
-        const response = await fetch('forbes_articles.csv');
-        const text = await response.text();
-
-        // Parse CSV
-        const lines = text.trim().split('\n');
-        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-
-        const articles = lines.slice(1).map(line => {
-          // Handle quoted fields that may contain commas
-          const values = [];
-          let current = '';
-          let inQuotes = false;
-
-          for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            if (char === '"') {
-              inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-              values.push(current.trim());
-              current = '';
-            } else {
-              current += char;
-            }
-          }
-          values.push(current.trim());
-
-          const article = {};
-          headers.forEach((header, i) => {
-            article[header] = values[i] || '';
-          });
-          return article;
-        }).filter(article => article.title); // Filter out empty rows
-
-        // Render articles
-        let html = '<div style="margin-top: 8px;">';
-
-        if (articles.length === 0) {
-          html += '<p style="color: var(--text-muted); padding: 10px 0;">Expert articles on AI governance, cybersecurity strategy, responsible innovation, and technology policy.</p>';
-        } else {
-          articles.forEach(article => {
-            if (article.url && article.url !== '""' && article.url !== '') {
-              html += `<a href="${article.url}" target="_blank" rel="noopener" class="forbes-article-link">`;
-              html += `<span style="display: block;">• ${article.title}</span>`;
-              if (article.date && article.date !== '""' && article.date !== '') {
-                html += `<span class="article-date" style="display: inline-block; margin-left: 12px; margin-top: 2px;">${article.date}</span>`;
-              }
-              html += `</a>`;
-            } else {
-              html += `<p style="margin-bottom: 8px; padding: 10px 0; color: var(--text-muted);">${article.title}</p>`;
-            }
-          });
-        }
-
-        html += '</div>';
-        container.innerHTML = html;
-      } catch (error) {
-        console.error('Error loading Forbes articles:', error);
-        container.innerHTML = '<p style="color: var(--text-muted); margin-top: 12px;">Expert articles on AI governance, cybersecurity strategy, responsible innovation, and technology policy.</p>';
-      }
-    }
-
-    // Populate Forbes articles on page load
-    window.addEventListener('load', populateForbesArticles);
   </script>
-
-
-</body></html>
+</body>
+</html>
