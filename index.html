@@ -964,7 +964,7 @@
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-number">500+</div>
-            <div class="stat-label">Students Taught</div>
+            <div class="stat-label">Students Taught (Faculty)</div>
           </div>
           <div class="stat-card">
             <div class="stat-number">18+</div>
@@ -2041,7 +2041,7 @@
       </div>
       <div class="footer-bottom">
         <p>© <span id="year"></span> Alon Hillel‑Tuch · Industry Assistant Professor, NYU Tandon School of Engineering</p>
-        <p style="margin-top: 8px; opacity: .7;">Hamilton College '07 · Columbia University · New York University</p>
+        <p style="margin-top: 8px; opacity: .7;">Hamilton College · Columbia University · New York University</p>
       </div>
     </div>
   </footer>
@@ -2232,15 +2232,30 @@
 
       html += '</tbody></table>';
 
-      // Add aggregated stats
-      const totalEnrollment = courses.reduce((sum, c) => {
-        const match = c.enrollment ? c.enrollment.match(/~?(\d+)/) : null;
-        return sum + (match ? parseInt(match[1]) : 0);
+      // Add aggregated stats by role
+      const facultyEnrollment = courses.reduce((sum, c) => {
+        if (c.role === 'Faculty') {
+          const match = c.enrollment ? c.enrollment.match(/~?(\d+)/) : null;
+          return sum + (match ? parseInt(match[1]) : 0);
+        }
+        return sum;
       }, 0);
+
+      const taEnrollment = courses.reduce((sum, c) => {
+        if (c.role && c.role.includes('TA')) {
+          const match = c.enrollment ? c.enrollment.match(/~?(\d+)/) : null;
+          return sum + (match ? parseInt(match[1]) : 0);
+        }
+        return sum;
+      }, 0);
+
+      const totalEnrollment = facultyEnrollment + taEnrollment;
 
       html += `<div style="margin-top: 24px; padding: 20px; background: var(--bg-tertiary); border-radius: 12px;">
         <h3 style="color: var(--navy); margin-bottom: 16px;">Teaching Summary</h3>
         <p><strong>Total Students Taught:</strong> ~${totalEnrollment} students across all courses</p>
+        <p style="margin-top: 8px;"><strong>As Faculty:</strong> ~${facultyEnrollment} students</p>
+        <p style="margin-top: 8px;"><strong>As TA/CA:</strong> ~${taEnrollment} students</p>
         <p style="margin-top: 12px;"><strong>Primary Courses:</strong> Application Security (CS-GY 9163), Computer Networking (CS-GY 6843), AI Governance (CS-GY 9215), Cyber Resiliency Management (CS-GY 9215), ISSEM (CS-GY 6803)</p>
       </div>`;
 
