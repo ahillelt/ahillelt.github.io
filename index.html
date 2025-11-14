@@ -11,19 +11,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --navy: #1e3a8a;
-      --navy-light: #3b82f6;
-      --cyan: #06b6d4;
+      /* Modern Professional Color System */
+      --navy: #0f172a;
+      --navy-light: #334155;
+      --navy-accent: #475569;
+      --accent: #2563eb;
+      --accent-light: #3b82f6;
+      --accent-hover: #1d4ed8;
       --gold: #f59e0b;
+
+      /* Neutral Backgrounds */
       --bg: #ffffff;
       --bg-secondary: #f8fafc;
-      --bg-tertiary: #e7f0ff;
-      --text: #1e293b;
+      --bg-tertiary: #f1f5f9;
+      --bg-elevated: #fafafa;
+
+      /* Text Colors */
+      --text: #0f172a;
+      --text-secondary: #334155;
       --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      /* Borders */
       --border: #e2e8f0;
-      --shadow: 0 1px 3px rgba(0,0,0,.08);
-      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
-      --shadow-lg: 0 12px 32px rgba(0,0,0,.12);
+      --border-light: #f1f5f9;
+      --border-focus: #cbd5e1;
+
+      /* Modern Shadow System */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+      /* Elevation for interactive elements */
+      --elevation-1: 0 2px 4px rgba(15, 23, 42, 0.06);
+      --elevation-2: 0 4px 8px rgba(15, 23, 42, 0.08);
+      --elevation-3: 0 8px 16px rgba(15, 23, 42, 0.10);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,16 +59,22 @@
       color: var(--text);
       background: var(--bg);
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
+    h1, h2, h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      letter-spacing: -0.02em;
+    }
 
     a {
-      color: var(--navy-light);
+      color: var(--accent);
       text-decoration: none;
-      transition: color .2s ease;
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    a:hover { color: var(--cyan); }
+    a:hover {
+      color: var(--accent-hover);
+    }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
@@ -52,11 +82,11 @@
     header.nav {
       position: sticky;
       top: 0;
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.98);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       z-index: 100;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-sm);
     }
     .nav-inner {
       display: flex;
@@ -76,14 +106,15 @@
     .brand .logo {
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, var(--navy), var(--cyan));
+      background: var(--navy);
       border-radius: 12px;
       display: grid;
       place-items: center;
       color: white;
       font-weight: 900;
       font-size: 20px;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--elevation-2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     nav { display: flex; gap: 2px; flex-wrap: nowrap; }
     nav a {
@@ -98,34 +129,16 @@
       white-space: nowrap;
     }
     nav a:hover {
-      color: var(--navy);
+      color: var(--text);
       background: var(--bg-tertiary);
       transform: translateY(-1px);
     }
     nav a.active {
       color: white;
-      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      background: var(--navy);
       font-weight: 700;
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+      box-shadow: var(--elevation-2);
       transform: translateY(-1px);
-    }
-    nav a.active::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 10px;
-      padding: 2px;
-      background: linear-gradient(135deg, var(--cyan), var(--navy-light));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0.6;
-      animation: navGlow 0.6s ease-in-out;
-    }
-    @keyframes navGlow {
-      0% { opacity: 0; transform: scale(0.95); }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; transform: scale(1); }
     }
 
     /* Mobile menu toggle */
@@ -140,9 +153,21 @@
 
     /* Hero */
     .hero {
-      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%);
+      background: var(--bg-secondary);
       padding: 80px 0 60px;
       border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60%;
+      height: 100%;
+      background: radial-gradient(ellipse at top right, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
+      pointer-events: none;
     }
     .hero-content {
       display: grid;
@@ -155,12 +180,13 @@
       background: var(--navy);
       color: white;
       padding: 8px 16px;
-      border-radius: 20px;
+      border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: .5px;
       text-transform: uppercase;
       margin-bottom: 20px;
+      box-shadow: var(--elevation-1);
     }
     h1 {
       font-size: clamp(36px, 5vw, 56px);
@@ -185,11 +211,12 @@
     .chip {
       background: white;
       color: var(--navy);
-      border: 1.5px solid var(--navy-light);
+      border: 1.5px solid var(--accent);
       padding: 8px 14px;
-      border-radius: 20px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
+      box-shadow: var(--shadow-sm);
     }
     .cta {
       display: flex;
@@ -204,44 +231,46 @@
       justify-content: center;
       gap: 8px;
       padding: 14px 28px;
-      font-weight: 700;
+      font-weight: 600;
       border-radius: 10px;
       font-size: 16px;
-      transition: all .2s ease;
-      box-shadow: var(--shadow);
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--elevation-1);
       min-width: 160px;
+      cursor: pointer;
     }
     .btn.primary {
       background: var(--navy);
       color: white;
-      border: 2px solid var(--navy);
+      border: 1px solid var(--navy);
     }
     .btn.primary:hover {
-      background: var(--navy-light);
-      border-color: var(--navy-light);
-      box-shadow: var(--shadow-md);
+      background: var(--navy-accent);
+      border-color: var(--navy-accent);
+      box-shadow: var(--elevation-3);
       transform: translateY(-2px);
     }
     .btn.secondary {
       background: white;
       color: var(--navy);
-      border: 2px solid var(--navy);
+      border: 1px solid var(--border-focus);
     }
     .btn.secondary:hover {
-      background: var(--navy);
-      color: white;
-      box-shadow: var(--shadow-md);
+      background: var(--bg-tertiary);
+      border-color: var(--navy);
+      box-shadow: var(--elevation-2);
       transform: translateY(-2px);
     }
 
     .portrait {
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-xl);
       aspect-ratio: 4 / 5;
-      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      background: var(--bg-tertiary);
       display: grid;
       place-items: center;
+      border: 1px solid var(--border);
     }
     .portrait img {
       width: 100%;
@@ -249,7 +278,7 @@
       object-fit: cover;
     }
     .portrait svg {
-      color: var(--navy-light);
+      color: var(--accent-light);
     }
 
     /* Stats */
@@ -267,13 +296,14 @@
       padding: 32px 24px;
       background: white;
       border-radius: 16px;
-      box-shadow: var(--shadow);
-      transition: all .3s ease;
+      box-shadow: var(--elevation-1);
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid var(--border);
     }
     .stat-card:hover {
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--elevation-3);
       transform: translateY(-4px);
+      border-color: var(--border-focus);
     }
     .stat-number {
       font-size: 48px;
@@ -302,6 +332,7 @@
       color: var(--navy);
       margin-bottom: 16px;
       font-weight: 800;
+      letter-spacing: -0.02em;
     }
     .section-subtitle {
       font-size: 18px;
@@ -323,8 +354,8 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 32px;
-      box-shadow: var(--shadow);
-      transition: all .3s ease;
+      box-shadow: var(--elevation-1);
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
     }
@@ -348,8 +379,8 @@
       flex-direction: column;
     }
     .card:hover {
-      box-shadow: var(--shadow-lg);
-      border-color: var(--navy-light);
+      box-shadow: var(--elevation-3);
+      border-color: var(--accent-light);
       transform: translateY(-4px);
     }
     .card h3 {
@@ -361,7 +392,7 @@
     }
     .card h4 {
       font-size: 18px;
-      color: var(--navy-light);
+      color: var(--accent);
       margin: 20px 0 12px;
       font-weight: 700;
     }
@@ -371,7 +402,8 @@
       line-height: 1.7;
     }
     /* Colored subtitle paragraphs - min-height to align body text */
-    .card > p[style*="color: var(--navy-light)"] {
+    .card > p[style*="color: var(--accent)"],
+    .card > p[style*="color: var(--accent)"] {
       margin: 0 0 16px 0;
       line-height: 1.5;
       min-height: 4.5em; /* Accommodates up to 3 lines, aligns body text */
@@ -493,7 +525,8 @@
       background: white;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: var(--shadow);
+      box-shadow: var(--elevation-1);
+      border: 1px solid var(--border);
     }
     .course-table th {
       background: var(--navy);
@@ -519,7 +552,7 @@
     .course-table .course-code-cell {
       font-family: 'Inter', monospace;
       font-weight: 700;
-      color: var(--navy-light);
+      color: var(--accent);
       white-space: nowrap;
     }
     .course-table .enrollment-cell {
@@ -530,16 +563,18 @@
 
     /* Course Cards */
     .course-card {
-      background: var(--bg-secondary);
+      background: white;
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 28px;
       margin-bottom: 20px;
-      transition: all .3s ease;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--elevation-1);
     }
     .course-card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: var(--navy-light);
+      box-shadow: var(--elevation-2);
+      border-color: var(--accent-light);
+      transform: translateY(-2px);
     }
     .course-header {
       display: flex;
@@ -551,7 +586,7 @@
     .course-code {
       font-family: 'Inter', monospace;
       font-size: 13px;
-      color: var(--navy-light);
+      color: var(--accent);
       font-weight: 700;
       letter-spacing: .5px;
     }
@@ -616,29 +651,29 @@
       font-size: 15px;
     }
     .year-tab:hover {
-      border-color: var(--navy-light);
+      border-color: var(--accent);
       color: var(--navy);
     }
     .year-tab.active {
       background: var(--navy);
       border-color: var(--navy);
       color: white;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--elevation-2);
     }
 
     /* Publications */
     .publication {
       padding: 28px;
       background: white;
-      border-left: 4px solid var(--navy-light);
+      border-left: 4px solid var(--accent-light);
       border-radius: 12px;
       margin-bottom: 20px;
-      box-shadow: var(--shadow);
-      transition: all .3s ease;
+      box-shadow: var(--elevation-1);
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .publication:hover {
-      box-shadow: var(--shadow-md);
-      border-left-color: var(--cyan);
+      box-shadow: var(--elevation-2);
+      border-left-color: var(--accent);
       transform: translateX(4px);
     }
     .pub-title {
@@ -656,7 +691,7 @@
     }
     .pub-venue {
       font-size: 14px;
-      color: var(--navy-light);
+      color: var(--accent);
       font-weight: 600;
       margin-bottom: 12px;
     }
@@ -679,17 +714,17 @@
       gap: 6px;
       padding: 8px 16px;
       background: var(--bg-tertiary);
-      border: 1px solid var(--navy-light);
+      border: 1px solid var(--accent-light);
       border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
       color: var(--navy);
-      transition: all .2s ease;
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .pub-link:hover {
       background: var(--navy);
       color: white;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--elevation-2);
     }
 
     /* Forbes article links - elegant hover effect */
@@ -706,7 +741,7 @@
     }
     .forbes-article-link:hover {
       background: var(--bg-tertiary);
-      border-left-color: var(--navy-light);
+      border-left-color: var(--accent);
       color: var(--navy) !important;
       transform: translateX(4px);
       box-shadow: 0 2px 8px rgba(30, 58, 138, 0.08);
@@ -718,7 +753,7 @@
       transition: color 0.2s ease;
     }
     .forbes-article-link:hover .article-date {
-      color: var(--navy-light);
+      color: var(--accent);
     }
 
     /* Filter Tabs */
@@ -741,12 +776,12 @@
       transition: all .2s ease;
     }
     .filter-tab:hover {
-      border-color: var(--navy-light);
+      border-color: var(--accent);
       color: var(--navy);
     }
     .filter-tab.active {
-      background: var(--navy-light);
-      border-color: var(--navy-light);
+      background: var(--navy);
+      border-color: var(--navy);
       color: white;
     }
 
@@ -756,7 +791,7 @@
       width: 100%;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--elevation-2);
       margin: 20px 0;
       border: 1px solid var(--border);
       flex-shrink: 0;
@@ -873,7 +908,7 @@
         border-bottom: 1px solid var(--border);
         flex-direction: column;
         padding: 16px;
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--elevation-3);
       }
       nav.active { display: flex; }
       .menu-toggle { display: block; }
@@ -881,7 +916,18 @@
 
     /* Accent sections */
     .accent-bg {
-      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      background: var(--bg-secondary);
+      position: relative;
+    }
+    .accent-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.02) 0%, transparent 70%);
+      pointer-events: none;
     }
   </style>
 
@@ -1024,7 +1070,7 @@
         <div class="grid cols-2">
           <article class="card">
             <h3>U.S. House Oversight Committee</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
+            <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
             <div class="video-wrapper">
               <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
             </div>
@@ -1041,7 +1087,7 @@
 
           <article class="card">
             <h3>U.S. House Financial Services Committee</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">March 5, 2014</p>
+            <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">March 5, 2014</p>
             <div class="video-wrapper">
               <iframe loading="lazy" src="https://player.vimeo.com/video/105809391" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
@@ -1062,7 +1108,7 @@
           <div class="grid cols-2">
             <div class="card video-card">
               <h3>TEDx: Emergence of an Alternate Path</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">TEDxNavesink · September 20, 2013</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">TEDxNavesink · September 20, 2013</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1071,7 +1117,7 @@
 
             <div class="card video-card">
               <h3>Augmented Intelligence (AI)</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Real Estate Leaders Summit · Re.Comm.17 · Kitzbühel, Austria · November 22–24, 2017</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Real Estate Leaders Summit · Re.Comm.17 · Kitzbühel, Austria · November 22–24, 2017</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://www.youtube.com/embed/rMs4Mpojk3Q" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               </div>
@@ -1080,7 +1126,7 @@
 
             <div class="card video-card">
               <h3>The Future of Crowdfunding: What the Next 5 Years Will Bring</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Campaigning Summit · Berlin · May 22, 2015</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Campaigning Summit · Berlin · May 22, 2015</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/133619613" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1089,7 +1135,7 @@
 
             <div class="card video-card">
               <h3>Open Economy Fundamentals</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">CrowdEconomy Conference · Minsk · c.2014</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">CrowdEconomy Conference · Minsk · c.2014</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1098,13 +1144,13 @@
 
             <div class="card">
               <h3>World Crowdfunding Conference</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Guiyang, China · 2015</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Guiyang, China · 2015</p>
               <p>Represented the Crowdfunding Professional Association (CfPA) and RocketHub as speaker at this large-scale international forum drawing ~13,000 attendees including government dignitaries. Addressed the global state of crowdfunding and met with Chinese officials, underscoring role as "Top Global Partner" for U.S. crowdfunding outreach in 2015.</p>
             </div>
 
             <div class="card">
               <h3>Hardware Innovation Workshop</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Maker Faire · May 2012</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Maker Faire · May 2012</p>
               <p>Panel on crowdfunding for hardware startups at O'Reilly/Make's Hardware Innovation Workshop alongside makers, investors, and industry leaders.</p>
               <div class="pub-links">
                 <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" class="pub-link" target="_blank" rel="noopener">
@@ -1121,7 +1167,7 @@
           <div class="grid cols-2">
             <article class="card">
               <h3>Fordham Law School Symposium</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Fordham Journal of Corporate & Financial Law · Vol. 20, 2015</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Fordham Journal of Corporate & Financial Law · Vol. 20, 2015</p>
               <p><strong>JOBS Act: The Terrible Twos - General Solicitation & Crowdfunding, The Next Frontier of Securities Regulation</strong></p>
               <p>Panelist alongside SEC Commissioner Troy A. Paredes, Congressman Patrick McHenry, and other leading securities law experts. Examined general solicitation rules and crowdfunding regulations two years after the JOBS Act passage, providing industry perspective on regulatory implementation challenges.</p>
               <div class="pub-links">
@@ -1133,7 +1179,7 @@
 
             <article class="card">
               <h3>Connecticut Bar Association CLE Program</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Technology Law Committee · 2012-2013</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Technology Law Committee · 2012-2013</p>
               <p>Featured panelist at CLE program about the federal "Jumpstarting Our Business Startups" (JOBS) Act. Panel held at Carmen Anthony Steakhouse in New Haven, attended by 28 attorneys. Spoke as representative of RocketHub.com (one of the online exchanges seeking approval) about lobbying in support of the JOBS Act. Joined by Henry M. Beck Jr. (Halloran & Sage LLP) discussing SEC regulation pitfalls and patent agent Mark Nowotarski on crowdfunding success stories.</p>
               <div class="pub-links">
                 <a href="https://www.ctbar.org/docs/default-source/publications/annual-reports/2012-2013_annual_report.pdf" class="pub-link" target="_blank" rel="noopener">
@@ -1152,7 +1198,7 @@
           <div class="grid cols-2">
             <article class="card">
               <h3>NPR Morning Edition</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">May 9, 2014</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">May 9, 2014</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/133615381" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1166,7 +1212,7 @@
 
             <article class="card">
               <h3>CCTV International</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/133625379" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1178,7 +1224,7 @@
           <div class="grid cols-3" style="margin-top: 40px;">
             <article class="card">
               <h3>IEEE The Institute</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Volume 41, Issue 3</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Volume 41, Issue 3</p>
               <p><strong>"Crowdfunding Innovation and Entrepreneurship"</strong></p>
               <p>Featured profile on crowdfunding platform innovation, entrepreneurial technology development, and the intersection of engineering, business, and regulatory policy in emerging financial markets.</p>
               <div class="pub-links">
@@ -1190,21 +1236,21 @@
 
             <article class="card">
               <h3>Wired Magazine</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Special Edition</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Special Edition</p>
               <p><strong>"Ways to Change the World"</strong></p>
               <p>Featured in Wired Magazine's special edition guest-edited by Bill Clinton and Bill Gates, highlighting crowdfunding innovation and democratizing access to capital for entrepreneurs and changemakers globally.</p>
             </article>
 
             <article class="card">
               <h3>AARP</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Featured Expert</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Featured Expert</p>
               <p><strong>"Crowdfunding for Social Impact"</strong></p>
               <p>Expert commentary on crowdfunding platforms enabling social entrepreneurs and community-driven projects, exploring how technology democratizes capital access for purpose-driven ventures.</p>
             </article>
 
             <article class="card">
               <h3>The New York Times</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">October 28, 2013</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">October 28, 2013</p>
               <p><strong>"A Year Late, S.E.C. Weighs In With 585 Pages of Crowdfunding Rules"</strong></p>
               <p>Expert commentary on SEC's proposed crowdfunding regulations following the JOBS Act, analyzing the regulatory framework's impact on platforms and investors in the emerging crowdfunding industry.</p>
               <div class="pub-links">
@@ -1216,7 +1262,7 @@
 
             <article class="card">
               <h3>The New York Times</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">December 26, 2012</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">December 26, 2012</p>
               <p><strong>"RocketHub Ponders Its Future in Crowdfunding"</strong></p>
               <p>Featured in NYT Boss blog piece profiling RocketHub's strategic positioning in the evolving crowdfunding landscape, examining platform innovation, regulatory challenges, and the future of democratized capital access.</p>
               <div class="pub-links">
@@ -1228,7 +1274,7 @@
 
             <article class="card">
               <h3>Entrepreneur Magazine</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Educational Series</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Educational Series</p>
               <p><strong>"8-Episode Crash Course in Crowdfunding"</strong></p>
               <p>Eight-episode educational series on crowdfunding fundamentals, platform strategies, regulatory compliance, and best practices for entrepreneurs seeking to raise capital through crowdfunding campaigns.</p>
               <div class="pub-links">
@@ -1240,28 +1286,28 @@
 
             <article class="card">
               <h3>Entrepreneur Magazine</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">April 17, 2015</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">April 17, 2015</p>
               <p><strong>"Crowdfunding Platform RocketHub Acquired"</strong></p>
               <p>Extensively quoted about the acquisition deal's significance. Assured that RocketHub was "by no means going away... it's being fed steroids" under EFactor. Described plans to expand services for entrepreneurs by combining crowdfunding with mentorship.</p>
             </article>
 
             <article class="card">
               <h3>Forbes</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">November 16, 2012</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">November 16, 2012</p>
               <p><strong>"CrowdFund Investing: Emphasis Turning to Implementation"</strong></p>
               <p>Interviewed by Alan Hall about the post-JOBS Act crowdfunding era. As RocketHub's co-founder/CFO, discussed moving from legislative passage to implementation, emphasizing the need for entrepreneur-friendly rules.</p>
             </article>
 
             <article class="card">
               <h3>Crain's New York Business</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">November 13, 2013</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">November 13, 2013</p>
               <p><strong>"Equity crowdfunding sites court investors, startups"</strong></p>
               <p>Quoted expressing excitement about democratized investing: "What I am excited about is allowing anyone to do what accredited investors do." Crain's noted RocketHub's role and optimism that everyday people could soon invest in startups like angels.</p>
             </article>
 
             <article class="card">
               <h3>Forbes Technology Council</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 12px;">Founding Member</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 12px;">Founding Member</p>
               <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 16px;">Forbes Technology Council is a professional organization for senior-level technology executives, including founders, partners, and CEOs of technology companies, C-level executives such as CTOs and CIOs, and VPs of technology teams. As a <strong style="color: var(--text);">founding member</strong> and ongoing contributor, providing expert analysis and thought leadership for the member community on AI governance, cybersecurity, and technology innovation.</p>
               <div style="margin-top: 8px;">
                 <a href="https://www.forbes.com/sites/forbestechcouncil/2024/07/10/companies-are-killing-themselves-with-ai-a-hidden-crisis/" target="_blank" rel="noopener" class="forbes-article-link">
@@ -1303,7 +1349,7 @@
               <h3>Additional Coverage</h3>
               <p style="margin-bottom: 16px;"><strong>Featured in:</strong> Fortune, Bloomberg, Reuters, Wall Street Journal, China Daily, and international business publications</p>
               <p style="color: var(--text-muted);">Expert commentary on crowdfunding, fintech innovation, technology policy, AI governance, and cybersecurity. Consulted by TIME Magazine for "100 Most Influential People in AI" list (Winter 2023).</p>
-              <p style="margin-top: 16px; color: var(--navy-light); font-weight: 600;">Available for media interviews on cybersecurity, AI governance, technology policy, and financial innovation.</p>
+              <p style="margin-top: 16px; color: var(--accent); font-weight: 600;">Available for media interviews on cybersecurity, AI governance, technology policy, and financial innovation.</p>
               <div class="pub-links">
                 <a href="#contact" class="pub-link">Media Inquiries</a>
               </div>
@@ -1317,13 +1363,13 @@
           <div class="grid cols-2">
             <div class="card">
               <h3>Lunch & Learn Series</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Crowdfunding Professional Association · 2016</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Crowdfunding Professional Association · 2016</p>
               <p>Featured guest in CfPA's webinar series. Session billed "Lunch & Learn with Alon Hillel-Tuch (Co-founder of RocketHub)", sharing industry insights on crowdfunding trends and best practices for entrepreneurs and investors.</p>
             </div>
 
             <div class="card">
               <h3>The Sound Entrepreneur</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">October 2016</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">October 2016</p>
               <p><strong>"How does an investor make money with equity crowdfunding?"</strong></p>
               <p>Audio interview for business advice media outlet. Explained equity crowdfunding models and ROI expectations in roundtable-style discussion, helping demystify crowdfunding for creatives and startups.</p>
             </div>
@@ -1432,7 +1478,7 @@
         <div class="grid cols-2">
           <div class="card">
             <h3>OSIRIS Lab</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">NYU Tandon · Faculty Director</p>
+            <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">NYU Tandon · Faculty Director</p>
             <p>OSIRIS (Organization for Security and Intelligence Research In Systems) is NYU's student-run offensive security research lab. Students compete in international CTF competitions, conduct independent security research, and develop cutting-edge security tools.</p>
             <h4>Lab Activities</h4>
             <ul>
@@ -1447,7 +1493,7 @@
 
           <div class="card">
             <h3>Center for Cyber Security (CCS)</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">NYU Tandon · Faculty Member</p>
+            <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">NYU Tandon · Faculty Member</p>
             <p>The Center for Cybersecurity at NYU Tandon is a hub for interdisciplinary research, education, and public engagement in cybersecurity. The center brings together faculty, students, and industry partners to address critical security challenges.</p>
             <h4>Center Focus Areas</h4>
             <ul>
@@ -1556,7 +1602,7 @@
             <div class="pub-authors">Alon Hillel-Tuch</div>
             <div class="pub-venue">SSRN Electronic Journal · May 2021</div>
             <p class="pub-abstract">This paper explores data exfiltration dynamics across complex networked systems, examining how sophisticated attackers establish persistent transmission flows at the physical layer that evade traditional network security detection mechanisms. Focus on nation-state level threats and defense strategies.</p>
-            <p style="color: var(--navy-light); font-size: 14px; margin-top: 8px; font-weight: 600;">📊 Impact: 480+ downloads · 1,300+ abstract views on SSRN · Multiple citations</p>
+            <p style="color: var(--accent); font-size: 14px; margin-top: 8px; font-weight: 600;">📊 Impact: 480+ downloads · 1,300+ abstract views on SSRN · Multiple citations</p>
             <div class="pub-links">
               <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener">
                 📄 Read Paper (SSRN)
@@ -1615,7 +1661,7 @@
               <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
               <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, offer presentation systems, and community engagement systems for creative and entrepreneurial ventures.</p>
-              <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
+              <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
               <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Square (15+ patents on merchant financing), Capital One (social discovery), 3M (internal crowdfunding), Winklevoss/Gemini (20+ crypto patents), Givling, Angelsoft, and numerous fintech innovations</p>
               <div class="pub-links">
                 <a href="https://patents.justia.com/patent/20140040157" class="pub-link" target="_blank" rel="noopener">
@@ -1629,7 +1675,7 @@
               <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
               <div class="pub-venue">USPTO Patent Application 20140279645A1 · Filed 2013 · RocketHub Inc.</div>
               <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency. Includes beneficiary-focused crowdsourcing mechanisms.</p>
-              <p style="color: var(--navy-light); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
+              <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
               <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Shanghai Baichou Financial (secondary crowdfunding markets), Heyue Group (fintech platforms), BitPagos/Ripio (crypto payments), and compliance-focused crowdfunding systems</p>
               <div class="pub-links">
                 <a href="https://patents.google.com/?inventor=Alon+Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
@@ -1653,7 +1699,7 @@
         <div class="grid cols-2">
           <div class="card industry-card">
             <h3>RocketHub · Co-Founder, CFO & CTO</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2010 - 2015 · Acquired</p>
+            <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">2010 - 2015 · Acquired</p>
             <p>Co-founded one of the first global crowdfunding platforms, pioneering equity crowdfunding under the JOBS Act. Facilitated over $50M in funding across 30,000+ projects serving 500K+ users.</p>
             <h4>Key Achievements</h4>
             <ul>
@@ -1667,7 +1713,7 @@
 
           <div class="card industry-card">
             <h3>Stacked Capital · Managing Partner</h3>
-            <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2015 - Present</p>
+            <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">2015 - Present</p>
             <p>Early-stage venture capital focused on deep tech: hardware, AI infrastructure, and resilient systems. Invested in companies building critical technologies at the intersection of security, scalability, and societal impact.</p>
             <h4>Investment Focus</h4>
             <ul>
@@ -1685,7 +1731,7 @@
           <div class="grid cols-2">
             <article class="card">
               <h3>Beacon: Disaster Response Platform</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Salesforce Partnership</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Salesforce Partnership</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/367493508" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1694,7 +1740,7 @@
 
             <article class="card">
               <h3>Ovation TV Creative Studio</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Ovation × will.i.am</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Ovation × will.i.am</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/148018050" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1703,7 +1749,7 @@
 
             <article class="card">
               <h3>Chrysler Innovation Challenge</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Chrysler Group</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Chrysler Group</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/133416076" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1712,7 +1758,7 @@
 
             <article class="card">
               <h3>A&E Network: Project Startup</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">A&E Television</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">A&E Television</p>
               <div class="video-wrapper">
                 <iframe loading="lazy" src="https://player.vimeo.com/video/63913374" title="A&E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
@@ -1724,19 +1770,19 @@
             <div class="grid cols-3">
               <div class="card">
                 <h3>YALI - Young African Leaders Initiative</h3>
-                <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">White House × U.S. Department of State</p>
+                <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">White House × U.S. Department of State</p>
                 <p>Selected as technology partner for President Obama's Young African Leaders Initiative, building crowdfunding and entrepreneurship programs supporting the next generation of African innovators and changemakers across the continent.</p>
               </div>
 
               <div class="card">
                 <h3>Venture for America</h3>
-                <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">American Express Innovation Fund</p>
+                <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">American Express Innovation Fund</p>
                 <p>Partnered with Venture for America and American Express to support recent college graduates working in startups. Created funding mechanisms and mentorship programs connecting talented entrepreneurs with resources and capital.</p>
               </div>
 
               <div class="card">
                 <h3>FreshDirect: Next Big Food Thing</h3>
-                <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">FreshDirect Partnership</p>
+                <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">FreshDirect Partnership</p>
                 <p>Developed "Next Big Food Thing" crowdfunding initiative with FreshDirect, enabling food entrepreneurs and culinary innovators to bring new products to market through community-backed validation and distribution partnerships.</p>
               </div>
             </div>
@@ -1774,43 +1820,43 @@
           <div class="grid cols-2">
             <div class="card">
               <h3>TouchCast</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Business Strategy & Technical Modeling</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Business Strategy & Technical Modeling</p>
               <p>Consulted from seed stage on business strategy, technical architecture, and market positioning. TouchCast was later acquired for $500M, validating the strategic foundation and technical roadmap developed during early-stage consulting.</p>
             </div>
 
             <div class="card">
               <h3>Salesforce</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Innovation Consulting · 2017</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Innovation Consulting · 2017</p>
               <p>Innovation consulting for Salesforce Ignite program. Developed human-first LLM platform for disaster response coordination, focusing on resilient communication infrastructure and AI-assisted emergency management systems.</p>
             </div>
 
             <div class="card">
               <h3>GreenLightGo</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security Assessment & Business Development</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Security Assessment & Business Development</p>
               <p>Conducted comprehensive security assessment and business model development for emerging fintech platform. Provided strategic guidance on security architecture, regulatory compliance, and market positioning.</p>
             </div>
 
             <div class="card">
               <h3>Bain Consulting</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Security & Regulatory Project</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Security & Regulatory Project</p>
               <p>Security and regulation-focused consulting project (confidential). Advised on complex regulatory compliance frameworks and security risk mitigation strategies for enterprise client.</p>
             </div>
 
             <div class="card">
               <h3>American Express</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">OPEN Team Innovation Workshop</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">OPEN Team Innovation Workshop</p>
               <p>Led innovation consulting workshop for American Express OPEN team, focusing on emerging payment technologies, fraud prevention, and customer experience optimization for small business segment.</p>
             </div>
 
             <div class="card">
               <h3>Keisuke Honda</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">International Market Entry</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">International Market Entry</p>
               <p>Consulted on Japanese venture market entry strategy, providing guidance on technology ecosystem dynamics, partnership development, and cultural considerations for successful market penetration.</p>
             </div>
 
             <div class="card">
               <h3>Zombie Soup</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">Strategic Advisor · AI/VR Startup</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Strategic Advisor · AI/VR Startup</p>
               <p>Strategic advisor for AI/VR startup, providing guidance on technology development, security architecture, market positioning, and strategic partnerships in emerging immersive technology sector.</p>
             </div>
           </div>
@@ -1822,19 +1868,19 @@
           <div class="grid cols-3">
             <div class="card">
               <h3>BCMS Corporate</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · Special Situations Manager & Head of Prospect Generation</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">2007 - 2011 · Special Situations Manager & Head of Prospect Generation</p>
               <p>Led 15-person Prospect Generation department, conducting M&A diligence that generated over $600M in offers. Member of North American Strategic Planning Committee. Managed complex special situations analysis and strategic transaction evaluation across multiple industries.</p>
             </div>
 
             <div class="card">
               <h3>PlayerNet</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2009 - 2010 · Interim CTO</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">2009 - 2010 · Interim CTO</p>
               <p>Served as Interim Chief Technology Officer, overseeing technology infrastructure, platform architecture, and engineering teams during critical growth phase.</p>
             </div>
 
             <div class="card">
               <h3>HBK Capital Management</h3>
-              <p style="color: var(--navy-light); font-weight: 700; margin-bottom: 16px;">2007</p>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">2007</p>
               <p>Quantitative trading and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
             </div>
           </div>
@@ -1934,7 +1980,7 @@
             <div class="grid cols-3" style="margin-top: 24px;">
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">New York University</h4>
-                <p style="color: var(--navy-light); font-weight: 600;">M.Sc. Cybersecurity</p>
+                <p style="color: var(--accent); font-weight: 600;">M.Sc. Cybersecurity</p>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Graduated 2024</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Academic Excellence Award · Cyber Fellowship</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">NSA Cyber Operations & Defense Certificates</p>
@@ -1942,14 +1988,14 @@
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Columbia University</h4>
-                <p style="color: var(--navy-light); font-weight: 600;">M.Sc.</p>
+                <p style="color: var(--accent); font-weight: 600;">M.Sc.</p>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation & Conflict Resolution</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2011</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute (Advanced Consortium for Cooperation, Conflict, and Complexity)</p>
               </div>
               <div style="text-align: center; padding: 20px;">
                 <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Hamilton College</h4>
-                <p style="color: var(--navy-light); font-weight: 600;">B.A.</p>
+                <p style="color: var(--accent); font-weight: 600;">B.A.</p>
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Economics, Chinese Culture & Language</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Graduated 2007</p>
                 <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Phi Sigma Iota Honor Society</p>
