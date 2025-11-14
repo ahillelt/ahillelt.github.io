@@ -929,6 +929,49 @@
       background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.02) 0%, transparent 70%);
       pointer-events: none;
     }
+
+    /* Drag-and-Drop Navigation Reordering */
+    nav a {
+      cursor: grab;
+      user-select: none;
+      position: relative;
+    }
+    nav a:active {
+      cursor: grabbing;
+    }
+    nav a.dragging {
+      opacity: 0.4;
+      transform: scale(0.95);
+      cursor: grabbing;
+    }
+    nav a.drag-over {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(37, 99, 235, 0.05) 100%);
+    }
+    nav a::before {
+      content: '⋮⋮';
+      position: absolute;
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--text-light);
+      opacity: 0;
+      transition: opacity 0.2s;
+      letter-spacing: -2px;
+    }
+    nav a:hover::before {
+      opacity: 0.5;
+    }
+
+    /* Section reorder animations */
+    main > section {
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+    }
+    main > section.reordering {
+      opacity: 0.7;
+    }
   </style>
 
   <script type="application/ld+json">
@@ -2351,6 +2394,192 @@
 
     // Load courses on page load
     window.addEventListener('load', loadCourses);
+
+    // ===== DRAG-AND-DROP NAVIGATION REORDERING =====
+    (function() {
+      const nav = document.getElementById('mainNav');
+      const main = document.querySelector('main');
+      let draggedElement = null;
+      let draggedOverElement = null;
+
+      // Section mapping (nav href -> section id)
+      const sectionMap = {
+        '#about': 'about',
+        '#press': 'press',
+        '#teaching': 'teaching',
+        '#labs': 'labs',
+        '#research': 'research',
+        '#industry': 'industry',
+        '#credentials': 'credentials',
+        '#contact': 'contact'
+      };
+
+      // Load saved order from localStorage
+      function loadSavedOrder() {
+        const savedOrder = localStorage.getItem('navOrder');
+        if (savedOrder) {
+          try {
+            const order = JSON.parse(savedOrder);
+            reorderNav(order);
+            reorderSections(order);
+          } catch (e) {
+            console.error('Failed to load saved nav order:', e);
+          }
+        }
+      }
+
+      // Save order to localStorage
+      function saveOrder() {
+        const navItems = Array.from(nav.querySelectorAll('a'));
+        const order = navItems.map(a => a.getAttribute('href'));
+        localStorage.setItem('navOrder', JSON.stringify(order));
+      }
+
+      // Reorder navigation items
+      function reorderNav(order) {
+        const navItems = Array.from(nav.querySelectorAll('a'));
+        const itemMap = {};
+        navItems.forEach(item => {
+          itemMap[item.getAttribute('href')] = item;
+        });
+
+        // Clear nav and re-append in new order
+        nav.innerHTML = '';
+        order.forEach(href => {
+          if (itemMap[href]) {
+            nav.appendChild(itemMap[href]);
+          }
+        });
+      }
+
+      // Reorder sections to match navigation order
+      function reorderSections(order) {
+        const sections = {};
+
+        // Collect all sections
+        Object.values(sectionMap).forEach(id => {
+          const section = document.getElementById(id);
+          if (section) {
+            sections[id] = section;
+          }
+        });
+
+        // Add reordering class for animation
+        Object.values(sections).forEach(section => {
+          section.classList.add('reordering');
+        });
+
+        // Reorder sections in DOM
+        setTimeout(() => {
+          order.forEach(href => {
+            const sectionId = sectionMap[href];
+            if (sections[sectionId]) {
+              main.appendChild(sections[sectionId]);
+            }
+          });
+
+          // Remove reordering class after animation
+          setTimeout(() => {
+            Object.values(sections).forEach(section => {
+              section.classList.remove('reordering');
+            });
+          }, 100);
+        }, 50);
+      }
+
+      // Initialize drag and drop for each nav item
+      function initDragAndDrop() {
+        const navItems = nav.querySelectorAll('a');
+
+        navItems.forEach(item => {
+          item.setAttribute('draggable', 'true');
+
+          // Drag start
+          item.addEventListener('dragstart', (e) => {
+            draggedElement = item;
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', item.innerHTML);
+          });
+
+          // Drag end
+          item.addEventListener('dragend', (e) => {
+            item.classList.remove('dragging');
+
+            // Remove drag-over class from all items
+            navItems.forEach(navItem => {
+              navItem.classList.remove('drag-over');
+            });
+
+            draggedElement = null;
+            draggedOverElement = null;
+          });
+
+          // Drag over
+          item.addEventListener('dragover', (e) => {
+            if (e.preventDefault) {
+              e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+
+            if (item !== draggedElement) {
+              draggedOverElement = item;
+              item.classList.add('drag-over');
+            }
+
+            return false;
+          });
+
+          // Drag enter
+          item.addEventListener('dragenter', (e) => {
+            if (item !== draggedElement) {
+              item.classList.add('drag-over');
+            }
+          });
+
+          // Drag leave
+          item.addEventListener('dragleave', (e) => {
+            item.classList.remove('drag-over');
+          });
+
+          // Drop
+          item.addEventListener('drop', (e) => {
+            if (e.stopPropagation) {
+              e.stopPropagation();
+            }
+
+            e.preventDefault();
+
+            if (draggedElement && draggedElement !== item) {
+              // Swap positions
+              const allItems = Array.from(nav.querySelectorAll('a'));
+              const draggedIndex = allItems.indexOf(draggedElement);
+              const targetIndex = allItems.indexOf(item);
+
+              if (draggedIndex < targetIndex) {
+                nav.insertBefore(draggedElement, item.nextSibling);
+              } else {
+                nav.insertBefore(draggedElement, item);
+              }
+
+              // Get new order and reorder sections
+              const newOrder = Array.from(nav.querySelectorAll('a')).map(a => a.getAttribute('href'));
+              reorderSections(newOrder);
+              saveOrder();
+            }
+
+            item.classList.remove('drag-over');
+            return false;
+          });
+        });
+      }
+
+      // Initialize on load
+      window.addEventListener('load', () => {
+        loadSavedOrder();
+        initDragAndDrop();
+      });
+    })();
   </script>
 </body>
 </html>
