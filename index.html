@@ -965,12 +965,35 @@
       opacity: 0.5;
     }
 
+    /* Drop indicator */
+    .drop-indicator {
+      position: absolute;
+      width: 3px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(37, 99, 235, 0.4), 0 0 4px rgba(37, 99, 235, 0.6);
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .drop-indicator.show {
+      opacity: 1;
+    }
+
     /* Section reorder animations */
     main > section {
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
     }
     main > section.reordering {
       opacity: 0.7;
+    }
+    /* Disable transitions on initial load */
+    main > section.no-transition {
+      transition: none !important;
     }
 
     /* Layout Save/Reset Controls */
@@ -1070,6 +1093,32 @@
   </script>
 </head>
 <body>
+  <!-- Inline script to load saved layout IMMEDIATELY (before render) -->
+  <script>
+    (function() {
+      // Fast cookie getter
+      function getCookie(name) {
+        const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+        return value ? decodeURIComponent(value.split('=')[1]) : null;
+      }
+
+      // Get saved order from localStorage or cookie
+      let savedOrder = localStorage.getItem('navOrder');
+      if (!savedOrder) {
+        savedOrder = getCookie('navOrder');
+      }
+
+      // Store in global variable for immediate use
+      if (savedOrder) {
+        try {
+          window.__initialNavOrder = JSON.parse(savedOrder);
+        } catch (e) {
+          console.error('Failed to parse saved nav order:', e);
+        }
+      }
+    })();
+  </script>
+
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
@@ -1078,6 +1127,7 @@
       </div>
       <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
       <nav id="mainNav">
+        <div class="drop-indicator" id="dropIndicator"></div>
         <a href="#about">About</a>
         <a href="#press">Press & Speaking</a>
         <a href="#teaching">Teaching</a>
@@ -2515,22 +2565,29 @@
       }
 
       // Load saved order from localStorage AND cookies
-      function loadSavedOrder() {
-        let savedOrder = localStorage.getItem('navOrder');
+      function loadSavedOrder(isInitialLoad = false) {
+        // Use pre-loaded order from inline script if available
+        let order = window.__initialNavOrder;
 
-        // Fallback to cookie if localStorage is empty
-        if (!savedOrder) {
-          savedOrder = getCookie('navOrder');
+        if (!order) {
+          let savedOrder = localStorage.getItem('navOrder');
+          if (!savedOrder) {
+            savedOrder = getCookie('navOrder');
+          }
+
+          if (savedOrder) {
+            try {
+              order = JSON.parse(savedOrder);
+            } catch (e) {
+              console.error('Failed to load saved nav order:', e);
+              return;
+            }
+          }
         }
 
-        if (savedOrder) {
-          try {
-            const order = JSON.parse(savedOrder);
-            reorderNav(order);
-            reorderSections(order);
-          } catch (e) {
-            console.error('Failed to load saved nav order:', e);
-          }
+        if (order) {
+          reorderNav(order);
+          reorderSections(order, isInitialLoad);
         }
       }
 
@@ -2563,7 +2620,7 @@
       }
 
       // Reorder sections to match navigation order
-      function reorderSections(order) {
+      function reorderSections(order, isInitialLoad = false) {
         const sections = {};
 
         // Collect all sections
@@ -2574,13 +2631,12 @@
           }
         });
 
-        // Add reordering class for animation
-        Object.values(sections).forEach(section => {
-          section.classList.add('reordering');
-        });
+        if (isInitialLoad) {
+          // On initial load: no animations, instant reorder
+          Object.values(sections).forEach(section => {
+            section.classList.add('no-transition');
+          });
 
-        // Reorder sections in DOM
-        setTimeout(() => {
           order.forEach(href => {
             const sectionId = sectionMap[href];
             if (sections[sectionId]) {
@@ -2588,13 +2644,66 @@
             }
           });
 
-          // Remove reordering class after animation
-          setTimeout(() => {
+          // Remove no-transition class after DOM update
+          requestAnimationFrame(() => {
             Object.values(sections).forEach(section => {
-              section.classList.remove('reordering');
+              section.classList.remove('no-transition');
             });
-          }, 100);
-        }, 50);
+          });
+        } else {
+          // During drag-and-drop: smooth animations
+          Object.values(sections).forEach(section => {
+            section.classList.add('reordering');
+          });
+
+          setTimeout(() => {
+            order.forEach(href => {
+              const sectionId = sectionMap[href];
+              if (sections[sectionId]) {
+                main.appendChild(sections[sectionId]);
+              }
+            });
+
+            setTimeout(() => {
+              Object.values(sections).forEach(section => {
+                section.classList.remove('reordering');
+              });
+            }, 100);
+          }, 50);
+        }
+      }
+
+      // Drop indicator helpers
+      const dropIndicator = document.getElementById('dropIndicator');
+
+      function showDropIndicator(targetElement, draggedElement) {
+        if (!dropIndicator || !targetElement || targetElement === draggedElement) return;
+
+        const allItems = Array.from(nav.querySelectorAll('a'));
+        const draggedIndex = allItems.indexOf(draggedElement);
+        const targetIndex = allItems.indexOf(targetElement);
+
+        const rect = targetElement.getBoundingClientRect();
+        const navRect = nav.getBoundingClientRect();
+
+        // Position indicator on left or right of target based on drag direction
+        let left;
+        if (draggedIndex < targetIndex) {
+          // Dragging forward: show indicator on right side
+          left = rect.right - navRect.left;
+        } else {
+          // Dragging backward: show indicator on left side
+          left = rect.left - navRect.left;
+        }
+
+        dropIndicator.style.left = left + 'px';
+        dropIndicator.classList.add('show');
+      }
+
+      function hideDropIndicator() {
+        if (dropIndicator) {
+          dropIndicator.classList.remove('show');
+        }
       }
 
       // Initialize drag and drop for each nav item
@@ -2621,6 +2730,9 @@
               navItem.classList.remove('drag-over');
             });
 
+            // Hide drop indicator
+            hideDropIndicator();
+
             draggedElement = null;
             draggedOverElement = null;
           });
@@ -2635,6 +2747,7 @@
             if (item !== draggedElement) {
               draggedOverElement = item;
               item.classList.add('drag-over');
+              showDropIndicator(item, draggedElement);
             }
 
             return false;
@@ -2644,6 +2757,7 @@
           item.addEventListener('dragenter', (e) => {
             if (item !== draggedElement) {
               item.classList.add('drag-over');
+              showDropIndicator(item, draggedElement);
             }
           });
 
@@ -2686,7 +2800,7 @@
 
       // Initialize on load
       window.addEventListener('load', () => {
-        loadSavedOrder();
+        loadSavedOrder(true); // true = initial load, skip animations
         initDragAndDrop();
       });
 
