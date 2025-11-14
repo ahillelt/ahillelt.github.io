@@ -1223,14 +1223,11 @@
               <h3>Forbes Technology Council</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Founding Member</p>
               <div style="text-align: center; margin-bottom: 16px;">
-                <img id="forbes-headshot"
-                     src="headshot-thumb.jpg"
-                     data-hq="headshot.png"
+                <img src="headshot.png"
                      alt="Alon Hillel-Tuch"
                      fetchpriority="high"
                      decoding="async"
-                     style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; box-shadow: var(--elevation-1); transition: filter 0.3s ease;"
-                     class="progressive-img" />
+                     style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; box-shadow: var(--elevation-1);" />
               </div>
               <p>As a founding member and ongoing contributor, providing expert analysis and thought leadership for the member community on AI governance, cybersecurity, and technology innovation.</p>
               <div class="pub-links">
@@ -2078,26 +2075,6 @@
   <script>
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Progressive image loading for headshot
-    (function() {
-      const img = document.getElementById('forbes-headshot');
-
-      if (img && img.classList.contains('progressive-img')) {
-        const hqSrc = img.getAttribute('data-hq');
-        if (hqSrc) {
-          // Thumbnail is already loaded (fast, only 590 bytes)
-          // Now load high-quality version in background
-          const hqImg = new Image();
-          hqImg.onload = function() {
-            // Swap to high-quality image
-            img.src = hqSrc;
-          };
-          // Start loading HQ image
-          hqImg.src = hqSrc;
-        }
-      }
-    })();
 
     // Mobile menu
     function toggleMenu() {
