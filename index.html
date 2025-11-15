@@ -143,6 +143,8 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
       padding: 2px 0;
+      min-width: 0; /* Allow flex shrinking */
+      flex: 1; /* Take available space */
     }
     nav::-webkit-scrollbar {
       display: none;
@@ -989,6 +991,15 @@
       }
       nav.active { display: flex; }
       .menu-toggle { display: block; }
+
+      /* Horizontal drop indicator for vertical nav */
+      .drop-indicator {
+        width: 80%;
+        height: 3px;
+        left: 50%;
+        top: auto;
+        transform: translateX(-50%);
+      }
     }
 
     /* Accent sections */
@@ -2871,17 +2882,36 @@
         const draggedIndex = allItems.indexOf(draggedElement);
         const targetIndex = allItems.indexOf(targetElement);
 
-        // Get positions using offsetLeft (relative to nav parent)
-        let left;
-        if (draggedIndex < targetIndex) {
-          // Dragging forward: show indicator on right side of target
-          left = targetElement.offsetLeft + targetElement.offsetWidth + 1; // +1 for gap spacing
+        // Check if nav is vertical (flex-direction: column)
+        const navStyle = window.getComputedStyle(nav);
+        const isVertical = navStyle.flexDirection === 'column';
+
+        if (isVertical) {
+          // Vertical nav: position indicator horizontally between items
+          let top;
+          if (draggedIndex < targetIndex) {
+            // Dragging down: show indicator below target
+            top = targetElement.offsetTop + targetElement.offsetHeight + 2;
+          } else {
+            // Dragging up: show indicator above target
+            top = targetElement.offsetTop - 2;
+          }
+          dropIndicator.style.top = top + 'px';
+          dropIndicator.style.left = '50%';
         } else {
-          // Dragging backward: show indicator on left side of target
-          left = targetElement.offsetLeft - 1.5; // -1.5 to center in gap
+          // Horizontal nav: position indicator vertically between items
+          let left;
+          if (draggedIndex < targetIndex) {
+            // Dragging forward: show indicator on right side of target
+            left = targetElement.offsetLeft + targetElement.offsetWidth + 1;
+          } else {
+            // Dragging backward: show indicator on left side of target
+            left = targetElement.offsetLeft - 1.5;
+          }
+          dropIndicator.style.left = left + 'px';
+          dropIndicator.style.top = '50%';
         }
 
-        dropIndicator.style.left = left + 'px';
         dropIndicator.classList.add('show');
       }
 
