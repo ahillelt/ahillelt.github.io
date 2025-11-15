@@ -1121,8 +1121,8 @@
         <a href="#credentials">Credentials</a>
         <a href="#contact">Contact</a>
         <div class="layout-controls">
-          <button class="save-btn" onclick="saveLayout()" title="Save current layout">Save</button>
-          <button class="reset-btn" onclick="resetLayout()" title="Reset to default layout">Reset</button>
+          <button class="save-btn" onclick="saveLayout(event)" title="Save current layout">Save</button>
+          <button class="reset-btn" onclick="resetLayout(event)" title="Reset to default layout">Reset</button>
         </div>
       </nav>
     </div>
@@ -2211,10 +2211,17 @@
   <!-- Immediate reordering script (runs as soon as DOM is parsed) -->
   <script>
     (function() {
-      if (!window.__initialNavOrder) return;
+      // Guard: Prevent double execution
+      if (!window.__initialNavOrder || window.__layoutReordered) return;
 
       const nav = document.getElementById('mainNav');
       const main = document.querySelector('main');
+
+      // Null safety checks
+      if (!nav || !main) {
+        console.error('Required elements not found');
+        return;
+      }
       const sectionMap = {
         '#about': 'about',
         '#press': 'press',
@@ -2337,7 +2344,7 @@
 
     // Year switching
     // Filter switching
-    function filterPublications(category) {
+    function filterPublications(event, category) {
       document.querySelectorAll('.filter-tab').forEach(tab => {
         tab.classList.remove('active');
       });
@@ -2376,6 +2383,7 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target); // Stop observing after animation triggers
         }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
@@ -2410,8 +2418,17 @@
       });
     }
 
-    // Run on scroll and on page load
-    window.addEventListener('scroll', highlightNavigation);
+    // Run on scroll and on page load with throttling
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+          highlightNavigation();
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    });
     window.addEventListener('load', highlightNavigation);
 
     // Load and render courses from CSV
@@ -2651,9 +2668,20 @@
         const order = navItems.map(a => a.getAttribute('href'));
         const orderJSON = JSON.stringify(order);
 
-        // Save to both localStorage and cookie
-        localStorage.setItem('navOrder', orderJSON);
-        setCookie('navOrder', orderJSON);
+        // Save to localStorage with error handling
+        try {
+          localStorage.setItem('navOrder', orderJSON);
+        } catch (e) {
+          // QuotaExceededError or localStorage disabled
+          console.warn('Failed to save to localStorage:', e.message);
+        }
+
+        // Always save to cookie as fallback
+        try {
+          setCookie('navOrder', orderJSON);
+        } catch (e) {
+          console.error('Failed to save layout:', e);
+        }
       }
 
       // Reorder navigation items (preserving non-link elements)
@@ -2879,7 +2907,7 @@
     })();
 
     // Global functions for Save/Reset buttons
-    function saveLayout() {
+    function saveLayout(event) {
       const btn = event.target;
       const originalText = btn.textContent;
 
@@ -2896,7 +2924,7 @@
       }, 1200);
     }
 
-    function resetLayout() {
+    function resetLayout(event) {
       const btn = event.target;
 
       // Subtle visual feedback with class
