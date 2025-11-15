@@ -13,7 +13,7 @@
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; frame-src https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; connect-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" />
 
   <!-- Performance: Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1157,13 +1157,19 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      opacity: 0.95;
+      /* Hidden by default, shown on nav hover */
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    /* Show when hovering over navigation */
+    header.nav:hover ~ .layout-controls-floating,
     .layout-controls-floating:hover {
       opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.08);
-      transform: translateY(-1px);
     }
     .layout-controls-floating button {
       display: flex;
