@@ -146,12 +146,22 @@
       background: var(--bg-tertiary);
       transform: translateY(-1px);
     }
+    nav a:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      color: var(--text);
+      background: var(--bg-tertiary);
+    }
     nav a.active {
       color: white;
       background: var(--navy);
       font-weight: 700;
       box-shadow: var(--elevation-2);
       transform: translateY(-1px);
+    }
+    button:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     /* Mobile menu toggle */
@@ -1150,8 +1160,8 @@
         <a href="#credentials">Credentials</a>
         <a href="#contact">Contact</a>
         <div class="layout-controls">
-          <button class="save-btn" onclick="saveLayout(event)" title="Save current layout">Save</button>
-          <button class="reset-btn" onclick="resetLayout(event)" title="Reset to default layout">Reset</button>
+          <button class="save-btn" onclick="saveLayout(event)" aria-label="Save current layout" title="Save current layout">Save</button>
+          <button class="reset-btn" onclick="resetLayout(event)" aria-label="Reset to default layout" title="Reset to default layout">Reset</button>
         </div>
       </nav>
     </div>
@@ -1625,8 +1635,8 @@
 
         <!-- View Tabs -->
         <div class="view-tabs">
-          <button class="view-tab active" onclick="switchView('history')">Course History</button>
-          <button class="view-tab" onclick="switchView('details')">Course Details</button>
+          <button class="view-tab active" onclick="switchView('history', event)" aria-label="View course history" aria-pressed="true">Course History</button>
+          <button class="view-tab" onclick="switchView('details', event)" aria-label="View course details" aria-pressed="false">Course Details</button>
         </div>
 
         <!-- Course History View -->
@@ -1638,11 +1648,11 @@
         <div id="view-details" class="view-content">
           <!-- Year Tabs -->
           <div class="year-tabs">
-            <button class="year-tab active" onclick="switchYear('2026')">2026</button>
-            <button class="year-tab" onclick="switchYear('2025')">2025</button>
-            <button class="year-tab" onclick="switchYear('2024')">2024</button>
-            <button class="year-tab" onclick="switchYear('2023')">2023</button>
-            <button class="year-tab" onclick="switchYear('all')">All Years</button>
+            <button class="year-tab active" onclick="switchYear('2026')" aria-label="Filter courses from 2026" aria-pressed="true">2026</button>
+            <button class="year-tab" onclick="switchYear('2025')" aria-label="Filter courses from 2025" aria-pressed="false">2025</button>
+            <button class="year-tab" onclick="switchYear('2024')" aria-label="Filter courses from 2024" aria-pressed="false">2024</button>
+            <button class="year-tab" onclick="switchYear('2023')" aria-label="Filter courses from 2023" aria-pressed="false">2023</button>
+            <button class="year-tab" onclick="switchYear('all')" aria-label="Show all courses" aria-pressed="false">All Years</button>
           </div>
           <div id="details-container"></div>
         </div>
@@ -2543,12 +2553,24 @@
     }
 
     // Switch between views
-    function switchView(view) {
-      document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.view-content').forEach(content => content.classList.remove('active'));
+    function switchView(view, event) {
+      // Update tab states
+      document.querySelectorAll('.view-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-pressed', 'false');
+      });
+
+      // Update content visibility
+      document.querySelectorAll('.view-content').forEach(content => {
+        content.classList.remove('active');
+      });
 
       document.querySelector(`#view-${view}`).classList.add('active');
-      event.target.classList.add('active');
+
+      if (event && event.target) {
+        event.target.classList.add('active');
+        event.target.setAttribute('aria-pressed', 'true');
+      }
     }
 
     function renderCourses(courseHistory, courseCatalog) {
