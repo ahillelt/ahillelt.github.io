@@ -1086,14 +1086,34 @@
   </script>
 </head>
 <body>
+  <!-- Global shared utilities to avoid code duplication -->
+  <script>
+    window.__portfolioUtils = {
+      sectionMap: {
+        '#about': 'about',
+        '#press': 'press',
+        '#teaching': 'teaching',
+        '#labs': 'labs',
+        '#research': 'research',
+        '#industry': 'industry',
+        '#credentials': 'credentials',
+        '#contact': 'contact'
+      },
+      getCookie: function(name) {
+        const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+        return value ? decodeURIComponent(value.split('=')[1]) : null;
+      },
+      setCookie: function(name, value, days = 365) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+      }
+    };
+  </script>
+
   <!-- Inline script to load saved layout IMMEDIATELY (before render) -->
   <script>
     (function() {
-      // Fast cookie getter
-      function getCookie(name) {
-        const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
-        return value ? decodeURIComponent(value.split('=')[1]) : null;
-      }
+      const getCookie = window.__portfolioUtils.getCookie;
 
       // Get saved order from localStorage or cookie
       let savedOrder = localStorage.getItem('navOrder');
@@ -2231,16 +2251,7 @@
         console.error('Required elements not found');
         return;
       }
-      const sectionMap = {
-        '#about': 'about',
-        '#press': 'press',
-        '#teaching': 'teaching',
-        '#labs': 'labs',
-        '#research': 'research',
-        '#industry': 'industry',
-        '#credentials': 'credentials',
-        '#contact': 'contact'
-      };
+      const sectionMap = window.__portfolioUtils.sectionMap;
 
       // REORDER NAV ITEMS IMMEDIATELY
       const navItems = Array.from(nav.querySelectorAll('a'));
@@ -2652,30 +2663,10 @@
       let draggedElement = null;
       let draggedOverElement = null;
 
-      // Section mapping (nav href -> section id)
-      const sectionMap = {
-        '#about': 'about',
-        '#press': 'press',
-        '#teaching': 'teaching',
-        '#labs': 'labs',
-        '#research': 'research',
-        '#industry': 'industry',
-        '#credentials': 'credentials',
-        '#contact': 'contact'
-      };
-
-      // Cookie management helpers
-      function setCookie(name, value, days = 365) {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString();
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
-      }
-
-      function getCookie(name) {
-        return document.cookie.split('; ').reduce((r, v) => {
-          const parts = v.split('=');
-          return parts[0] === name ? decodeURIComponent(parts[1]) : r;
-        }, '');
-      }
+      // Use shared utilities to avoid code duplication
+      const sectionMap = window.__portfolioUtils.sectionMap;
+      const setCookie = window.__portfolioUtils.setCookie;
+      const getCookie = window.__portfolioUtils.getCookie;
 
       // Load saved order from localStorage AND cookies
       function loadSavedOrder(isInitialLoad = false) {
