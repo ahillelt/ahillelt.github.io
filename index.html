@@ -996,9 +996,8 @@
       .drop-indicator {
         width: 80%;
         height: 3px;
-        left: 50%;
-        top: auto;
-        transform: translateX(-50%);
+        left: 10% !important;
+        transform: none !important;
       }
     }
 
@@ -1076,6 +1075,11 @@
       margin-left: 16px;
       padding-left: 16px;
       border-left: 1px solid var(--border);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    nav:hover .layout-controls {
       opacity: 1;
       pointer-events: auto;
     }
@@ -2887,7 +2891,7 @@
         const isVertical = navStyle.flexDirection === 'column';
 
         if (isVertical) {
-          // Vertical nav: position indicator horizontally between items
+          // Vertical nav: horizontal indicator between items
           let top;
           if (draggedIndex < targetIndex) {
             // Dragging down: show indicator below target
@@ -2897,9 +2901,9 @@
             top = targetElement.offsetTop - 2;
           }
           dropIndicator.style.top = top + 'px';
-          dropIndicator.style.left = '50%';
+          // CSS handles left positioning for vertical nav (10% left, 80% width)
         } else {
-          // Horizontal nav: position indicator vertically between items
+          // Horizontal nav: vertical indicator between items
           let left;
           if (draggedIndex < targetIndex) {
             // Dragging forward: show indicator on right side of target
