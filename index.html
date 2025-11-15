@@ -1375,7 +1375,7 @@
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 32px; align-items: start;">
               <div>
                 <h3 style="margin-bottom: 8px;">Forbes Technology Council</h3>
-                <p style="color: var(--accent); font-weight: 700; margin-bottom: 12px;">Founding Member</p>
+                <p style="color: var(--accent); font-weight: 700; margin-bottom: 12px;">Founding Member, Guest Writer</p>
                 <p style="color: var(--text-muted); font-size: 14px;">Expert analysis and thought leadership on AI governance, cybersecurity, and technology innovation.</p>
                 <div class="pub-links" style="margin-top: 16px;">
                   <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
@@ -2873,26 +2873,28 @@
     function saveLayout() {
       const btn = event.target;
       const originalText = btn.textContent;
+      const originalBg = btn.style.background;
 
       // Save the layout
       window.navReorderModule.saveOrder();
 
       // Visual feedback
-      btn.textContent = '✓ Saved';
+      btn.textContent = '✓';
       btn.style.background = '#10b981'; // Green
 
       setTimeout(() => {
         btn.textContent = originalText;
-        btn.style.background = '';
-      }, 1500);
+        btn.style.background = originalBg;
+      }, 1200);
     }
 
     function resetLayout() {
       const btn = event.target;
+      const originalBg = btn.style.background;
 
-      // Visual confirmation before reset
-      btn.textContent = 'Resetting...';
-      btn.style.background = '#ef4444'; // Red
+      // Subtle visual feedback
+      btn.style.opacity = '0.6';
+      btn.style.background = '#f59e0b'; // Amber/orange (less aggressive than red)
 
       // Clear saved data
       localStorage.removeItem('navOrder');
@@ -2901,7 +2903,7 @@
       // Small delay for visual feedback, then reload
       setTimeout(() => {
         location.reload();
-      }, 300);
+      }, 250);
     }
 
     function showStatusMessage(msg) {
