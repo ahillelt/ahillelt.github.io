@@ -6,8 +6,24 @@
   <title>Alon Hillel‑Tuch · Cybersecurity Professor & AI Governance Expert</title>
   <meta name="description" content="Industry Assistant Professor at NYU Tandon School of Engineering. Expert in cybersecurity, hardware security, AI governance, and AI safety. Former RocketHub co-founder and Stacked Capital managing partner. Research Fellow at Columbia's Earth Institute with expertise in conflict resolution. Congressional testimony on technology policy." />
   <meta name="theme-color" content="#1e40af" />
+
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" />
+
+  <!-- Performance: Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- Preload Critical Assets -->
+  <link rel="preload" href="headshot.png" as="image" type="image/png" fetchpriority="high">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet"></noscript>
   <style>
@@ -52,7 +68,12 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+      /* Performance: Enable GPU acceleration for smooth scrolling */
+      -webkit-overflow-scrolling: touch;
+    }
 
     body {
       font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -61,6 +82,8 @@
       background: var(--bg);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      /* Performance: Text rendering optimization */
+      text-rendering: optimizeSpeed;
     }
 
     h1, h2, h3 {
@@ -85,9 +108,14 @@
       top: 0;
       background: rgba(255,255,255,.98);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       z-index: 100;
       box-shadow: var(--shadow-sm);
+      /* Performance: Use GPU for sticky positioning and blur */
+      will-change: transform;
+      transform: translateZ(0);
+      contain: layout style;
     }
     .nav-inner {
       display: flex;
@@ -1114,58 +1142,105 @@
       transition: none !important;
     }
 
-    /* Layout Save/Reset Controls in Nav Bar */
-    .layout-controls {
+    /* Floating Layout Controls Below Nav Bar */
+    .layout-controls-floating {
+      position: fixed;
+      top: 65px; /* Below the nav bar */
+      right: 20px;
+      z-index: 998; /* Below nav (999) but above content */
       display: flex;
-      gap: 6px;
-      margin-left: 12px;
-      padding-left: 12px;
-      border-left: 1px solid var(--border);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-      flex-shrink: 0;
+      gap: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0.95;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    nav:hover .layout-controls {
+    .layout-controls-floating:hover {
       opacity: 1;
-      pointer-events: auto;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px);
     }
-    .layout-controls button {
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 11px;
+    .layout-controls-floating button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: Inter, sans-serif;
       white-space: nowrap;
-      min-width: 48px;
       border: 1px solid transparent;
     }
-    .layout-controls .save-btn {
+    .layout-controls-floating button svg {
+      flex-shrink: 0;
+    }
+    .layout-controls-floating .save-btn {
       background: var(--accent);
       color: white;
       border-color: var(--accent);
     }
-    .layout-controls .save-btn:hover {
+    .layout-controls-floating .save-btn:hover {
       background: var(--accent-hover);
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+      transform: translateY(-1px);
     }
-    .layout-controls .save-btn.saved {
+    .layout-controls-floating .save-btn.saved {
       background: #10b981;
       border-color: #10b981;
     }
-    .layout-controls .reset-btn {
-      background: transparent;
+    .layout-controls-floating .reset-btn {
+      background: var(--bg-tertiary);
       color: var(--text);
       border-color: var(--border);
     }
-    .layout-controls .reset-btn:hover {
-      background: var(--bg-tertiary);
+    .layout-controls-floating .reset-btn:hover {
+      background: var(--bg-primary);
       border-color: var(--text-muted);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
     }
-    .layout-controls .reset-btn.resetting {
+    .layout-controls-floating .reset-btn.resetting {
       opacity: 0.6;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      .layout-controls-floating {
+        top: 60px;
+        right: 10px;
+        padding: 6px 10px;
+        gap: 6px;
+      }
+      .layout-controls-floating button {
+        padding: 6px 10px;
+        font-size: 12px;
+        gap: 4px;
+      }
+      .layout-controls-floating button svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    /* Small mobile - stack buttons or make more compact */
+    @media (max-width: 480px) {
+      .layout-controls-floating {
+        flex-direction: column;
+        gap: 4px;
+        padding: 6px;
+      }
+      .layout-controls-floating button {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 
@@ -1252,13 +1327,28 @@
         <a href="#industry">Industry</a>
         <a href="#credentials">Credentials</a>
         <a href="#contact">Contact</a>
-        <div class="layout-controls">
-          <button class="save-btn" onclick="saveLayout(event)" aria-label="Save current layout" title="Save current layout">Save</button>
-          <button class="reset-btn" onclick="resetLayout(event)" aria-label="Reset to default layout" title="Reset to default layout">Reset</button>
-        </div>
       </nav>
     </div>
   </header>
+
+  <!-- Floating Layout Controls -->
+  <div class="layout-controls-floating" id="layoutControls">
+    <button class="save-btn" onclick="saveLayout(event)" aria-label="Save current layout" title="Save current layout">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+        <polyline points="7 3 7 8 15 8"></polyline>
+      </svg>
+      Save Layout
+    </button>
+    <button class="reset-btn" onclick="resetLayout(event)" aria-label="Reset to default layout" title="Reset to default layout">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+      </svg>
+      Reset Layout
+    </button>
+  </div>
 
   <main>
     <!-- Hero -->
@@ -1287,6 +1377,8 @@
           <div class="portrait">
             <img src="headshot.png"
                  alt="Alon Hillel-Tuch"
+                 width="800"
+                 height="800"
                  fetchpriority="high"
                  decoding="async"
                  style="width: 100%; height: 100%; object-fit: cover;" />
