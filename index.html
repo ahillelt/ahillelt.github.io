@@ -2193,11 +2193,12 @@
     </section>
   </main>
 
-  <!-- Immediate section reordering script (runs as soon as DOM is parsed) -->
+  <!-- Immediate reordering script (runs as soon as DOM is parsed) -->
   <script>
     (function() {
       if (!window.__initialNavOrder) return;
 
+      const nav = document.getElementById('mainNav');
       const main = document.querySelector('main');
       const sectionMap = {
         '#about': 'about',
@@ -2210,18 +2211,39 @@
         '#contact': 'contact'
       };
 
-      // Collect all sections
+      // REORDER NAV ITEMS IMMEDIATELY
+      const navItems = Array.from(nav.querySelectorAll('a'));
+      const itemMap = {};
+      navItems.forEach(item => {
+        itemMap[item.getAttribute('href')] = item;
+      });
+
+      const dropIndicator = document.getElementById('dropIndicator');
+      const layoutControls = nav.querySelector('.layout-controls');
+
+      navItems.forEach(item => item.remove());
+
+      const firstNonLink = dropIndicator || layoutControls;
+      window.__initialNavOrder.forEach(href => {
+        if (itemMap[href]) {
+          if (firstNonLink) {
+            nav.insertBefore(itemMap[href], firstNonLink);
+          } else {
+            nav.appendChild(itemMap[href]);
+          }
+        }
+      });
+
+      // REORDER SECTIONS IMMEDIATELY
       const sections = {};
       Object.values(sectionMap).forEach(id => {
         const section = document.getElementById(id);
         if (section) {
           sections[id] = section;
-          // Disable transitions immediately
           section.style.transition = 'none';
         }
       });
 
-      // Reorder sections immediately (synchronously)
       window.__initialNavOrder.forEach(href => {
         const sectionId = sectionMap[href];
         if (sections[sectionId]) {
@@ -2229,12 +2251,15 @@
         }
       });
 
-      // Re-enable transitions after a tiny delay
+      // Re-enable transitions
       setTimeout(() => {
         Object.values(sections).forEach(section => {
           section.style.transition = '';
         });
       }, 50);
+
+      // Mark that we've already done the reordering
+      window.__layoutReordered = true;
     })();
   </script>
 
@@ -2616,7 +2641,7 @@
         setCookie('navOrder', orderJSON);
       }
 
-      // Reorder navigation items
+      // Reorder navigation items (preserving non-link elements)
       function reorderNav(order) {
         const navItems = Array.from(nav.querySelectorAll('a'));
         const itemMap = {};
@@ -2624,11 +2649,22 @@
           itemMap[item.getAttribute('href')] = item;
         });
 
-        // Clear nav and re-append in new order
-        nav.innerHTML = '';
+        // Save references to elements we need to preserve
+        const dropIndicator = document.getElementById('dropIndicator');
+        const layoutControls = nav.querySelector('.layout-controls');
+
+        // Remove all anchor tags (but keep other elements)
+        navItems.forEach(item => item.remove());
+
+        // Re-insert anchor tags in new order
+        const firstNonLink = dropIndicator || layoutControls;
         order.forEach(href => {
           if (itemMap[href]) {
-            nav.appendChild(itemMap[href]);
+            if (firstNonLink) {
+              nav.insertBefore(itemMap[href], firstNonLink);
+            } else {
+              nav.appendChild(itemMap[href]);
+            }
           }
         });
       }
@@ -2809,15 +2845,13 @@
         });
       }
 
-      // Initialize on load
-      window.addEventListener('load', () => {
-        // Sections already reordered by inline script after <main>
-        // Just reorder nav to match
-        if (window.__initialNavOrder) {
-          reorderNav(window.__initialNavOrder);
-        }
+      // Initialize ASAP using DOMContentLoaded (doesn't wait for images)
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDragAndDrop);
+      } else {
+        // DOM already loaded
         initDragAndDrop();
-      });
+      }
 
       // Make functions globally accessible for button onclick handlers
       window.navReorderModule = {
