@@ -1024,21 +1024,6 @@
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
       background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(37, 99, 235, 0.05) 100%);
     }
-    nav a::before {
-      content: '⋮⋮';
-      position: absolute;
-      left: 2px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 10px;
-      color: var(--text-light);
-      opacity: 0;
-      transition: opacity 0.2s;
-      letter-spacing: -2px;
-    }
-    nav a:hover::before {
-      opacity: 0.5;
-    }
 
     /* Drop indicator */
     .drop-indicator {
@@ -1078,12 +1063,6 @@
       margin-left: 16px;
       padding-left: 16px;
       border-left: 1px solid var(--border);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    nav:hover .layout-controls,
-    .layout-controls:hover {
       opacity: 1;
       pointer-events: auto;
     }
@@ -2357,12 +2336,10 @@
         }
       });
 
-      // Re-enable transitions
-      setTimeout(() => {
-        Object.values(sections).forEach(section => {
-          section.style.transition = '';
-        });
-      }, 50);
+      // Re-enable transitions immediately
+      Object.values(sections).forEach(section => {
+        section.style.transition = '';
+      });
 
       // Mark that we've already done the reordering
       window.__layoutReordered = true;
@@ -2537,9 +2514,6 @@
 
     // Initial highlight on load
     window.addEventListener('load', highlightNavigation);
-
-    // Also run after a short delay to catch any layout shifts
-    setTimeout(highlightNavigation, 500);
 
     // Load and render courses from CSV
     async function loadCourses() {
@@ -2879,25 +2853,13 @@
             });
           });
         } else {
-          // During drag-and-drop: smooth animations
-          Object.values(sections).forEach(section => {
-            section.classList.add('reordering');
+          // During drag-and-drop: instant reordering
+          order.forEach(href => {
+            const sectionId = sectionMap[href];
+            if (sections[sectionId]) {
+              main.appendChild(sections[sectionId]);
+            }
           });
-
-          setTimeout(() => {
-            order.forEach(href => {
-              const sectionId = sectionMap[href];
-              if (sections[sectionId]) {
-                main.appendChild(sections[sectionId]);
-              }
-            });
-
-            setTimeout(() => {
-              Object.values(sections).forEach(section => {
-                section.classList.remove('reordering');
-              });
-            }, 100);
-          }, 50);
         }
       }
 
@@ -3121,30 +3083,20 @@
       // Save the layout
       window.navReorderModule.saveOrder();
 
-      // Subtle visual feedback with class
+      // Instant visual feedback
       btn.textContent = '✓';
       btn.classList.add('saved');
-
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.classList.remove('saved');
-      }, 1200);
     }
 
     function resetLayout(event) {
       const btn = event.target;
 
-      // Subtle visual feedback with class
-      btn.classList.add('resetting');
-
       // Clear saved data
       localStorage.removeItem('navOrder');
       document.cookie = 'navOrder=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
-      // Small delay for visual feedback, then reload
-      setTimeout(() => {
-        location.reload();
-      }, 200);
+      // Instant reload
+      location.reload();
     }
   </script>
 </body>
