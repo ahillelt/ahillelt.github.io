@@ -116,7 +116,12 @@
       box-shadow: var(--elevation-2);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    nav { display: flex; gap: 2px; flex-wrap: nowrap; }
+    nav {
+      display: flex;
+      gap: 2px;
+      flex-wrap: nowrap;
+      position: relative;
+    }
     nav a {
       padding: 10px 12px;
       font-weight: 600;
@@ -2683,17 +2688,14 @@
         const draggedIndex = allItems.indexOf(draggedElement);
         const targetIndex = allItems.indexOf(targetElement);
 
-        const rect = targetElement.getBoundingClientRect();
-        const navRect = nav.getBoundingClientRect();
-
-        // Position indicator on left or right of target based on drag direction
+        // Get positions using offsetLeft (relative to nav parent)
         let left;
         if (draggedIndex < targetIndex) {
-          // Dragging forward: show indicator on right side
-          left = rect.right - navRect.left;
+          // Dragging forward: show indicator on right side of target
+          left = targetElement.offsetLeft + targetElement.offsetWidth + 1; // +1 for gap spacing
         } else {
-          // Dragging backward: show indicator on left side
-          left = rect.left - navRect.left;
+          // Dragging backward: show indicator on left side of target
+          left = targetElement.offsetLeft - 1.5; // -1.5 to center in gap
         }
 
         dropIndicator.style.left = left + 'px';
