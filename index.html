@@ -1026,6 +1026,7 @@
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: Inter, sans-serif;
       white-space: nowrap;
+      min-width: 52px;
     }
     .layout-controls .save-btn {
       background: var(--accent);
@@ -1036,6 +1037,10 @@
       transform: translateY(-1px);
       box-shadow: var(--elevation-2);
     }
+    .layout-controls .save-btn.saved {
+      background: #059669;
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+    }
     .layout-controls .reset-btn {
       background: var(--bg-tertiary);
       color: var(--navy);
@@ -1045,6 +1050,10 @@
       background: var(--bg-secondary);
       border-color: var(--navy);
       transform: translateY(-1px);
+    }
+    .layout-controls .reset-btn.resetting {
+      opacity: 0.5;
+      border-color: #94a3b8;
     }
   </style>
 
@@ -2873,28 +2882,25 @@
     function saveLayout() {
       const btn = event.target;
       const originalText = btn.textContent;
-      const originalBg = btn.style.background;
 
       // Save the layout
       window.navReorderModule.saveOrder();
 
-      // Visual feedback
+      // Subtle visual feedback with class
       btn.textContent = '✓';
-      btn.style.background = '#10b981'; // Green
+      btn.classList.add('saved');
 
       setTimeout(() => {
         btn.textContent = originalText;
-        btn.style.background = originalBg;
+        btn.classList.remove('saved');
       }, 1200);
     }
 
     function resetLayout() {
       const btn = event.target;
-      const originalBg = btn.style.background;
 
-      // Subtle visual feedback
-      btn.style.opacity = '0.6';
-      btn.style.background = '#f59e0b'; // Amber/orange (less aggressive than red)
+      // Subtle visual feedback with class
+      btn.classList.add('resetting');
 
       // Clear saved data
       localStorage.removeItem('navOrder');
@@ -2903,7 +2909,7 @@
       // Small delay for visual feedback, then reload
       setTimeout(() => {
         location.reload();
-      }, 250);
+      }, 200);
     }
 
     function showStatusMessage(msg) {
