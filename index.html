@@ -1001,50 +1001,24 @@
       transition: none !important;
     }
 
-    /* Layout Save/Reset Controls */
+    /* Layout Save/Reset Controls in Nav Bar */
     .layout-controls {
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: var(--elevation-3);
-      padding: 12px 16px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      transform: translateX(10px);
-      z-index: 99;
-      border: 1px solid var(--border);
-    }
-    header.nav:hover ~ main .layout-controls,
-    .layout-controls:hover {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(0);
-    }
-    .layout-controls h4 {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-family: Inter, sans-serif;
-    }
-    .layout-controls-buttons {
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      margin-left: 12px;
+      padding-left: 12px;
+      border-left: 1px solid var(--border);
     }
     .layout-controls button {
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: Inter, sans-serif;
+      white-space: nowrap;
     }
     .layout-controls .save-btn {
       background: var(--accent);
@@ -1064,17 +1038,6 @@
       background: var(--bg-secondary);
       border-color: var(--navy);
       transform: translateY(-1px);
-    }
-    .layout-controls .status-msg {
-      font-size: 11px;
-      color: var(--accent);
-      margin-top: 6px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      text-align: center;
-    }
-    .layout-controls .status-msg.show {
-      opacity: 1;
     }
   </style>
 
@@ -1141,21 +1104,15 @@
         <a href="#industry">Industry</a>
         <a href="#credentials">Credentials</a>
         <a href="#contact">Contact</a>
+        <div class="layout-controls">
+          <button class="save-btn" onclick="saveLayout()" title="Save current layout">Save</button>
+          <button class="reset-btn" onclick="resetLayout()" title="Reset to default layout">Reset</button>
+        </div>
       </nav>
     </div>
   </header>
 
   <main>
-    <!-- Layout Controls (appears on hover) -->
-    <div class="layout-controls">
-      <h4>Layout</h4>
-      <div class="layout-controls-buttons">
-        <button class="save-btn" onclick="saveLayout()">Save</button>
-        <button class="reset-btn" onclick="resetLayout()">Reset</button>
-      </div>
-      <div class="status-msg" id="layoutStatus"></div>
-    </div>
-
     <!-- Hero -->
     <section class="hero">
       <div class="container">
@@ -2229,6 +2186,51 @@
     </section>
   </main>
 
+  <!-- Immediate section reordering script (runs as soon as DOM is parsed) -->
+  <script>
+    (function() {
+      if (!window.__initialNavOrder) return;
+
+      const main = document.querySelector('main');
+      const sectionMap = {
+        '#about': 'about',
+        '#press': 'press',
+        '#teaching': 'teaching',
+        '#labs': 'labs',
+        '#research': 'research',
+        '#industry': 'industry',
+        '#credentials': 'credentials',
+        '#contact': 'contact'
+      };
+
+      // Collect all sections
+      const sections = {};
+      Object.values(sectionMap).forEach(id => {
+        const section = document.getElementById(id);
+        if (section) {
+          sections[id] = section;
+          // Disable transitions immediately
+          section.style.transition = 'none';
+        }
+      });
+
+      // Reorder sections immediately (synchronously)
+      window.__initialNavOrder.forEach(href => {
+        const sectionId = sectionMap[href];
+        if (sections[sectionId]) {
+          main.appendChild(sections[sectionId]);
+        }
+      });
+
+      // Re-enable transitions after a tiny delay
+      setTimeout(() => {
+        Object.values(sections).forEach(section => {
+          section.style.transition = '';
+        });
+      }, 50);
+    })();
+  </script>
+
   <footer>
     <div class="container">
       <div class="footer-content">
@@ -2802,7 +2804,11 @@
 
       // Initialize on load
       window.addEventListener('load', () => {
-        loadSavedOrder(true); // true = initial load, skip animations
+        // Sections already reordered by inline script after <main>
+        // Just reorder nav to match
+        if (window.__initialNavOrder) {
+          reorderNav(window.__initialNavOrder);
+        }
         initDragAndDrop();
       });
 
@@ -2832,15 +2838,8 @@
     }
 
     function showStatusMessage(msg) {
-      const statusEl = document.getElementById('layoutStatus');
-      if (statusEl) {
-        statusEl.textContent = msg;
-        statusEl.classList.add('show');
-
-        setTimeout(() => {
-          statusEl.classList.remove('show');
-        }, 2000);
-      }
+      // Simple feedback via temporary button text change
+      console.log(msg);
     }
   </script>
 </body>
