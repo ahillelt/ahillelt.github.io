@@ -94,15 +94,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 16px 0;
-      gap: 24px;
+      gap: 16px;
+      min-width: 0;
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       font-weight: 800;
       color: var(--navy);
       font-size: 20px;
+      flex-shrink: 0;
     }
     .brand .logo {
       width: 48px;
@@ -994,10 +996,12 @@
 
       /* Horizontal drop indicator for vertical nav */
       .drop-indicator {
-        width: 80%;
-        height: 3px;
+        width: 80% !important;
+        height: 3px !important;
         left: 10% !important;
+        top: auto !important;
         transform: none !important;
+        background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%) !important;
       }
     }
 
@@ -1072,27 +1076,28 @@
     .layout-controls {
       display: flex;
       gap: 6px;
-      margin-left: 16px;
-      padding-left: 16px;
+      margin-left: 12px;
+      padding-left: 12px;
       border-left: 1px solid var(--border);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
+      flex-shrink: 0;
     }
     nav:hover .layout-controls {
       opacity: 1;
       pointer-events: auto;
     }
     .layout-controls button {
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: Inter, sans-serif;
       white-space: nowrap;
-      min-width: 52px;
+      min-width: 48px;
       border: 1px solid transparent;
     }
     .layout-controls .save-btn {
