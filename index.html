@@ -2449,6 +2449,11 @@
           fetch('courses_catalog.csv')
         ]);
 
+        // Check for HTTP errors
+        if (!historyResponse.ok || !catalogResponse.ok) {
+          throw new Error('Failed to load course data files');
+        }
+
         const historyText = await historyResponse.text();
         const catalogText = await catalogResponse.text();
 
@@ -2458,7 +2463,27 @@
         renderCourses(courseHistory, courseCatalog);
       } catch (error) {
         console.error('Error loading courses:', error);
+        showCourseLoadError(error.message);
       }
+    }
+
+    function showCourseLoadError(message) {
+      const errorHtml = `
+        <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
+          <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+          <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Course Data</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">${message || 'An error occurred while loading the course information.'}</p>
+          <button onclick="loadCourses()" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
+            Try Again
+          </button>
+        </div>
+      `;
+
+      const historyContainer = document.querySelector('#history-container');
+      const detailsContainer = document.querySelector('#details-container');
+
+      if (historyContainer) historyContainer.innerHTML = errorHtml;
+      if (detailsContainer) detailsContainer.innerHTML = errorHtml;
     }
 
     function parseCSV(csvText) {
