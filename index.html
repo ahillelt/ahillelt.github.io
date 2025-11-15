@@ -8,7 +8,8 @@
   <meta name="theme-color" content="#1e40af" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet"></noscript>
   <style>
     :root {
       /* Modern Professional Color System */
@@ -115,6 +116,18 @@
       font-size: 20px;
       box-shadow: var(--elevation-2);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    .brand .logo:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--elevation-3);
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a8a 100%);
+    }
+    .brand .logo:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
     nav {
       display: flex;
@@ -160,8 +173,15 @@
       transform: translateY(-1px);
     }
     button:focus {
+      outline: none; /* Remove default outline */
+    }
+    button:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
+    }
+    .layout-controls button:focus-visible {
+      outline: 1px solid rgba(37, 99, 235, 0.3);
+      outline-offset: 1px;
     }
 
     /* Mobile menu toggle */
@@ -1145,7 +1165,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <div class="logo">AH</div>
+        <a href="#" class="logo" aria-label="Go to top of page">AHT</a>
         <div>Alon Hillel‑Tuch</div>
       </div>
       <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
@@ -1270,7 +1290,7 @@
             <h3>U.S. House Oversight Committee</h3>
             <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
             <div class="video-wrapper">
-              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
+              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe loading="lazy" src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
             </div>
             <p>Testified on implementing the JOBS Act crowdfunding provisions, balancing innovation with investor protection in emerging fintech markets. Recommended raising crowdfunding cap from $1M to $5M to better support startups.</p>
             <div class="pub-links">
