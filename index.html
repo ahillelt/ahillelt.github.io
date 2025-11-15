@@ -145,8 +145,9 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
       padding: 2px 0;
-      min-width: 0; /* Allow flex shrinking */
-      flex: 1; /* Take available space */
+      min-width: 0;
+      flex: 1;
+      max-width: 100%;
     }
     nav::-webkit-scrollbar {
       display: none;
@@ -955,6 +956,21 @@
       .chip { padding: 6px 10px; font-size: 11px; }
       .card { padding: 20px; }
       .pub-links { flex-direction: column; gap: 8px; }
+
+      /* Compact header for mobile */
+      .brand > div {
+        display: none;
+      }
+      .layout-controls button {
+        padding: 4px 8px;
+        font-size: 10px;
+        min-width: 42px;
+      }
+      .layout-controls {
+        margin-left: 8px;
+        padding-left: 8px;
+        gap: 4px;
+      }
     }
 
     /* Tablet: 641px to 768px */
@@ -964,6 +980,33 @@
       h1 { font-size: 40px; }
       section { padding: 60px 0; }
       .grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+
+      /* Compact brand for tablet */
+      .brand {
+        gap: 8px;
+        font-size: 18px;
+      }
+      .brand .logo {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    /* Medium screens: 641px to 980px */
+    @media (min-width: 641px) and (max-width: 980px) {
+      .layout-controls button {
+        padding: 4px 9px;
+        font-size: 10px;
+        min-width: 44px;
+      }
+      .layout-controls {
+        margin-left: 10px;
+        padding-left: 10px;
+        gap: 5px;
+      }
+      .nav-inner {
+        gap: 12px;
+      }
     }
 
     /* Small Laptop: 769px to 1024px */
@@ -999,7 +1042,6 @@
         width: 80% !important;
         height: 3px !important;
         left: 10% !important;
-        top: auto !important;
         transform: none !important;
         background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%) !important;
       }
