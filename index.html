@@ -1305,6 +1305,26 @@
         justify-content: center;
       }
     }
+
+    /* ACCESSIBILITY: Skip to content link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--navy);
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 0 0 4px 0;
+      z-index: 1000;
+      transition: top 0.2s ease;
+    }
+    .skip-link:focus {
+      top: 0;
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
   </style>
 
   <script type="application/ld+json">
@@ -1327,6 +1347,9 @@
   </script>
 </head>
 <body>
+  <!-- ACCESSIBILITY: Skip to main content link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- Global shared utilities to avoid code duplication -->
   <script>
     window.__portfolioUtils = {
@@ -1345,8 +1368,11 @@
         return value ? decodeURIComponent(value.split('=')[1]) : null;
       },
       setCookie: function(name, value, days = 365) {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString();
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+        const MS_PER_DAY = 864e5; // 86400000 milliseconds in a day
+        const expires = new Date(Date.now() + days * MS_PER_DAY).toUTCString();
+        // SECURITY: Add Secure flag for HTTPS, SameSite=Strict to prevent CSRF
+        const isSecure = window.location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict${isSecure}`;
       }
     };
   </script>
@@ -1413,7 +1439,7 @@
     </button>
   </div>
 
-  <main>
+  <main id="main-content">
     <!-- Hero -->
     <section class="hero">
       <div class="container">
@@ -1892,7 +1918,7 @@
 
         <!-- Course History View -->
         <div id="view-history" class="view-content active">
-          <div id="history-container"></div>
+          <div id="history-container" aria-live="polite" aria-atomic="true"></div>
         </div>
 
         <!-- Course Details View -->
@@ -1905,7 +1931,7 @@
             <button class="year-tab" onclick="switchYear('2023')" aria-label="Filter courses from 2023" aria-pressed="false">2023</button>
             <button class="year-tab" onclick="switchYear('all')" aria-label="Show all courses" aria-pressed="false">All Years</button>
           </div>
-          <div id="details-container"></div>
+          <div id="details-container" aria-live="polite" aria-atomic="true"></div>
         </div>
 
         <!-- Course Development & Curriculum Innovation -->
@@ -2612,8 +2638,41 @@
   </footer>
 
   <script>
+    // ============================================================================
+    // SECURITY: HTML Escaping Function (Prevent XSS)
+    // ============================================================================
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    // ============================================================================
+    // PERFORMANCE: DOM Element Cache
+    // ============================================================================
+    const DOM_CACHE = {
+      year: null,
+      mainNav: null,
+      sections: null,
+      navLinks: null,
+      historyContainer: null,
+      detailsContainer: null,
+      init() {
+        this.year = document.getElementById('year');
+        this.mainNav = document.getElementById('mainNav');
+        this.sections = document.querySelectorAll('section[id]');
+        this.navLinks = document.querySelectorAll('#mainNav a[href^="#"]');
+      }
+    };
+
     // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', () => {
+      DOM_CACHE.init();
+      if (DOM_CACHE.year) {
+        DOM_CACHE.year.textContent = new Date().getFullYear();
+      }
+    });
 
     // Mobile menu
     function toggleMenu() {
@@ -2640,53 +2699,78 @@
       });
     }
 
-    // Smooth scroll with proper active state management
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        if (href !== '#') {
-          e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) {
-            // Remove active from all nav links immediately
-            document.querySelectorAll('#mainNav a').forEach(link => {
-              link.classList.remove('active');
-            });
+    // ============================================================================
+    // PERFORMANCE: Event Delegation for Smooth Scroll (prevents memory leaks)
+    // ============================================================================
+    document.addEventListener('click', function (e) {
+      const anchor = e.target.closest('a[href^="#"]');
+      if (!anchor) return;
 
-            // Add active to clicked link
-            this.classList.add('active');
+      const href = anchor.getAttribute('href');
+      if (href !== '#') {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          // Remove active from all nav links immediately
+          document.querySelectorAll('#mainNav a').forEach(link => {
+            link.classList.remove('active');
+          });
 
-            // Scroll to target
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Add active to clicked link and ARIA current
+          anchor.classList.add('active');
+          anchor.setAttribute('aria-current', 'page');
 
-            // Close mobile menu
-            const nav = document.getElementById('mainNav');
-            nav.classList.remove('active');
+          // Scroll to target
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+          // ACCESSIBILITY: Set focus to target for screen readers
+          target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+
+          // Close mobile menu
+          const nav = document.getElementById('mainNav');
+          if (nav) nav.classList.remove('active');
+        }
+      }
+    });
+
+    // ============================================================================
+    // PERFORMANCE: Intersection Observer with proper cleanup
+    // ============================================================================
+    (function() {
+      const elementsToObserve = document.querySelectorAll('.card, .course-card, .publication, .stat-card');
+      let observedCount = 0;
+      const totalElements = elementsToObserve.length;
+
+      if (totalElements === 0) return; // No elements to observe
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            observer.unobserve(entry.target);
+            observedCount++;
+
+            // MEMORY: Disconnect observer when all elements are observed
+            if (observedCount === totalElements) {
+              observer.disconnect();
+            }
           }
-        }
-      });
-    });
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    // Intersection Observer for animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('fade-in');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      elementsToObserve.forEach(el => observer.observe(el));
+    })();
 
-    document.querySelectorAll('.card, .course-card, .publication, .stat-card').forEach(el => {
-      observer.observe(el);
-    });
-
+    // ============================================================================
     // Active navigation highlighting based on scroll position
+    // ============================================================================
+    const SCROLL_OFFSET = 150; // Offset for determining active section
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('#mainNav a[href^="#"]');
 
     function highlightNavigation() {
-      const scrollPosition = window.scrollY + 150;
+      const scrollPosition = window.scrollY + SCROLL_OFFSET;
 
       // Find the current section
       let currentSection = null;
@@ -2864,12 +2948,13 @@
       courses.forEach(course => {
         const enrollment = course.enrollment || 'TBD';
         const role = course.role || 'Instructor';
+        // SECURITY: Escape all CSV data to prevent XSS
         html += `<tr>
-          <td>${course.year}</td>
-          <td>${course.semester}</td>
-          <td><strong>${course.course_title}</strong></td>
-          <td class="enrollment-cell">${enrollment}</td>
-          <td>${role}</td>
+          <td>${escapeHtml(course.year)}</td>
+          <td>${escapeHtml(course.semester)}</td>
+          <td><strong>${escapeHtml(course.course_title)}</strong></td>
+          <td class="enrollment-cell">${escapeHtml(enrollment)}</td>
+          <td>${escapeHtml(role)}</td>
         </tr>`;
       });
 
@@ -2921,24 +3006,25 @@
         const badges = course.badges ? course.badges.split('|').filter(b => b) : [];
         const keyTopics = course.key_topics ? course.key_topics.split('|').filter(t => t) : [];
 
+        // SECURITY: Escape all CSV data to prevent XSS
         card.innerHTML = `
           <div class="course-header">
             <div>
-              <div class="course-code">${course.course_code}</div>
-              <h3>${course.course_title}</h3>
+              <div class="course-code">${escapeHtml(course.course_code)}</div>
+              <h3>${escapeHtml(course.course_title)}</h3>
             </div>
           </div>
           <div class="badges">
             ${badges.map(badge => {
               const className = badge.toLowerCase().replace(/[^a-z]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-              return `<span class="badge ${className}">${badge}</span>`;
+              return `<span class="badge ${escapeHtml(className)}">${escapeHtml(badge)}</span>`;
             }).join('\n            ')}
           </div>
-          ${course.description ? `<p>${course.description}</p>` : ''}
+          ${course.description ? `<p>${escapeHtml(course.description)}</p>` : ''}
           ${keyTopics.length > 0 ? `
           <h4>Key Topics</h4>
           <ul>
-            ${keyTopics.map(topic => `<li>${topic}</li>`).join('\n            ')}
+            ${keyTopics.map(topic => `<li>${escapeHtml(topic)}</li>`).join('\n            ')}
           </ul>
           ` : ''}
         `;
