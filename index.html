@@ -121,6 +121,14 @@
       gap: 2px;
       flex-wrap: nowrap;
       position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    nav::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
     }
     nav a {
       padding: 10px 12px;
@@ -138,12 +146,22 @@
       background: var(--bg-tertiary);
       transform: translateY(-1px);
     }
+    nav a:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      color: var(--text);
+      background: var(--bg-tertiary);
+    }
     nav a.active {
       color: white;
       background: var(--navy);
       font-weight: 700;
       box-shadow: var(--elevation-2);
       transform: translateY(-1px);
+    }
+    button:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     /* Mobile menu toggle */
@@ -1012,7 +1030,8 @@
       pointer-events: none;
       transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    nav:hover .layout-controls {
+    nav:hover .layout-controls,
+    .layout-controls:hover {
       opacity: 1;
       pointer-events: auto;
     }
@@ -1077,14 +1096,34 @@
   </script>
 </head>
 <body>
+  <!-- Global shared utilities to avoid code duplication -->
+  <script>
+    window.__portfolioUtils = {
+      sectionMap: {
+        '#about': 'about',
+        '#press': 'press',
+        '#teaching': 'teaching',
+        '#labs': 'labs',
+        '#research': 'research',
+        '#industry': 'industry',
+        '#credentials': 'credentials',
+        '#contact': 'contact'
+      },
+      getCookie: function(name) {
+        const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+        return value ? decodeURIComponent(value.split('=')[1]) : null;
+      },
+      setCookie: function(name, value, days = 365) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+      }
+    };
+  </script>
+
   <!-- Inline script to load saved layout IMMEDIATELY (before render) -->
   <script>
     (function() {
-      // Fast cookie getter
-      function getCookie(name) {
-        const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
-        return value ? decodeURIComponent(value.split('=')[1]) : null;
-      }
+      const getCookie = window.__portfolioUtils.getCookie;
 
       // Get saved order from localStorage or cookie
       let savedOrder = localStorage.getItem('navOrder');
@@ -1121,8 +1160,8 @@
         <a href="#credentials">Credentials</a>
         <a href="#contact">Contact</a>
         <div class="layout-controls">
-          <button class="save-btn" onclick="saveLayout()" title="Save current layout">Save</button>
-          <button class="reset-btn" onclick="resetLayout()" title="Reset to default layout">Reset</button>
+          <button class="save-btn" onclick="saveLayout(event)" aria-label="Save current layout" title="Save current layout">Save</button>
+          <button class="reset-btn" onclick="resetLayout(event)" aria-label="Reset to default layout" title="Reset to default layout">Reset</button>
         </div>
       </nav>
     </div>
@@ -1596,8 +1635,8 @@
 
         <!-- View Tabs -->
         <div class="view-tabs">
-          <button class="view-tab active" onclick="switchView('history')">Course History</button>
-          <button class="view-tab" onclick="switchView('details')">Course Details</button>
+          <button class="view-tab active" onclick="switchView('history', event)" aria-label="View course history" aria-pressed="true">Course History</button>
+          <button class="view-tab" onclick="switchView('details', event)" aria-label="View course details" aria-pressed="false">Course Details</button>
         </div>
 
         <!-- Course History View -->
@@ -1609,11 +1648,11 @@
         <div id="view-details" class="view-content">
           <!-- Year Tabs -->
           <div class="year-tabs">
-            <button class="year-tab active" onclick="switchYear('2026')">2026</button>
-            <button class="year-tab" onclick="switchYear('2025')">2025</button>
-            <button class="year-tab" onclick="switchYear('2024')">2024</button>
-            <button class="year-tab" onclick="switchYear('2023')">2023</button>
-            <button class="year-tab" onclick="switchYear('all')">All Years</button>
+            <button class="year-tab active" onclick="switchYear('2026')" aria-label="Filter courses from 2026" aria-pressed="true">2026</button>
+            <button class="year-tab" onclick="switchYear('2025')" aria-label="Filter courses from 2025" aria-pressed="false">2025</button>
+            <button class="year-tab" onclick="switchYear('2024')" aria-label="Filter courses from 2024" aria-pressed="false">2024</button>
+            <button class="year-tab" onclick="switchYear('2023')" aria-label="Filter courses from 2023" aria-pressed="false">2023</button>
+            <button class="year-tab" onclick="switchYear('all')" aria-label="Show all courses" aria-pressed="false">All Years</button>
           </div>
           <div id="details-container"></div>
         </div>
@@ -2211,20 +2250,18 @@
   <!-- Immediate reordering script (runs as soon as DOM is parsed) -->
   <script>
     (function() {
-      if (!window.__initialNavOrder) return;
+      // Guard: Prevent double execution
+      if (!window.__initialNavOrder || window.__layoutReordered) return;
 
       const nav = document.getElementById('mainNav');
       const main = document.querySelector('main');
-      const sectionMap = {
-        '#about': 'about',
-        '#press': 'press',
-        '#teaching': 'teaching',
-        '#labs': 'labs',
-        '#research': 'research',
-        '#industry': 'industry',
-        '#credentials': 'credentials',
-        '#contact': 'contact'
-      };
+
+      // Null safety checks
+      if (!nav || !main) {
+        console.error('Required elements not found');
+        return;
+      }
+      const sectionMap = window.__portfolioUtils.sectionMap;
 
       // REORDER NAV ITEMS IMMEDIATELY
       const navItems = Array.from(nav.querySelectorAll('a'));
@@ -2337,7 +2374,7 @@
 
     // Year switching
     // Filter switching
-    function filterPublications(category) {
+    function filterPublications(event, category) {
       document.querySelectorAll('.filter-tab').forEach(tab => {
         tab.classList.remove('active');
       });
@@ -2376,6 +2413,7 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target); // Stop observing after animation triggers
         }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
@@ -2410,8 +2448,17 @@
       });
     }
 
-    // Run on scroll and on page load
-    window.addEventListener('scroll', highlightNavigation);
+    // Run on scroll and on page load with throttling
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+          highlightNavigation();
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    });
     window.addEventListener('load', highlightNavigation);
 
     // Load and render courses from CSV
@@ -2423,6 +2470,11 @@
           fetch('courses_catalog.csv')
         ]);
 
+        // Check for HTTP errors
+        if (!historyResponse.ok || !catalogResponse.ok) {
+          throw new Error('Failed to load course data files');
+        }
+
         const historyText = await historyResponse.text();
         const catalogText = await catalogResponse.text();
 
@@ -2432,7 +2484,27 @@
         renderCourses(courseHistory, courseCatalog);
       } catch (error) {
         console.error('Error loading courses:', error);
+        showCourseLoadError(error.message);
       }
+    }
+
+    function showCourseLoadError(message) {
+      const errorHtml = `
+        <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
+          <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+          <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Course Data</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">${message || 'An error occurred while loading the course information.'}</p>
+          <button onclick="loadCourses()" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
+            Try Again
+          </button>
+        </div>
+      `;
+
+      const historyContainer = document.querySelector('#history-container');
+      const detailsContainer = document.querySelector('#details-container');
+
+      if (historyContainer) historyContainer.innerHTML = errorHtml;
+      if (detailsContainer) detailsContainer.innerHTML = errorHtml;
     }
 
     function parseCSV(csvText) {
@@ -2459,8 +2531,16 @@
 
       for (let i = 0; i < line.length; i++) {
         const char = line[i];
+        const nextChar = line[i + 1];
+
         if (char === '"') {
-          insideQuotes = !insideQuotes;
+          // Check for escaped quote (two consecutive quotes)
+          if (insideQuotes && nextChar === '"') {
+            current += '"';
+            i++; // Skip the next quote
+          } else {
+            insideQuotes = !insideQuotes;
+          }
         } else if (char === ',' && !insideQuotes) {
           result.push(current);
           current = '';
@@ -2473,12 +2553,24 @@
     }
 
     // Switch between views
-    function switchView(view) {
-      document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.view-content').forEach(content => content.classList.remove('active'));
+    function switchView(view, event) {
+      // Update tab states
+      document.querySelectorAll('.view-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-pressed', 'false');
+      });
+
+      // Update content visibility
+      document.querySelectorAll('.view-content').forEach(content => {
+        content.classList.remove('active');
+      });
 
       document.querySelector(`#view-${view}`).classList.add('active');
-      event.target.classList.add('active');
+
+      if (event && event.target) {
+        event.target.classList.add('active');
+        event.target.setAttribute('aria-pressed', 'true');
+      }
     }
 
     function renderCourses(courseHistory, courseCatalog) {
@@ -2593,30 +2685,10 @@
       let draggedElement = null;
       let draggedOverElement = null;
 
-      // Section mapping (nav href -> section id)
-      const sectionMap = {
-        '#about': 'about',
-        '#press': 'press',
-        '#teaching': 'teaching',
-        '#labs': 'labs',
-        '#research': 'research',
-        '#industry': 'industry',
-        '#credentials': 'credentials',
-        '#contact': 'contact'
-      };
-
-      // Cookie management helpers
-      function setCookie(name, value, days = 365) {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString();
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
-      }
-
-      function getCookie(name) {
-        return document.cookie.split('; ').reduce((r, v) => {
-          const parts = v.split('=');
-          return parts[0] === name ? decodeURIComponent(parts[1]) : r;
-        }, '');
-      }
+      // Use shared utilities to avoid code duplication
+      const sectionMap = window.__portfolioUtils.sectionMap;
+      const setCookie = window.__portfolioUtils.setCookie;
+      const getCookie = window.__portfolioUtils.getCookie;
 
       // Load saved order from localStorage AND cookies
       function loadSavedOrder(isInitialLoad = false) {
@@ -2651,9 +2723,20 @@
         const order = navItems.map(a => a.getAttribute('href'));
         const orderJSON = JSON.stringify(order);
 
-        // Save to both localStorage and cookie
-        localStorage.setItem('navOrder', orderJSON);
-        setCookie('navOrder', orderJSON);
+        // Save to localStorage with error handling
+        try {
+          localStorage.setItem('navOrder', orderJSON);
+        } catch (e) {
+          // QuotaExceededError or localStorage disabled
+          console.warn('Failed to save to localStorage:', e.message);
+        }
+
+        // Always save to cookie as fallback
+        try {
+          setCookie('navOrder', orderJSON);
+        } catch (e) {
+          console.error('Failed to save layout:', e);
+        }
       }
 
       // Reorder navigation items (preserving non-link elements)
@@ -2857,6 +2940,78 @@
             item.classList.remove('drag-over');
             return false;
           });
+
+          // Touch events for mobile support
+          let touchStartY = 0;
+          let touchCurrentElement = null;
+
+          item.addEventListener('touchstart', (e) => {
+            draggedElement = item;
+            item.classList.add('dragging');
+            touchStartY = e.touches[0].clientY;
+            touchCurrentElement = item;
+            // Prevent scrolling while dragging
+            e.preventDefault();
+          }, { passive: false });
+
+          item.addEventListener('touchmove', (e) => {
+            if (!draggedElement) return;
+
+            e.preventDefault();
+            const touch = e.touches[0];
+            const elementAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
+
+            // Find the closest nav item
+            const targetNavItem = elementAtPoint?.closest('#mainNav a');
+
+            if (targetNavItem && targetNavItem !== draggedElement) {
+              draggedOverElement = targetNavItem;
+
+              // Remove drag-over from all items
+              navItems.forEach(navItem => {
+                navItem.classList.remove('drag-over');
+              });
+
+              targetNavItem.classList.add('drag-over');
+              showDropIndicator(targetNavItem, draggedElement);
+              touchCurrentElement = targetNavItem;
+            }
+          }, { passive: false });
+
+          item.addEventListener('touchend', (e) => {
+            if (!draggedElement) return;
+
+            item.classList.remove('dragging');
+
+            // Remove drag-over from all items
+            navItems.forEach(navItem => {
+              navItem.classList.remove('drag-over');
+            });
+
+            hideDropIndicator();
+
+            if (touchCurrentElement && touchCurrentElement !== draggedElement) {
+              // Perform the swap
+              const allItems = Array.from(nav.querySelectorAll('a'));
+              const draggedIndex = allItems.indexOf(draggedElement);
+              const targetIndex = allItems.indexOf(touchCurrentElement);
+
+              if (draggedIndex < targetIndex) {
+                nav.insertBefore(draggedElement, touchCurrentElement.nextSibling);
+              } else {
+                nav.insertBefore(draggedElement, touchCurrentElement);
+              }
+
+              // Get new order and reorder sections
+              const newOrder = Array.from(nav.querySelectorAll('a')).map(a => a.getAttribute('href'));
+              reorderSections(newOrder);
+              saveOrder();
+            }
+
+            draggedElement = null;
+            draggedOverElement = null;
+            touchCurrentElement = null;
+          });
         });
       }
 
@@ -2879,7 +3034,7 @@
     })();
 
     // Global functions for Save/Reset buttons
-    function saveLayout() {
+    function saveLayout(event) {
       const btn = event.target;
       const originalText = btn.textContent;
 
@@ -2896,7 +3051,7 @@
       }, 1200);
     }
 
-    function resetLayout() {
+    function resetLayout(event) {
       const btn = event.target;
 
       // Subtle visual feedback with class
