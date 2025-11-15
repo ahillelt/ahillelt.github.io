@@ -2476,8 +2476,16 @@
 
       for (let i = 0; i < line.length; i++) {
         const char = line[i];
+        const nextChar = line[i + 1];
+
         if (char === '"') {
-          insideQuotes = !insideQuotes;
+          // Check for escaped quote (two consecutive quotes)
+          if (insideQuotes && nextChar === '"') {
+            current += '"';
+            i++; // Skip the next quote
+          } else {
+            insideQuotes = !insideQuotes;
+          }
         } else if (char === ',' && !insideQuotes) {
           result.push(current);
           current = '';
