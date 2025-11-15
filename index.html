@@ -2885,6 +2885,78 @@
             item.classList.remove('drag-over');
             return false;
           });
+
+          // Touch events for mobile support
+          let touchStartY = 0;
+          let touchCurrentElement = null;
+
+          item.addEventListener('touchstart', (e) => {
+            draggedElement = item;
+            item.classList.add('dragging');
+            touchStartY = e.touches[0].clientY;
+            touchCurrentElement = item;
+            // Prevent scrolling while dragging
+            e.preventDefault();
+          }, { passive: false });
+
+          item.addEventListener('touchmove', (e) => {
+            if (!draggedElement) return;
+
+            e.preventDefault();
+            const touch = e.touches[0];
+            const elementAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
+
+            // Find the closest nav item
+            const targetNavItem = elementAtPoint?.closest('#mainNav a');
+
+            if (targetNavItem && targetNavItem !== draggedElement) {
+              draggedOverElement = targetNavItem;
+
+              // Remove drag-over from all items
+              navItems.forEach(navItem => {
+                navItem.classList.remove('drag-over');
+              });
+
+              targetNavItem.classList.add('drag-over');
+              showDropIndicator(targetNavItem, draggedElement);
+              touchCurrentElement = targetNavItem;
+            }
+          }, { passive: false });
+
+          item.addEventListener('touchend', (e) => {
+            if (!draggedElement) return;
+
+            item.classList.remove('dragging');
+
+            // Remove drag-over from all items
+            navItems.forEach(navItem => {
+              navItem.classList.remove('drag-over');
+            });
+
+            hideDropIndicator();
+
+            if (touchCurrentElement && touchCurrentElement !== draggedElement) {
+              // Perform the swap
+              const allItems = Array.from(nav.querySelectorAll('a'));
+              const draggedIndex = allItems.indexOf(draggedElement);
+              const targetIndex = allItems.indexOf(touchCurrentElement);
+
+              if (draggedIndex < targetIndex) {
+                nav.insertBefore(draggedElement, touchCurrentElement.nextSibling);
+              } else {
+                nav.insertBefore(draggedElement, touchCurrentElement);
+              }
+
+              // Get new order and reorder sections
+              const newOrder = Array.from(nav.querySelectorAll('a')).map(a => a.getAttribute('href'));
+              reorderSections(newOrder);
+              saveOrder();
+            }
+
+            draggedElement = null;
+            draggedOverElement = null;
+            touchCurrentElement = null;
+          });
         });
       }
 
