@@ -755,136 +755,198 @@
         </div>
 
         <!-- Research Areas -->
-        <div class="grid cols-3">
-          <div class="card">
-            <h3>Hardware & Physical Security</h3>
-            <p>Fault injection attacks, side-channel analysis, hardware trojans, and practical defenses for embedded systems and IoT devices in resource-constrained environments.</p>
-          </div>
-          <div class="card">
-            <h3>Applied Cryptography</h3>
-            <p>Misuse-resistant cryptographic APIs, secure protocol design, and making strong cryptography accessible to developers through secure-by-default systems.</p>
-          </div>
-          <div class="card">
-            <h3>AI Governance & Safety</h3>
-            <p>Governance frameworks for responsible AI deployment, operational safety in AI systems, regulatory policy development, adversarial robustness, and designing decision-support tools aligned with human values. Combining technical expertise with conflict resolution methodologies to address AI alignment challenges.</p>
-          </div>
-          <div class="card">
-            <h3>Critical Infrastructure</h3>
-            <p>Failure modes in complex socio-technical systems, graceful degradation under attack, and recovery strategies for essential services.</p>
-          </div>
-          <div class="card">
-            <h3>Security Governance</h3>
-            <p>Policy frameworks, standards development, and incentive structures that encourage responsible innovation and security investment.</p>
-          </div>
-          <div class="card">
-            <h3>Education at Scale</h3>
-            <p>Curriculum design, hands-on lab development, and making advanced security concepts accessible to working professionals.</p>
-          </div>
+        <!-- Research areas loaded dynamically from research_areas.csv -->
+        <div id="research-areas-container" class="grid cols-3">
+          <!-- Research areas will be populated here by JavaScript -->
         </div>
+
+        <script>
+          // Load research areas immediately - inline script executes as soon as DOM element is ready
+          (async function() {
+            const container = document.querySelector('#research-areas-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('research_areas.csv');
+              if (!response.ok) throw new Error('Failed to load research areas data');
+
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+              const areas = [];
+
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let insideQuotes = false;
+
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+
+                  if (char === '"') {
+                    if (insideQuotes && nextChar === '"') {
+                      current += '"';
+                      j++;
+                    } else {
+                      insideQuotes = !insideQuotes;
+                    }
+                  } else if (char === ',' && !insideQuotes) {
+                    values.push(current);
+                    current = '';
+                  } else {
+                    current += char;
+                  }
+                }
+                values.push(current);
+
+                const area = {};
+                headers.forEach((header, index) => {
+                  area[header] = values[index] || '';
+                });
+                areas.push(area);
+              }
+
+              // Render research areas
+              container.innerHTML = '';
+              areas.forEach(area => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const escapeHtml = (text) => {
+                  const div = document.createElement('div');
+                  div.textContent = text;
+                  return div.innerHTML;
+                };
+
+                card.innerHTML = `
+                  <h3>${escapeHtml(area.title)}</h3>
+                  <p>${escapeHtml(area.description)}</p>
+                `;
+
+                container.appendChild(card);
+              });
+            } catch (error) {
+              console.error('Error loading research areas:', error);
+              container.innerHTML = `
+                <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
+                  <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                  <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Research Areas</h3>
+                  <p style="color: var(--text-muted);">${error.message}</p>
+                </div>
+              `;
+            }
+          })();
+        </script>
 
         <!-- Publications -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Papers Published</h3>
 
-          <div class="publication">
-            <div class="pub-title">Branch-Commit-Validate: A Git-Inspired Workflow for Autonomous Red-Team Agents</div>
-            <div class="pub-authors">C. Shringi*, A. Hillel-Tuch, M. Rizwan* (*Student Researchers)</div>
-            <div class="pub-venue">World Congress in Computer Science, Computer Engineering, & Applied Computing (CSCE) · 2025</div>
-            <p class="pub-abstract">Novel workflow framework for autonomous red-team agents inspired by Git version control, enabling structured offensive security testing and validation processes. Research collaboration with student researchers advancing autonomous security testing methodologies.</p>
-            <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
-                🎓 Google Scholar
-              </a>
-            </div>
+          <!-- Papers loaded dynamically from papers_published.csv -->
+          <div id="papers-container">
+            <!-- Papers will be populated here by JavaScript -->
           </div>
 
-          <div class="publication">
-            <div class="pub-title">Physical Memory Attacks and a Memory Safe Management System for Memory Defense</div>
-            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmstead</div>
-            <div class="pub-venue">Springer Transactions on Computational Science & Computational Intelligence · March 2024 (Extended from CSCE 2022)</div>
-            <p class="pub-abstract">Extended journal version presenting novel physical memory attack vectors and proposing a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems. Includes open-source proof-of-concept implementation released for research and industry adoption.</p>
-            <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
-                🎓 Google Scholar
-              </a>
-            </div>
-          </div>
+          <script>
+            // Load papers immediately - inline script executes as soon as DOM element is ready
+            (async function() {
+              const container = document.querySelector('#papers-container');
+              if (!container) return;
 
-          <div class="publication">
-            <div class="pub-title">Technical Book Reviewer: Security-Driven Software Development</div>
-            <div class="pub-authors">Author: Aspen Olmsted · Reviewer: Alon Hillel-Tuch</div>
-            <div class="pub-venue">Packt Publishing · 2024</div>
-            <p class="pub-abstract">Technical book reviewer for "Security-Driven Software Development: Learn to analyze and mitigate risks in your software projects." Provided expert review on security practices, threat modeling, and secure development methodologies for comprehensive software security guide.</p>
-            <div class="pub-links">
-              <a href="https://www.packtpub.com/product/security-driven-software-development/9781835460825" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📚 View Book
-              </a>
-            </div>
-          </div>
+              try {
+                const response = await fetch('papers_published.csv');
+                if (!response.ok) throw new Error('Failed to load papers data');
 
-          <div class="publication">
-            <div class="pub-title">Priority Based Soft-Solution for Operating System Integrity Due To Randomized Hardware Faults At The Transistor Level</div>
-            <div class="pub-authors">Alon Hillel-Tuch, Aspen Olmsted</div>
-            <div class="pub-venue">Conference Paper · December 2021</div>
-            <p class="pub-abstract">Proposes a priority-based software solution to maintain operating system integrity when facing randomized hardware faults at the transistor level, addressing critical reliability challenges in modern computing systems.</p>
-            <div class="pub-links">
-              <a href="https://www.researchgate.net/profile/Alon-Hillel-Tuch" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📄 ResearchGate
-              </a>
-            </div>
-          </div>
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                const headers = lines[0].split(',');
+                const papers = [];
 
-          <div class="publication">
-            <div class="pub-title">Data Siphoning Through Advanced Persistent Transmission Attacks At The Physical Layer</div>
-            <div class="pub-authors">Alon Hillel-Tuch</div>
-            <div class="pub-venue">SSRN Electronic Journal · May 2021</div>
-            <p class="pub-abstract">This paper explores data exfiltration dynamics across complex networked systems, examining how sophisticated attackers establish persistent transmission flows at the physical layer that evade traditional network security detection mechanisms. Focus on nation-state level threats and defense strategies.</p>
-            <p style="color: var(--accent); font-size: 14px; margin-top: 8px; font-weight: 600;">📊 Impact: 480+ downloads · 1,300+ abstract views on SSRN · Multiple citations</p>
-            <div class="pub-links">
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📄 Read Paper (SSRN)
-              </a>
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
-                🎓 Google Scholar
-              </a>
-            </div>
-          </div>
+                for (let i = 1; i < lines.length; i++) {
+                  const values = [];
+                  let current = '';
+                  let insideQuotes = false;
 
-          <div class="publication">
-            <div class="pub-title">Implementation of Crowdfunding in the United States: Regulatory and Market Challenges</div>
-            <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
-            <div class="pub-venue">Conference Paper · 2014</div>
-            <p class="pub-abstract">Analysis of crowdfunding platform implementation challenges following the JOBS Act passage, examining regulatory compliance frameworks, market structure evolution, and investor protection mechanisms in emerging equity crowdfunding markets.</p>
-            <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
-                🎓 Google Scholar
-              </a>
-            </div>
-          </div>
+                  for (let j = 0; j < lines[i].length; j++) {
+                    const char = lines[i][j];
+                    const nextChar = lines[i][j + 1];
 
-          <div class="publication">
-            <div class="pub-title">Crowdfunding Platform Architecture and Regulatory Frameworks</div>
-            <div class="pub-authors">Alon Hillel-Tuch, Vladimir Vukicevic</div>
-            <div class="pub-venue">Conference Paper · 2012</div>
-            <p class="pub-abstract">Explores technical and regulatory architectures for crowdfunding platforms, proposing frameworks for balancing innovation, market efficiency, and compliance with emerging securities regulations under the JOBS Act.</p>
-            <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
-                🎓 Google Scholar
-              </a>
-            </div>
-          </div>
+                    if (char === '"') {
+                      if (insideQuotes && nextChar === '"') {
+                        current += '"';
+                        j++;
+                      } else {
+                        insideQuotes = !insideQuotes;
+                      }
+                    } else if (char === ',' && !insideQuotes) {
+                      values.push(current);
+                      current = '';
+                    } else {
+                      current += char;
+                    }
+                  }
+                  values.push(current);
 
-          <div class="publication">
-            <div class="pub-title">Developing Focal Point Networks for State-Centered Genocide Prevention</div>
-            <div class="pub-authors">Alon Hillel-Tuch</div>
-            <div class="pub-venue">SSRN Electronic Journal · May 2011</div>
-            <p class="pub-abstract">Examines the development of focal point networks as mechanisms for state-centered genocide prevention, exploring coordination strategies and institutional frameworks for early intervention.</p>
-            <div class="pub-links">
-              <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=1820862" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📄 Read Paper (SSRN)
-              </a>
-            </div>
-          </div>
+                  const paper = {};
+                  headers.forEach((header, index) => {
+                    paper[header] = values[index] || '';
+                  });
+                  papers.push(paper);
+                }
+
+                // Render papers
+                container.innerHTML = '';
+                papers.forEach(paper => {
+                  const pub = document.createElement('div');
+                  pub.className = 'publication';
+
+                  const escapeHtml = (text) => {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                  };
+
+                  let html = `
+                    <div class="pub-title">${escapeHtml(paper.title)}</div>
+                    <div class="pub-authors">${escapeHtml(paper.authors)}</div>
+                    <div class="pub-venue">${escapeHtml(paper.venue)}</div>
+                    <p class="pub-abstract">${escapeHtml(paper.abstract)}</p>
+                  `;
+
+                  // Add impact if available
+                  if (paper.impact && paper.impact.trim()) {
+                    html += `<p style="color: var(--accent); font-size: 14px; margin-top: 8px; font-weight: 600;">${escapeHtml(paper.impact)}</p>`;
+                  }
+
+                  // Parse links (format: "Label|URL::Label|URL")
+                  if (paper.links && paper.links.trim()) {
+                    const linkPairs = paper.links.split('::');
+                    html += '<div class="pub-links">';
+                    linkPairs.forEach(pair => {
+                      const [label, url] = pair.split('|');
+                      if (label && url) {
+                        html += `<a href="${escapeHtml(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
+                      }
+                    });
+                    html += '</div>';
+                  }
+
+                  pub.innerHTML = html;
+                  container.appendChild(pub);
+                });
+              } catch (error) {
+                console.error('Error loading papers:', error);
+                container.innerHTML = `
+                  <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                    <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Papers</h3>
+                    <p style="color: var(--text-muted);">${error.message}</p>
+                  </div>
+                `;
+              }
+            })();
+          </script>
         </div>
 
         <!-- Patents -->
@@ -1053,49 +1115,91 @@
 
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Private Consulting & Advisory</h3>
-          <div class="grid cols-2">
-            <div class="card">
-              <h3>TouchCast</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Business Strategy & Technical Modeling</p>
-              <p>Consulted from seed stage on business strategy, technical architecture, and market positioning. TouchCast was later acquired for $500M, validating the strategic foundation and technical roadmap developed during early-stage consulting.</p>
-            </div>
 
-            <div class="card">
-              <h3>Salesforce</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Innovation Consulting · 2017</p>
-              <p>Innovation consulting for Salesforce Ignite program. Developed human-first LLM platform for disaster response coordination, focusing on resilient communication infrastructure and AI-assisted emergency management systems.</p>
-            </div>
-
-            <div class="card">
-              <h3>GreenLightGo</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Security Assessment & Business Development</p>
-              <p>Conducted comprehensive security assessment and business model development for emerging fintech platform. Provided strategic guidance on security architecture, regulatory compliance, and market positioning.</p>
-            </div>
-
-            <div class="card">
-              <h3>Bain Consulting</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Security & Regulatory Project</p>
-              <p>Security and regulation-focused consulting project (confidential). Advised on complex regulatory compliance frameworks and security risk mitigation strategies for enterprise client.</p>
-            </div>
-
-            <div class="card">
-              <h3>American Express</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">OPEN Team Innovation Workshop</p>
-              <p>Led innovation consulting workshop for American Express OPEN team, focusing on emerging payment technologies, fraud prevention, and customer experience optimization for small business segment.</p>
-            </div>
-
-            <div class="card">
-              <h3>Keisuke Honda</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">International Market Entry</p>
-              <p>Consulted on Japanese venture market entry strategy, providing guidance on technology ecosystem dynamics, partnership development, and cultural considerations for successful market penetration.</p>
-            </div>
-
-            <div class="card">
-              <h3>Zombie Soup</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Strategic Advisor · AI/VR Startup</p>
-              <p>Strategic advisor for AI/VR startup, providing guidance on technology development, security architecture, market positioning, and strategic partnerships in emerging immersive technology sector.</p>
-            </div>
+          <!-- Consulting engagements loaded dynamically from consulting_advisory.csv -->
+          <div id="consulting-container" class="grid cols-2">
+            <!-- Consulting cards will be populated here by JavaScript -->
           </div>
+
+          <script>
+            // Load consulting engagements immediately - inline script executes as soon as DOM element is ready
+            (async function() {
+              const container = document.querySelector('#consulting-container');
+              if (!container) return;
+
+              try {
+                const response = await fetch('consulting_advisory.csv');
+                if (!response.ok) throw new Error('Failed to load consulting data');
+
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                const headers = lines[0].split(',');
+                const engagements = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                  const values = [];
+                  let current = '';
+                  let insideQuotes = false;
+
+                  for (let j = 0; j < lines[i].length; j++) {
+                    const char = lines[i][j];
+                    const nextChar = lines[i][j + 1];
+
+                    if (char === '"') {
+                      if (insideQuotes && nextChar === '"') {
+                        current += '"';
+                        j++;
+                      } else {
+                        insideQuotes = !insideQuotes;
+                      }
+                    } else if (char === ',' && !insideQuotes) {
+                      values.push(current);
+                      current = '';
+                    } else {
+                      current += char;
+                    }
+                  }
+                  values.push(current);
+
+                  const engagement = {};
+                  headers.forEach((header, index) => {
+                    engagement[header] = values[index] || '';
+                  });
+                  engagements.push(engagement);
+                }
+
+                // Render consulting engagements
+                container.innerHTML = '';
+                engagements.forEach(eng => {
+                  const card = document.createElement('div');
+                  card.className = 'card';
+
+                  const escapeHtml = (text) => {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                  };
+
+                  card.innerHTML = `
+                    <h3>${escapeHtml(eng.company)}</h3>
+                    <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">${escapeHtml(eng.role)}</p>
+                    <p>${escapeHtml(eng.description)}</p>
+                  `;
+
+                  container.appendChild(card);
+                });
+              } catch (error) {
+                console.error('Error loading consulting engagements:', error);
+                container.innerHTML = `
+                  <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                    <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Consulting Data</h3>
+                    <p style="color: var(--text-muted);">${error.message}</p>
+                  </div>
+                `;
+              }
+            })();
+          </script>
         </div>
 
         <div style="margin-top: 60px;">
