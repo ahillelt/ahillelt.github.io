@@ -1,0 +1,7 @@
+title,description
+"Hardware & Physical Security","Fault injection attacks, side-channel analysis, hardware trojans, and practical defenses for embedded systems and IoT devices in resource-constrained environments."
+"Applied Cryptography","Misuse-resistant cryptographic APIs, secure protocol design, and making strong cryptography accessible to developers through secure-by-default systems."
+"AI Governance & Safety","Governance frameworks for responsible AI deployment, operational safety in AI systems, regulatory policy development, adversarial robustness, and designing decision-support tools aligned with human values. Combining technical expertise with conflict resolution methodologies to address AI alignment challenges."
+"Critical Infrastructure","Failure modes in complex socio-technical systems, graceful degradation under attack, and recovery strategies for essential services."
+"Security Governance","Policy frameworks, standards development, and incentive structures that encourage responsible innovation and security investment."
+"Education at Scale","Curriculum design, hands-on lab development, and making advanced security concepts accessible to working professionals."
