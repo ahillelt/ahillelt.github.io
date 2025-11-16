@@ -57,8 +57,9 @@
   <!-- Preload Critical Assets -->
   <link rel="preload" href="headshot.png" as="image" type="image/png" fetchpriority="high">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet"></noscript>
+  <!-- PERFORMANCE: Optimized font loading - reduced weights, added font-display -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"></noscript>
   <style>
     :root {
       /* Modern Professional Color System */
@@ -431,7 +432,12 @@
     }
 
     /* Sections */
-    section { padding: 80px 0; }
+    section {
+      padding: 80px 0;
+      /* PERFORMANCE: Content-visibility for faster initial render */
+      content-visibility: auto;
+      contain-intrinsic-size: auto 500px;
+    }
     .section-header {
       text-align: center;
       max-width: 800px;
@@ -468,6 +474,8 @@
       transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
+      /* PERFORMANCE: CSS containment for better rendering */
+      contain: layout style paint;
     }
     .card.video-card {
       display: grid;
@@ -1380,6 +1388,26 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto;
+    }
+
+    /* ACCESSIBILITY: Respect user's motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* RESPONSIVE: Ultra-small devices */
+    @media (max-width: 360px) {
+      html { font-size: 14px; }
+      .container { padding: 0 16px; }
+      .hero h1 { font-size: 28px; }
+      section { padding: 60px 0; }
     }
   </style>
 
@@ -2868,7 +2896,7 @@
         });
         scrollTicking = true;
       }
-    });
+    }, { passive: true }); // PERFORMANCE: Passive listener for better scroll performance
 
     // Initial highlight on load
     window.addEventListener('load', highlightNavigation);
@@ -3237,6 +3265,26 @@
               main.appendChild(sections[sectionId]);
             }
           });
+
+          // Reset save button state when layout changes
+          resetSaveButtonState();
+        }
+      }
+
+      // Helper to reset save button to allow re-saving
+      function resetSaveButtonState() {
+        const saveBtn = document.querySelector('.layout-controls-floating .save-btn');
+        if (saveBtn && saveBtn.classList.contains('saved')) {
+          saveBtn.classList.remove('saved');
+          // Restore original text with icon
+          saveBtn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save Layout
+          `;
         }
       }
 
@@ -3473,15 +3521,34 @@
 
     // Global functions for Save/Reset buttons
     function saveLayout(event) {
-      const btn = event.target;
-      const originalText = btn.textContent;
+      const btn = event.target.closest('button'); // Handle clicks on SVG or button
 
       // Save the layout
       window.navReorderModule.saveOrder();
 
-      // Instant visual feedback
-      btn.textContent = '✓';
+      // Instant visual feedback - show checkmark
+      btn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Saved!
+      `;
       btn.classList.add('saved');
+
+      // Reset button after 2 seconds
+      setTimeout(() => {
+        if (btn.classList.contains('saved')) {
+          btn.classList.remove('saved');
+          btn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save Layout
+          `;
+        }
+      }, 2000);
     }
 
     function resetLayout(event) {
