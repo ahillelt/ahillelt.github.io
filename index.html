@@ -7,6 +7,31 @@
   <meta name="description" content="Industry Assistant Professor at NYU Tandon School of Engineering. Expert in cybersecurity, hardware security, AI governance, and AI safety. Former RocketHub co-founder and Stacked Capital managing partner. Research Fellow at Columbia's Earth Institute with expertise in conflict resolution. Congressional testimony on technology policy." />
   <meta name="theme-color" content="#1e40af" />
 
+  <!-- SEO: Canonical URL -->
+  <link rel="canonical" href="https://ahillelt.github.io/">
+
+  <!-- SEO: Robots -->
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- SEO: Open Graph Meta Tags -->
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Alon Hillel‑Tuch · Cybersecurity Professor & AI Governance Expert">
+  <meta property="og:description" content="Industry Assistant Professor at NYU Tandon. Expert in cybersecurity, hardware security, AI governance, and AI safety.">
+  <meta property="og:url" content="https://ahillelt.github.io/">
+  <meta property="og:image" content="https://ahillelt.github.io/headshot.png">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="800">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Alon Hillel-Tuch">
+
+  <!-- SEO: Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ahillelt">
+  <meta name="twitter:creator" content="@ahillelt">
+  <meta name="twitter:title" content="Alon Hillel‑Tuch · Cybersecurity Professor">
+  <meta name="twitter:description" content="Industry Assistant Professor at NYU Tandon. Expert in cybersecurity, hardware security, AI governance, and AI safety.">
+  <meta name="twitter:image" content="https://ahillelt.github.io/headshot.png">
+
   <!-- Security Headers -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
@@ -20,6 +45,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- Performance: Video Provider Resource Hints -->
+  <link rel="preconnect" href="https://cdn.jwplayer.com">
+  <link rel="preconnect" href="https://player.vimeo.com">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="dns-prefetch" href="https://cdn.jwplayer.com">
+  <link rel="dns-prefetch" href="https://player.vimeo.com">
+  <link rel="dns-prefetch" href="https://www.youtube.com">
 
   <!-- Preload Critical Assets -->
   <link rel="preload" href="headshot.png" as="image" type="image/png" fetchpriority="high">
@@ -47,7 +80,7 @@
       --text: #0f172a;
       --text-secondary: #334155;
       --text-muted: #64748b;
-      --text-light: #94a3b8;
+      --text-light: #6b7280; /* ACCESSIBILITY: Changed from #94a3b8 for WCAG AA contrast */
 
       /* Borders */
       --border: #e2e8f0;
@@ -1122,6 +1155,12 @@
       nav.active { display: flex; }
       .menu-toggle { display: block; }
 
+      /* ACCESSIBILITY: Ensure 44px min touch target per WCAG AA */
+      nav a {
+        padding: 13px 16px;
+        min-height: 44px;
+      }
+
       /* Horizontal drop indicator for vertical nav */
       .drop-indicator {
         width: 80% !important;
@@ -1283,9 +1322,11 @@
         gap: 6px;
       }
       .layout-controls-floating button {
-        padding: 6px 10px;
+        /* ACCESSIBILITY: Ensure 44px min touch target per WCAG AA */
+        padding: 12px 14px;
         font-size: 12px;
         gap: 4px;
+        min-height: 44px;
       }
       .layout-controls-floating button svg {
         width: 12px;
@@ -1324,6 +1365,21 @@
       top: 0;
       outline: 3px solid var(--accent);
       outline-offset: 2px;
+    }
+
+    /* Loading spinner animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
     }
   </style>
 
@@ -1460,7 +1516,7 @@
             </div>
             <div class="cta">
               <a href="#contact" class="btn primary">Get in Touch</a>
-              <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener">NYU Profile</a>
+              <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener noreferrer">NYU Profile</a>
             </div>
           </div>
           <div class="portrait">
@@ -1544,14 +1600,14 @@
             <h3>U.S. House Oversight Committee</h3>
             <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">June 26, 2012</p>
             <div class="video-wrapper">
-              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe loading="lazy" src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
+              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
             </div>
             <p>Testified on implementing the JOBS Act crowdfunding provisions, balancing innovation with investor protection in emerging fintech markets. Recommended raising crowdfunding cap from $1M to $5M to better support startups.</p>
             <div class="pub-links">
-              <a href="https://oversight.house.gov/wp-content/uploads/2012/06/6-26-12-TARP-Hillel-Tuch.pdf" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://oversight.house.gov/wp-content/uploads/2012/06/6-26-12-TARP-Hillel-Tuch.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📄 Written Testimony
               </a>
-              <a href="https://www.c-span.org/program/house-committee/jobs-act-implementation/280562" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://www.c-span.org/program/house-committee/jobs-act-implementation/280562" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📺 Watch on C-SPAN
               </a>
             </div>
@@ -1561,11 +1617,11 @@
             <h3>U.S. House Financial Services Committee</h3>
             <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">March 5, 2014</p>
             <div class="video-wrapper">
-              <iframe loading="lazy" src="https://player.vimeo.com/video/105809391" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/105809391" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
             <p>Provided expert statement on crowdfunding market structure, regulatory frameworks, and the role of technology platforms in democratizing access to capital while maintaining market integrity and investor protection. Warned that overly strict compliance requirements could "limit the rate we're able to domestically innovate and create jobs."</p>
             <div class="pub-links">
-              <a href="https://financialservices.house.gov/uploadedfiles/hhrg-113-ba09-wstate-ahilleltuch-20140305.pdf" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://financialservices.house.gov/uploadedfiles/hhrg-113-ba09-wstate-ahilleltuch-20140305.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📄 Written Statement
               </a>
             </div>
@@ -1582,7 +1638,7 @@
               <h3>TEDx: Emergence of an Alternate Path</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">TEDxNavesink · September 20, 2013</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Delivered talk outlining the ethos of crowdfunding as a disruptive technology enabling grassroots innovation. Emphasized that "some of the best innovations and ideas happen at the grassroots level" as platforms like RocketHub incubate new ideas. Exploring how technology adoption cycles create alternate paths for human progress and social transformation.</p>
             </div>
@@ -1591,7 +1647,7 @@
               <h3>Augmented Intelligence (AI)</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Real Estate Leaders Summit · Re.Comm.17 · Kitzbühel, Austria · November 22–24, 2017</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://www.youtube.com/embed/rMs4Mpojk3Q" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://www.youtube.com/embed/rMs4Mpojk3Q" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               </div>
               <p>International keynote examining human-AI collaboration and future intelligent systems. Shared stage with Wikipedia's Jimmy Wales and UK politician Nigel Farage. Austrian press noted presence as one of 11 renowned international speakers who "enthused 230 participants" at this elite gathering of global real estate and tech leaders.</p>
             </div>
@@ -1600,7 +1656,7 @@
               <h3>The Future of Crowdfunding: What the Next 5 Years Will Bring</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Campaigning Summit · Berlin · May 22, 2015</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/133619613" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133619613" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Conference keynote exploring the evolving crowdfunding landscape and predicted industry developments. Event dedicated to mobilization and engagement trends listed Hillel-Tuch (Co-Founder of RocketHub) among its outstanding international lineup. 9-minute keynote available via Campaigning Summit YouTube channel.</p>
             </div>
@@ -1609,7 +1665,7 @@
               <h3>Open Economy Fundamentals</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">CrowdEconomy Conference · Minsk · c.2014</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Featured speaker at Belarus conference on open innovation. Explored open economies, crowdsourcing, and collaborative innovation in emerging markets and technology ecosystems.</p>
             </div>
@@ -1625,7 +1681,7 @@
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Maker Faire · May 2012</p>
               <p>Panel on crowdfunding for hardware startups at O'Reilly/Make's Hardware Innovation Workshop alongside makers, investors, and industry leaders.</p>
               <div class="pub-links">
-                <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📄 Speaker Roster
                 </a>
               </div>
@@ -1643,7 +1699,7 @@
               <p><strong>JOBS Act: The Terrible Twos - General Solicitation & Crowdfunding, The Next Frontier of Securities Regulation</strong></p>
               <p>Panelist alongside SEC Commissioner Troy A. Paredes, Congressman Patrick McHenry, and other leading securities law experts. Examined general solicitation rules and crowdfunding regulations two years after the JOBS Act passage, providing industry perspective on regulatory implementation challenges.</p>
               <div class="pub-links">
-                <a href="https://ir.lawnet.fordham.edu/jcfl/vol20/iss2/7/" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://ir.lawnet.fordham.edu/jcfl/vol20/iss2/7/" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📄 Published Symposium
                 </a>
               </div>
@@ -1654,7 +1710,7 @@
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Technology Law Committee · 2012-2013</p>
               <p>Featured panelist at CLE program about the federal "Jumpstarting Our Business Startups" (JOBS) Act. Panel held at Carmen Anthony Steakhouse in New Haven, attended by 28 attorneys. Spoke as representative of RocketHub.com (one of the online exchanges seeking approval) about lobbying in support of the JOBS Act. Joined by Henry M. Beck Jr. (Halloran & Sage LLP) discussing SEC regulation pitfalls and patent agent Mark Nowotarski on crowdfunding success stories.</p>
               <div class="pub-links">
-                <a href="https://www.ctbar.org/docs/default-source/publications/annual-reports/2012-2013_annual_report.pdf" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://www.ctbar.org/docs/default-source/publications/annual-reports/2012-2013_annual_report.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📄 CBA Annual Report
                 </a>
               </div>
@@ -1672,11 +1728,11 @@
               <h3>NPR Morning Edition</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">May 9, 2014</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/133615381" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133615381" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Featured on NPR's Morning Edition arguing that overly strict SEC auditing requirements would place "too big a financial burden" on startups and could "limit the rate we're able to domestically innovate and create jobs."</p>
               <div class="pub-links">
-                <a href="https://www.npr.org/2014/05/09/310832193/crowdfunding-can-help-build-business-but-at-what-cost" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://www.npr.org/2014/05/09/310832193/crowdfunding-can-help-build-business-but-at-what-cost" class="pub-link" target="_blank" rel="noopener noreferrer">
                   🎙️ Listen on NPR
                 </a>
               </div>
@@ -1686,7 +1742,7 @@
               <h3>CCTV International</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">International Coverage</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/133625379" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133625379" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>International television interview discussing crowdfunding innovation, global market trends, and the democratization of access to capital for entrepreneurs worldwide.</p>
             </article>
@@ -1703,34 +1759,34 @@
                 <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">Expert analysis and thought leadership on AI governance, cybersecurity, and technology innovation. Published insights on emerging technology trends and their implications for business and society.</p>
               </div>
               <div class="pub-links">
-                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener noreferrer">
                   View Full Profile & All Articles →
                 </a>
               </div>
             </div>
 
             <div class="forbes-articles-grid">
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/07/10/companies-are-killing-themselves-with-ai-a-hidden-crisis/" target="_blank" rel="noopener" class="forbes-article-link">
+              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/07/10/companies-are-killing-themselves-with-ai-a-hidden-crisis/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
                 <span class="article-title">Companies Are Killing Themselves With AI: A Hidden Crisis</span>
                 <span class="article-date">July 2024</span>
               </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/04/19/generative-ais-challenges-to-cybersecurity/" target="_blank" rel="noopener" class="forbes-article-link">
+              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/04/19/generative-ais-challenges-to-cybersecurity/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
                 <span class="article-title">Generative AI's Challenges To Cybersecurity</span>
                 <span class="article-date">April 2024</span>
               </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/03/22/the-paradox-of-corporate-ventures-why-so-many-fail/" target="_blank" rel="noopener" class="forbes-article-link">
+              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/03/22/the-paradox-of-corporate-ventures-why-so-many-fail/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
                 <span class="article-title">The Paradox Of Corporate Ventures: Why So Many Fail</span>
                 <span class="article-date">March 2024</span>
               </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/11/01/is-venture-capital-drinking-its-own-kool-aid/" target="_blank" rel="noopener" class="forbes-article-link">
+              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/11/01/is-venture-capital-drinking-its-own-kool-aid/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
                 <span class="article-title">Is Venture Capital Drinking Its Own Kool-Aid?</span>
                 <span class="article-date">November 2019</span>
               </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/10/11/six-ways-your-early-start-up-data-can-be-misleading/" target="_blank" rel="noopener" class="forbes-article-link">
+              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/10/11/six-ways-your-early-start-up-data-can-be-misleading/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
                 <span class="article-title">Six Ways Your Early Start-Up Data Can Be Misleading</span>
                 <span class="article-date">October 2019</span>
               </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/09/24/why-the-best-technology-doesnt-always-win/" target="_blank" rel="noopener" class="forbes-article-link">
+              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/09/24/why-the-best-technology-doesnt-always-win/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
                 <span class="article-title">Why The Best Technology Doesn't Always Win</span>
                 <span class="article-date">September 2019</span>
               </a>
@@ -1745,7 +1801,7 @@
               <p><strong>"Crowdfunding Innovation and Entrepreneurship"</strong></p>
               <p>Featured profile on crowdfunding platform innovation, entrepreneurial technology development, and the intersection of engineering, business, and regulatory policy in emerging financial markets.</p>
               <div class="pub-links">
-                <a href="https://ethw.org/w/images/8/8b/Tisep17.pdf" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://ethw.org/w/images/8/8b/Tisep17.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📄 Read Article (PDF)
                 </a>
               </div>
@@ -1771,7 +1827,7 @@
               <p><strong>"A Year Late, S.E.C. Weighs In With 585 Pages of Crowdfunding Rules"</strong></p>
               <p>Expert commentary on SEC's proposed crowdfunding regulations following the JOBS Act, analyzing the regulatory framework's impact on platforms and investors in the emerging crowdfunding industry.</p>
               <div class="pub-links">
-                <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2013/10/28/a-year-late-s-e-c-weighs-in-with-585-pages-of-crowdfunding-rules/" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2013/10/28/a-year-late-s-e-c-weighs-in-with-585-pages-of-crowdfunding-rules/" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📰 Read on NY Times
                 </a>
               </div>
@@ -1783,7 +1839,7 @@
               <p><strong>"RocketHub Ponders Its Future in Crowdfunding"</strong></p>
               <p>Featured in NYT Boss blog piece profiling RocketHub's strategic positioning in the evolving crowdfunding landscape, examining platform innovation, regulatory challenges, and the future of democratized capital access.</p>
               <div class="pub-links">
-                <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2012/12/26/rockethub-ponders-its-future-in-crowdfunding/" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://archive.nytimes.com/boss.blogs.nytimes.com/2012/12/26/rockethub-ponders-its-future-in-crowdfunding/" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📰 Read on NY Times
                 </a>
               </div>
@@ -1795,7 +1851,7 @@
               <p><strong>"8-Episode Crash Course in Crowdfunding"</strong></p>
               <p>Eight-episode educational series on crowdfunding fundamentals, platform strategies, regulatory compliance, and best practices for entrepreneurs seeking to raise capital through crowdfunding campaigns.</p>
               <div class="pub-links">
-                <a href="https://finance.yahoo.com/news/watch-8-episode-crash-course-182500584.html" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://finance.yahoo.com/news/watch-8-episode-crash-course-182500584.html" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📺 Watch Series
                 </a>
               </div>
@@ -1968,7 +2024,7 @@
               <li>Weekly seminars and workshops</li>
               <li>Collaboration with industry security teams</li>
             </ul>
-            <p style="margin-top: 16px;"><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener" style="font-weight: 700;">Explore OSIRIS Lab →</a></p>
+            <p style="margin-top: 16px;"><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">Explore OSIRIS Lab →</a></p>
           </div>
 
           <div class="card">
@@ -1983,7 +2039,7 @@
               <li>Security policy and governance</li>
               <li>Industry partnerships and workforce development</li>
             </ul>
-            <p style="margin-top: 16px;"><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener" style="font-weight: 700;">Visit CCS Website →</a></p>
+            <p style="margin-top: 16px;"><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">Visit CCS Website →</a></p>
           </div>
         </div>
       </div>
@@ -2035,7 +2091,7 @@
             <div class="pub-venue">World Congress in Computer Science, Computer Engineering, & Applied Computing (CSCE) · 2025</div>
             <p class="pub-abstract">Novel workflow framework for autonomous red-team agents inspired by Git version control, enabling structured offensive security testing and validation processes. Research collaboration with student researchers advancing autonomous security testing methodologies.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
                 🎓 Google Scholar
               </a>
             </div>
@@ -2047,7 +2103,7 @@
             <div class="pub-venue">Springer Transactions on Computational Science & Computational Intelligence · March 2024 (Extended from CSCE 2022)</div>
             <p class="pub-abstract">Extended journal version presenting novel physical memory attack vectors and proposing a memory-safe management system designed to defend against both traditional and emerging memory-based attacks in modern computing systems. Includes open-source proof-of-concept implementation released for research and industry adoption.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
                 🎓 Google Scholar
               </a>
             </div>
@@ -2059,7 +2115,7 @@
             <div class="pub-venue">Packt Publishing · 2024</div>
             <p class="pub-abstract">Technical book reviewer for "Security-Driven Software Development: Learn to analyze and mitigate risks in your software projects." Provided expert review on security practices, threat modeling, and secure development methodologies for comprehensive software security guide.</p>
             <div class="pub-links">
-              <a href="https://www.packtpub.com/product/security-driven-software-development/9781835460825" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://www.packtpub.com/product/security-driven-software-development/9781835460825" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📚 View Book
               </a>
             </div>
@@ -2071,7 +2127,7 @@
             <div class="pub-venue">Conference Paper · December 2021</div>
             <p class="pub-abstract">Proposes a priority-based software solution to maintain operating system integrity when facing randomized hardware faults at the transistor level, addressing critical reliability challenges in modern computing systems.</p>
             <div class="pub-links">
-              <a href="https://www.researchgate.net/profile/Alon-Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://www.researchgate.net/profile/Alon-Hillel-Tuch" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📄 ResearchGate
               </a>
             </div>
@@ -2084,10 +2140,10 @@
             <p class="pub-abstract">This paper explores data exfiltration dynamics across complex networked systems, examining how sophisticated attackers establish persistent transmission flows at the physical layer that evade traditional network security detection mechanisms. Focus on nation-state level threats and defense strategies.</p>
             <p style="color: var(--accent); font-size: 14px; margin-top: 8px; font-weight: 600;">📊 Impact: 480+ downloads · 1,300+ abstract views on SSRN · Multiple citations</p>
             <div class="pub-links">
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3890371" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📄 Read Paper (SSRN)
               </a>
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
                 🎓 Google Scholar
               </a>
             </div>
@@ -2099,7 +2155,7 @@
             <div class="pub-venue">Conference Paper · 2014</div>
             <p class="pub-abstract">Analysis of crowdfunding platform implementation challenges following the JOBS Act passage, examining regulatory compliance frameworks, market structure evolution, and investor protection mechanisms in emerging equity crowdfunding markets.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
                 🎓 Google Scholar
               </a>
             </div>
@@ -2111,7 +2167,7 @@
             <div class="pub-venue">Conference Paper · 2012</div>
             <p class="pub-abstract">Explores technical and regulatory architectures for crowdfunding platforms, proposing frameworks for balancing innovation, market efficiency, and compliance with emerging securities regulations under the JOBS Act.</p>
             <div class="pub-links">
-              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" class="pub-link" target="_blank" rel="noopener noreferrer">
                 🎓 Google Scholar
               </a>
             </div>
@@ -2123,7 +2179,7 @@
             <div class="pub-venue">SSRN Electronic Journal · May 2011</div>
             <p class="pub-abstract">Examines the development of focal point networks as mechanisms for state-centered genocide prevention, exploring coordination strategies and institutional frameworks for early intervention.</p>
             <div class="pub-links">
-              <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=1820862" class="pub-link" target="_blank" rel="noopener">
+              <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=1820862" class="pub-link" target="_blank" rel="noopener noreferrer">
                 📄 Read Paper (SSRN)
               </a>
             </div>
@@ -2144,7 +2200,7 @@
               <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
               <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Square (15+ patents on merchant financing), Capital One (social discovery), 3M (internal crowdfunding), Winklevoss/Gemini (20+ crypto patents), Givling, Angelsoft, and numerous fintech innovations</p>
               <div class="pub-links">
-                <a href="https://patents.justia.com/patent/20140040157" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://patents.justia.com/patent/20140040157" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📄 View Patent Application
                 </a>
               </div>
@@ -2158,7 +2214,7 @@
               <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
               <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Shanghai Baichou Financial (secondary crowdfunding markets), Heyue Group (fintech platforms), BitPagos/Ripio (crypto payments), and compliance-focused crowdfunding systems</p>
               <div class="pub-links">
-                <a href="https://patents.google.com/?inventor=Alon+Hillel-Tuch" class="pub-link" target="_blank" rel="noopener">
+                <a href="https://patents.google.com/?inventor=Alon+Hillel-Tuch" class="pub-link" target="_blank" rel="noopener noreferrer">
                   📄 View on Google Patents
                 </a>
               </div>
@@ -2212,7 +2268,7 @@
               <h3>Beacon: Disaster Response Platform</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Salesforce Partnership</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/367493508" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/367493508" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Collaborated with Salesforce to develop Beacon, a technology platform for disaster response and resilience. Built critical communication infrastructure enabling coordination between emergency responders, relief organizations, and affected communities during crisis situations. Integrated secure data systems to maintain operational continuity under adverse conditions.</p>
             </article>
@@ -2221,7 +2277,7 @@
               <h3>Ovation TV Creative Studio</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Ovation × will.i.am</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/148018050" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/148018050" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Partnered with Ovation TV and will.i.am to launch a creative studio initiative supporting emerging artists and innovators. Built crowdfunding infrastructure and digital platform connecting creators with audiences and funding opportunities.</p>
             </article>
@@ -2230,7 +2286,7 @@
               <h3>Chrysler Innovation Challenge</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">Chrysler Group</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/133416076" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133416076" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Designed and executed Chrysler's innovation crowdfunding challenge, identifying and supporting automotive technology entrepreneurs. Platform enabled community-driven innovation in vehicle design, sustainability, and manufacturing processes.</p>
             </article>
@@ -2239,7 +2295,7 @@
               <h3>A&E Network: Project Startup</h3>
               <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">A&E Television</p>
               <div class="video-wrapper">
-                <iframe loading="lazy" src="https://player.vimeo.com/video/63913374" title="A&E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/63913374" title="A&E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
               </div>
               <p>Technology partner for A&E's Project Startup, a reality show featuring entrepreneurs competing for funding and mentorship. Built the crowdfunding platform integrating viewer engagement with real capital deployment.</p>
             </article>
@@ -2513,11 +2569,11 @@
         <div class="card" style="margin-top: 32px;">
           <h3 style="text-align: center; margin-bottom: 24px;">Connect Online</h3>
           <div class="cta" style="justify-content: center;">
-            <a href="https://github.com/ahillelt" target="_blank" class="btn secondary" rel="noopener">GitHub</a>
-            <a href="https://x.com/ahillelt" target="_blank" class="btn secondary" rel="noopener">X (Twitter)</a>
-            <a href="https://www.linkedin.com/in/ahillelt/" target="_blank" class="btn secondary" rel="noopener">LinkedIn</a>
-            <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener">NYU Profile</a>
-            <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" class="btn secondary" rel="noopener">Google Scholar</a>
+            <a href="https://github.com/ahillelt" target="_blank" class="btn secondary" rel="noopener noreferrer">GitHub</a>
+            <a href="https://x.com/ahillelt" target="_blank" class="btn secondary" rel="noopener noreferrer">X (Twitter)</a>
+            <a href="https://www.linkedin.com/in/ahillelt/" target="_blank" class="btn secondary" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener noreferrer">NYU Profile</a>
+            <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" class="btn secondary" rel="noopener noreferrer">Google Scholar</a>
           </div>
         </div>
       </div>
@@ -2607,18 +2663,18 @@
         <div class="footer-section">
           <h4>Academic</h4>
           <ul>
-            <li><a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" rel="noopener">NYU Faculty Page</a></li>
-            <li><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener">OSIRIS Lab</a></li>
-            <li><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener">Center for Cyber Security</a></li>
-            <li><a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
+            <li><a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" rel="noopener noreferrer">NYU Faculty Page</a></li>
+            <li><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener noreferrer">OSIRIS Lab</a></li>
+            <li><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener noreferrer">Center for Cyber Security</a></li>
+            <li><a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
           </ul>
         </div>
         <div class="footer-section">
           <h4>Professional</h4>
           <ul>
-            <li><a href="https://github.com/ahillelt" target="_blank" rel="noopener">GitHub</a></li>
-            <li><a href="https://x.com/ahillelt" target="_blank" rel="noopener">X (Twitter)</a></li>
-            <li><a href="https://www.linkedin.com/in/ahillelt/" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://github.com/ahillelt" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="https://x.com/ahillelt" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+            <li><a href="https://www.linkedin.com/in/ahillelt/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -2818,7 +2874,24 @@
     window.addEventListener('load', highlightNavigation);
 
     // Load and render courses from CSV
+    // UX: Show loading state
+    function showCourseLoading() {
+      const loadingHtml = `
+        <div style="padding: 60px; text-align: center;">
+          <div class="loading-spinner"></div>
+          <p style="margin-top: 16px; color: var(--text-muted); font-weight: 500;">Loading courses...</p>
+        </div>
+      `;
+      const historyContainer = document.querySelector('#history-container');
+      const detailsContainer = document.querySelector('#details-container');
+      if (historyContainer) historyContainer.innerHTML = loadingHtml;
+      if (detailsContainer) detailsContainer.innerHTML = loadingHtml;
+    }
+
     async function loadCourses() {
+      // Show loading state
+      showCourseLoading();
+
       try {
         // Load both CSV files
         const [historyResponse, catalogResponse] = await Promise.all([
