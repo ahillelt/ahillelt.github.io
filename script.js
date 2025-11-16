@@ -199,8 +199,8 @@
       try {
         // Load both CSV files
         const [historyResponse, catalogResponse] = await Promise.all([
-          fetch('courses_history.csv'),
-          fetch('courses_catalog.csv')
+          fetch('courses_history.csv', { cache: 'no-store' }),
+          fetch('courses_catalog.csv', { cache: 'no-store' })
         ]);
 
         // Check for HTTP errors

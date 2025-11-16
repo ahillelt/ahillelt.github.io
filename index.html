@@ -488,7 +488,7 @@
               if (!container) return;
 
               try {
-                const response = await fetch('news_articles.csv');
+                const response = await fetch('news_articles.csv', { cache: 'no-store' });
                 if (!response.ok) {
                   throw new Error('Failed to load news articles data');
                 }
@@ -767,7 +767,7 @@
             if (!container) return;
 
             try {
-              const response = await fetch('research_areas.csv');
+              const response = await fetch('research_areas.csv', { cache: 'no-store' });
               if (!response.ok) throw new Error('Failed to load research areas data');
 
               const csvText = await response.text();
@@ -855,7 +855,7 @@
               if (!container) return;
 
               try {
-                const response = await fetch('papers_published.csv');
+                const response = await fetch('papers_published.csv', { cache: 'no-store' });
                 if (!response.ok) throw new Error('Failed to load papers data');
 
                 const csvText = await response.text();
@@ -1128,7 +1128,7 @@
               if (!container) return;
 
               try {
-                const response = await fetch('consulting_advisory.csv');
+                const response = await fetch('consulting_advisory.csv', { cache: 'no-store' });
                 if (!response.ok) throw new Error('Failed to load consulting data');
 
                 const csvText = await response.text();
