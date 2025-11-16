@@ -1827,6 +1827,105 @@
             <!-- Articles will be populated here by JavaScript -->
           </div>
 
+          <script>
+            // Load news articles immediately - inline script executes as soon as DOM element is ready
+            (async function() {
+              const container = document.querySelector('#news-articles-container');
+              if (!container) return;
+
+              try {
+                const response = await fetch('news_articles.csv');
+                if (!response.ok) {
+                  throw new Error('Failed to load news articles data');
+                }
+
+                const csvText = await response.text();
+
+                // Parse CSV inline to avoid dependency on functions defined later
+                const lines = csvText.trim().split('\n');
+                const headers = lines[0].split(',');
+                const articles = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                  // Simple CSV parsing for quoted fields
+                  const values = [];
+                  let current = '';
+                  let insideQuotes = false;
+
+                  for (let j = 0; j < lines[i].length; j++) {
+                    const char = lines[i][j];
+                    const nextChar = lines[i][j + 1];
+
+                    if (char === '"') {
+                      if (insideQuotes && nextChar === '"') {
+                        current += '"';
+                        j++;
+                      } else {
+                        insideQuotes = !insideQuotes;
+                      }
+                    } else if (char === ',' && !insideQuotes) {
+                      values.push(current);
+                      current = '';
+                    } else {
+                      current += char;
+                    }
+                  }
+                  values.push(current);
+
+                  const article = {};
+                  headers.forEach((header, index) => {
+                    article[header] = values[index] || '';
+                  });
+                  articles.push(article);
+                }
+
+                // Render articles
+                container.innerHTML = '';
+                articles.forEach(article => {
+                  const card = document.createElement('article');
+                  card.className = 'card';
+
+                  // Simple HTML escaping
+                  const escapeHtml = (text) => {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                  };
+
+                  let html = `
+                    <h3>${escapeHtml(article.source)}</h3>
+                    <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">${escapeHtml(article.date)}</p>
+                    <p><strong>"${escapeHtml(article.title)}"</strong></p>
+                    <p>${escapeHtml(article.body)}</p>
+                  `;
+
+                  if (article.link_url && article.link_url.trim()) {
+                    html += `
+                    <div class="pub-links">
+                      <a href="${escapeHtml(article.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">
+                        ${article.link_icon ? escapeHtml(article.link_icon) + ' ' : ''}${escapeHtml(article.link_caption)}
+                      </a>
+                    </div>
+                    `;
+                  }
+
+                  card.innerHTML = html;
+                  container.appendChild(card);
+                });
+              } catch (error) {
+                console.error('Error loading news articles:', error);
+                // Show error state
+                container.innerHTML = `
+                  <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                    <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Articles</h3>
+                    <p style="color: var(--text-muted);">${error.message}</p>
+                  </div>
+                `;
+              }
+            })();
+          </script>
+
           <!-- Additional Coverage -->
           <div style="margin-top: 40px;">
             <div class="card">
@@ -3054,79 +3153,8 @@
       });
     }
 
-    // ===== NEWS ARTICLES LOADING =====
-    async function loadNewsArticles() {
-      const container = document.querySelector('#news-articles-container');
-      if (!container) return;
-
-      try {
-        // Show loading state
-        container.innerHTML = `
-          <div style="padding: 60px; text-align: center; grid-column: 1 / -1;">
-            <div class="loading-spinner"></div>
-            <p style="margin-top: 16px; color: var(--text-muted); font-weight: 500;">Loading articles...</p>
-          </div>
-        `;
-
-        const response = await fetch('news_articles.csv');
-        if (!response.ok) {
-          throw new Error('Failed to load news articles data');
-        }
-
-        const csvText = await response.text();
-        const articles = parseCSV(csvText);
-        renderNewsArticles(articles, container);
-      } catch (error) {
-        console.error('Error loading news articles:', error);
-        container.innerHTML = `
-          <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
-            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
-            <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Articles</h3>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">${escapeHtml(error.message)}</p>
-            <button onclick="loadNewsArticles()" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
-              Try Again
-            </button>
-          </div>
-        `;
-      }
-    }
-
-    function renderNewsArticles(articles, container) {
-      container.innerHTML = '';
-
-      articles.forEach(article => {
-        const card = document.createElement('article');
-        card.className = 'card';
-
-        // SECURITY: Escape all CSV data to prevent XSS
-        let html = `
-          <h3>${escapeHtml(article.source)}</h3>
-          <p style="color: var(--accent); font-weight: 700; margin-bottom: 16px;">${escapeHtml(article.date)}</p>
-          <p><strong>"${escapeHtml(article.title)}"</strong></p>
-          <p>${escapeHtml(article.body)}</p>
-        `;
-
-        // Add link if available
-        if (article.link_url && article.link_url.trim()) {
-          html += `
-          <div class="pub-links">
-            <a href="${escapeHtml(article.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">
-              ${article.link_icon ? escapeHtml(article.link_icon) + ' ' : ''}${escapeHtml(article.link_caption)}
-            </a>
-          </div>
-          `;
-        }
-
-        card.innerHTML = html;
-        container.appendChild(card);
-      });
-    }
-
-    // Load courses and news articles on page load
-    window.addEventListener('load', () => {
-      loadCourses();
-      loadNewsArticles();
-    });
+    // Load courses on page load
+    window.addEventListener('load', loadCourses);
 
     // ===== DRAG-AND-DROP NAVIGATION REORDERING =====
     (function() {
