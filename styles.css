@@ -448,7 +448,7 @@
     .card h4 {
       font-size: 18px;
       color: var(--accent);
-      margin: 20px 0 12px;
+      margin: 12px 0 12px;
       font-weight: 700;
     }
     .card > p:first-of-type {
