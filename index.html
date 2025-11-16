@@ -1793,31 +1793,9 @@
               </div>
             </div>
 
+            <!-- Articles are loaded dynamically from articles.csv -->
             <div class="forbes-articles-grid">
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/07/10/companies-are-killing-themselves-with-ai-a-hidden-crisis/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Companies Are Killing Themselves With AI: A Hidden Crisis</span>
-                <span class="article-date">July 2024</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/04/19/generative-ais-challenges-to-cybersecurity/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Generative AI's Challenges To Cybersecurity</span>
-                <span class="article-date">April 2024</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/03/22/the-paradox-of-corporate-ventures-why-so-many-fail/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">The Paradox Of Corporate Ventures: Why So Many Fail</span>
-                <span class="article-date">March 2024</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/11/01/is-venture-capital-drinking-its-own-kool-aid/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Is Venture Capital Drinking Its Own Kool-Aid?</span>
-                <span class="article-date">November 2019</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/10/11/six-ways-your-early-start-up-data-can-be-misleading/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Six Ways Your Early Start-Up Data Can Be Misleading</span>
-                <span class="article-date">October 2019</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/09/24/why-the-best-technology-doesnt-always-win/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Why The Best Technology Doesn't Always Win</span>
-                <span class="article-date">September 2019</span>
-              </a>
+              <!-- Articles will be populated here by JavaScript -->
             </div>
           </article>
 
@@ -3134,8 +3112,73 @@
       });
     }
 
-    // Load courses on page load
-    window.addEventListener('load', loadCourses);
+    // ===== ARTICLES LOADING =====
+    async function loadArticles() {
+      const container = document.querySelector('.forbes-articles-grid');
+      if (!container) return;
+
+      try {
+        // Show loading state
+        container.innerHTML = `
+          <div style="padding: 40px; text-align: center;">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 16px; color: var(--text-muted); font-weight: 500;">Loading articles...</p>
+          </div>
+        `;
+
+        const response = await fetch('articles.csv');
+        if (!response.ok) {
+          throw new Error('Failed to load articles data');
+        }
+
+        const csvText = await response.text();
+        const articles = parseCSV(csvText);
+        renderArticles(articles, container);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        container.innerHTML = `
+          <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+            <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Articles</h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">${escapeHtml(error.message)}</p>
+            <button onclick="loadArticles()" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
+              Try Again
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function renderArticles(articles, container) {
+      container.innerHTML = '';
+
+      articles.forEach(article => {
+        const link = document.createElement('a');
+        link.href = article.link_url || '#';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'forbes-article-link';
+
+        // SECURITY: Escape all CSV data to prevent XSS
+        link.innerHTML = `
+          <span class="article-title">${escapeHtml(article.title)}</span>
+          <span class="article-date">${escapeHtml(article.date)}</span>
+        `;
+
+        // Add tooltip with body content if available
+        if (article.body) {
+          link.setAttribute('title', article.body);
+        }
+
+        container.appendChild(link);
+      });
+    }
+
+    // Load courses and articles on page load
+    window.addEventListener('load', () => {
+      loadCourses();
+      loadArticles();
+    });
 
     // ===== DRAG-AND-DROP NAVIGATION REORDERING =====
     (function() {
