@@ -905,13 +905,17 @@
               if (accentP) maxAccentPHeight = Math.max(maxAccentPHeight, accentP.offsetHeight);
               if (h4) maxH4Height = Math.max(maxH4Height, h4.offsetHeight);
 
-              // Find description paragraph (2nd p in card, not the accent one)
-              const paragraphs = Array.from(card.querySelectorAll('p'));
-              const descP = paragraphs.find((p, idx) =>
-                idx === 1 && p.parentElement === card && !p.hasAttribute('style')
-              );
-              if (descP && h4) {
-                maxDescHeight = Math.max(maxDescHeight, descP.offsetHeight);
+              // Find description paragraph - the one immediately before h4
+              if (h4) {
+                let descP = h4.previousElementSibling;
+                // Walk backwards to find the first paragraph before h4
+                while (descP && descP.tagName !== 'P') {
+                  descP = descP.previousElementSibling;
+                }
+                // Make sure it's not the accent paragraph
+                if (descP && descP.tagName === 'P' && !descP.style.color) {
+                  maxDescHeight = Math.max(maxDescHeight, descP.offsetHeight);
+                }
               }
             });
 
@@ -925,13 +929,17 @@
               if (accentP && maxAccentPHeight > 0) accentP.style.minHeight = maxAccentPHeight + 'px';
               if (h4 && maxH4Height > 0) h4.style.minHeight = maxH4Height + 'px';
 
-              // Apply to description paragraph only if card has h4
+              // Apply to description paragraph - the one immediately before h4
               if (h4 && maxDescHeight > 0) {
-                const paragraphs = Array.from(card.querySelectorAll('p'));
-                const descP = paragraphs.find((p, idx) =>
-                  idx === 1 && p.parentElement === card && !p.hasAttribute('style')
-                );
-                if (descP) descP.style.minHeight = maxDescHeight + 'px';
+                let descP = h4.previousElementSibling;
+                // Walk backwards to find the first paragraph before h4
+                while (descP && descP.tagName !== 'P') {
+                  descP = descP.previousElementSibling;
+                }
+                // Make sure it's not the accent paragraph
+                if (descP && descP.tagName === 'P' && !descP.style.color) {
+                  descP.style.minHeight = maxDescHeight + 'px';
+                }
               }
             });
           });
@@ -948,16 +956,24 @@
       // Run on load and resize
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-          setTimeout(alignGridCards, 100); // Small delay to ensure all content loaded
+          setTimeout(alignGridCards, 200); // Delay to ensure all content loaded
+          setTimeout(alignGridCards, 500); // Second pass for CSV-loaded content
+          setTimeout(alignGridCards, 1000); // Third pass for any late content
         });
       } else {
-        setTimeout(alignGridCards, 100);
+        setTimeout(alignGridCards, 200);
+        setTimeout(alignGridCards, 500);
+        setTimeout(alignGridCards, 1000);
       }
 
       window.addEventListener('resize', debounceAlign);
+      window.addEventListener('load', () => setTimeout(alignGridCards, 100));
 
       // Re-align when fonts load
       if (document.fonts) {
         document.fonts.ready.then(alignGridCards);
       }
+
+      // Expose function globally so CSV scripts can trigger it
+      window.alignGridCards = alignGridCards;
     })();
