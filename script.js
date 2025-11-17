@@ -946,32 +946,69 @@
         });
       }
 
-      // Debounce function for resize events
-      let resizeTimer;
+      // Debounce function for events
+      let alignTimer;
       function debounceAlign() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(alignGridCards, 150);
+        clearTimeout(alignTimer);
+        alignTimer = setTimeout(alignGridCards, 50);
       }
 
-      // Run on load and resize
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          setTimeout(alignGridCards, 200); // Delay to ensure all content loaded
-          setTimeout(alignGridCards, 500); // Second pass for CSV-loaded content
-          setTimeout(alignGridCards, 1000); // Third pass for any late content
-        });
-      } else {
-        setTimeout(alignGridCards, 200);
-        setTimeout(alignGridCards, 500);
-        setTimeout(alignGridCards, 1000);
-      }
-
+      // Event-based triggers
       window.addEventListener('resize', debounceAlign);
-      window.addEventListener('load', () => setTimeout(alignGridCards, 100));
+      window.addEventListener('load', alignGridCards);
 
       // Re-align when fonts load
       if (document.fonts) {
         document.fonts.ready.then(alignGridCards);
+      }
+
+      // MutationObserver to detect when content is added to grids
+      const gridObserver = new MutationObserver((mutations) => {
+        let shouldAlign = false;
+        mutations.forEach(mutation => {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === 1) { // Element node
+                if (node.classList && node.classList.contains('card')) {
+                  shouldAlign = true;
+                }
+                // Check if any child is a card
+                if (node.querySelector && node.querySelector('.card')) {
+                  shouldAlign = true;
+                }
+              }
+            });
+          }
+        });
+        if (shouldAlign) {
+          debounceAlign();
+        }
+      });
+
+      // Observe all grid containers
+      document.addEventListener('DOMContentLoaded', () => {
+        const grids = document.querySelectorAll('.grid.cols-2, .grid.cols-3');
+        grids.forEach(grid => {
+          gridObserver.observe(grid, {
+            childList: true,
+            subtree: true
+          });
+        });
+
+        // Initial alignment
+        alignGridCards();
+      });
+
+      // If DOM already loaded
+      if (document.readyState !== 'loading') {
+        const grids = document.querySelectorAll('.grid.cols-2, .grid.cols-3');
+        grids.forEach(grid => {
+          gridObserver.observe(grid, {
+            childList: true,
+            subtree: true
+          });
+        });
+        alignGridCards();
       }
 
       // Expose function globally so CSV scripts can trigger it
