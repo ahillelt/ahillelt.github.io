@@ -711,12 +711,81 @@
         <div style="margin-top: 48px;">
           <div class="card">
             <h3>Course Development & Curriculum Innovation</h3>
-
-            <p style="margin-top: 20px;"><strong>Application Security (CS-GY 9163)</strong> — Graduate core course and capstone option, CAE-Operations and CAE-Defense certified. Serves 100-120 students per academic year. Enhanced curriculum with comprehensive code review methodologies, offensive security testing, and advanced cryptography including zero-knowledge proofs. Developed new exam series, modernized hands-on labs, and created study guides aligned with industry security frameworks (OWASP, MITRE ATT&CK, NIST SSDF).</p>
-
-            <p style="margin-top: 16px;"><strong>Computer Networking (CS-GY 6843)</strong> — Graduate networking course with CAE-Operations and CAE-Defense certification, serving 30-45 students per academic year. Developed new lecture series on secure network protocols, enhanced labs with real-world attack scenarios, and integrated modern SDN/NFV concepts. Created comprehensive assessment framework and hands-on exercises using industry-standard tools.</p>
+            <div id="course-development-container"></div>
           </div>
         </div>
+
+        <script>
+          // Load course development data immediately
+          (async function() {
+            const container = document.querySelector('#course-development-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('course_development.csv', { cache: 'no-store' });
+              if (!response.ok) {
+                throw new Error('Failed to load course development data');
+              }
+
+              const csvText = await response.text();
+
+              // Parse CSV
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+
+              const courses = [];
+              for (let i = 1; i < lines.length; i++) {
+                const line = lines[i];
+                if (!line.trim()) continue;
+
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+
+                for (let j = 0; j < line.length; j++) {
+                  const char = line[j];
+                  if (char === '"') {
+                    inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) {
+                    values.push(current.trim().replace(/^"|"$/g, ''));
+                    current = '';
+                  } else {
+                    current += char;
+                  }
+                }
+                values.push(current.trim().replace(/^"|"$/g, ''));
+
+                const course = {};
+                headers.forEach((header, index) => {
+                  course[header] = values[index] || '';
+                });
+                courses.push(course);
+              }
+
+              // Render courses
+              container.innerHTML = '';
+              courses.forEach((course, index) => {
+                const p = document.createElement('p');
+                p.style.marginTop = index === 0 ? '20px' : '16px';
+
+                const escapeHtml = (text) => {
+                  const div = document.createElement('div');
+                  div.textContent = text;
+                  return div.innerHTML;
+                };
+
+                p.innerHTML = `<strong>${escapeHtml(course.course_name)} (${escapeHtml(course.course_code)})</strong> — ${escapeHtml(course.description)}`;
+
+                container.appendChild(p);
+              });
+            } catch (error) {
+              console.error('Error loading course development data:', error);
+              container.innerHTML = `
+                <p style="color: var(--text-muted); margin-top: 20px; font-style: italic;">Unable to load course development data.</p>
+              `;
+            }
+          })();
+        </script>
       </div>
     </section>
 
