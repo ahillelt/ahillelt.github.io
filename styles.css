@@ -912,7 +912,7 @@
       height: 100%;
       border: none;
     }
-    .card > p:last-of-type {
+    .card.video-card > p:last-of-type {
       flex-grow: 1;
     }
 
