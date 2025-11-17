@@ -905,13 +905,17 @@
               if (accentP) maxAccentPHeight = Math.max(maxAccentPHeight, accentP.offsetHeight);
               if (h4) maxH4Height = Math.max(maxH4Height, h4.offsetHeight);
 
-              // Find description paragraph (2nd p in card, not the accent one)
-              const paragraphs = Array.from(card.querySelectorAll('p'));
-              const descP = paragraphs.find((p, idx) =>
-                idx === 1 && p.parentElement === card && !p.hasAttribute('style')
-              );
-              if (descP && h4) {
-                maxDescHeight = Math.max(maxDescHeight, descP.offsetHeight);
+              // Find description paragraph - the one immediately before h4
+              if (h4) {
+                let descP = h4.previousElementSibling;
+                // Walk backwards to find the first paragraph before h4
+                while (descP && descP.tagName !== 'P') {
+                  descP = descP.previousElementSibling;
+                }
+                // Make sure it's not the accent paragraph
+                if (descP && descP.tagName === 'P' && !descP.style.color) {
+                  maxDescHeight = Math.max(maxDescHeight, descP.offsetHeight);
+                }
               }
             });
 
@@ -925,39 +929,88 @@
               if (accentP && maxAccentPHeight > 0) accentP.style.minHeight = maxAccentPHeight + 'px';
               if (h4 && maxH4Height > 0) h4.style.minHeight = maxH4Height + 'px';
 
-              // Apply to description paragraph only if card has h4
+              // Apply to description paragraph - the one immediately before h4
               if (h4 && maxDescHeight > 0) {
-                const paragraphs = Array.from(card.querySelectorAll('p'));
-                const descP = paragraphs.find((p, idx) =>
-                  idx === 1 && p.parentElement === card && !p.hasAttribute('style')
-                );
-                if (descP) descP.style.minHeight = maxDescHeight + 'px';
+                let descP = h4.previousElementSibling;
+                // Walk backwards to find the first paragraph before h4
+                while (descP && descP.tagName !== 'P') {
+                  descP = descP.previousElementSibling;
+                }
+                // Make sure it's not the accent paragraph
+                if (descP && descP.tagName === 'P' && !descP.style.color) {
+                  descP.style.minHeight = maxDescHeight + 'px';
+                }
               }
             });
           });
         });
       }
 
-      // Debounce function for resize events
-      let resizeTimer;
+      // Debounce function for events
+      let alignTimer;
       function debounceAlign() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(alignGridCards, 150);
+        clearTimeout(alignTimer);
+        alignTimer = setTimeout(alignGridCards, 50);
       }
 
-      // Run on load and resize
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          setTimeout(alignGridCards, 100); // Small delay to ensure all content loaded
-        });
-      } else {
-        setTimeout(alignGridCards, 100);
-      }
-
+      // Event-based triggers
       window.addEventListener('resize', debounceAlign);
+      window.addEventListener('load', alignGridCards);
 
       // Re-align when fonts load
       if (document.fonts) {
         document.fonts.ready.then(alignGridCards);
       }
+
+      // MutationObserver to detect when content is added to grids
+      const gridObserver = new MutationObserver((mutations) => {
+        let shouldAlign = false;
+        mutations.forEach(mutation => {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === 1) { // Element node
+                if (node.classList && node.classList.contains('card')) {
+                  shouldAlign = true;
+                }
+                // Check if any child is a card
+                if (node.querySelector && node.querySelector('.card')) {
+                  shouldAlign = true;
+                }
+              }
+            });
+          }
+        });
+        if (shouldAlign) {
+          debounceAlign();
+        }
+      });
+
+      // Observe all grid containers
+      document.addEventListener('DOMContentLoaded', () => {
+        const grids = document.querySelectorAll('.grid.cols-2, .grid.cols-3');
+        grids.forEach(grid => {
+          gridObserver.observe(grid, {
+            childList: true,
+            subtree: true
+          });
+        });
+
+        // Initial alignment
+        alignGridCards();
+      });
+
+      // If DOM already loaded
+      if (document.readyState !== 'loading') {
+        const grids = document.querySelectorAll('.grid.cols-2, .grid.cols-3');
+        grids.forEach(grid => {
+          gridObserver.observe(grid, {
+            childList: true,
+            subtree: true
+          });
+        });
+        alignGridCards();
+      }
+
+      // Expose function globally so CSV scripts can trigger it
+      window.alignGridCards = alignGridCards;
     })();
