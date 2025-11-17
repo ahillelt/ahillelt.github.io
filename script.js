@@ -837,3 +837,127 @@
       // Instant reload
       location.reload();
     }
+
+    // ============================================================================
+    // RESPONSIVE CARD ALIGNMENT
+    // Dynamically aligns card elements in grid layouts based on actual rendering
+    // ============================================================================
+    (function() {
+      function alignGridCards() {
+        // Find all grid containers
+        const grids = document.querySelectorAll('.grid.cols-2, .grid.cols-3');
+
+        grids.forEach(grid => {
+          const cards = Array.from(grid.querySelectorAll('.card'));
+          if (cards.length === 0) return;
+
+          // Reset all min-heights first
+          cards.forEach(card => {
+            const h3 = card.querySelector('h3');
+            const accentP = card.querySelector('p[style*="color: var(--accent)"]');
+            const h4 = card.querySelector('h4');
+            const descriptions = card.querySelectorAll('p');
+
+            if (h3) h3.style.minHeight = '';
+            if (accentP) accentP.style.minHeight = '';
+            if (h4) h4.style.minHeight = '';
+            descriptions.forEach(p => {
+              if (p !== accentP && p.parentElement === card) {
+                p.style.minHeight = '';
+              }
+            });
+          });
+
+          // Group cards by row based on offsetTop
+          const rows = [];
+          let currentRow = [];
+          let lastTop = -1;
+
+          cards.forEach(card => {
+            const top = card.offsetTop;
+            if (lastTop === -1 || Math.abs(top - lastTop) < 10) {
+              currentRow.push(card);
+              lastTop = top;
+            } else {
+              if (currentRow.length > 0) rows.push(currentRow);
+              currentRow = [card];
+              lastTop = top;
+            }
+          });
+          if (currentRow.length > 0) rows.push(currentRow);
+
+          // Align each row
+          rows.forEach(row => {
+            if (row.length <= 1) return; // No alignment needed for single card
+
+            let maxH3Height = 0;
+            let maxAccentPHeight = 0;
+            let maxH4Height = 0;
+            let maxDescHeight = 0;
+
+            // Measure heights
+            row.forEach(card => {
+              const h3 = card.querySelector('h3');
+              const accentP = card.querySelector('p[style*="color: var(--accent)"]');
+              const h4 = card.querySelector('h4');
+
+              if (h3) maxH3Height = Math.max(maxH3Height, h3.offsetHeight);
+              if (accentP) maxAccentPHeight = Math.max(maxAccentPHeight, accentP.offsetHeight);
+              if (h4) maxH4Height = Math.max(maxH4Height, h4.offsetHeight);
+
+              // Find description paragraph (2nd p in card, not the accent one)
+              const paragraphs = Array.from(card.querySelectorAll('p'));
+              const descP = paragraphs.find((p, idx) =>
+                idx === 1 && p.parentElement === card && !p.hasAttribute('style')
+              );
+              if (descP && h4) {
+                maxDescHeight = Math.max(maxDescHeight, descP.offsetHeight);
+              }
+            });
+
+            // Apply min-heights to align
+            row.forEach(card => {
+              const h3 = card.querySelector('h3');
+              const accentP = card.querySelector('p[style*="color: var(--accent)"]');
+              const h4 = card.querySelector('h4');
+
+              if (h3 && maxH3Height > 0) h3.style.minHeight = maxH3Height + 'px';
+              if (accentP && maxAccentPHeight > 0) accentP.style.minHeight = maxAccentPHeight + 'px';
+              if (h4 && maxH4Height > 0) h4.style.minHeight = maxH4Height + 'px';
+
+              // Apply to description paragraph only if card has h4
+              if (h4 && maxDescHeight > 0) {
+                const paragraphs = Array.from(card.querySelectorAll('p'));
+                const descP = paragraphs.find((p, idx) =>
+                  idx === 1 && p.parentElement === card && !p.hasAttribute('style')
+                );
+                if (descP) descP.style.minHeight = maxDescHeight + 'px';
+              }
+            });
+          });
+        });
+      }
+
+      // Debounce function for resize events
+      let resizeTimer;
+      function debounceAlign() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(alignGridCards, 150);
+      }
+
+      // Run on load and resize
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(alignGridCards, 100); // Small delay to ensure all content loaded
+        });
+      } else {
+        setTimeout(alignGridCards, 100);
+      }
+
+      window.addEventListener('resize', debounceAlign);
+
+      // Re-align when fonts load
+      if (document.fonts) {
+        document.fonts.ready.then(alignGridCards);
+      }
+    })();

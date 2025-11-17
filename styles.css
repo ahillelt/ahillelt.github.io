@@ -420,12 +420,10 @@
       grid-template-columns: 1fr;
     }
     .card.video-card h3 {
-      min-height: 2.6em;
       display: flex;
       align-items: flex-start;
     }
     .card.video-card > p:first-of-type {
-      min-height: 2.5em;
       display: flex;
       align-items: flex-start;
     }
@@ -433,29 +431,8 @@
       display: flex;
       flex-direction: column;
     }
-    /* Cards in 3-column grids need min-heights for alignment */
-    .grid.cols-3 > .card h3 {
-      min-height: 2.6em;
-    }
-    .grid.cols-3 > .card > p[style*="color: var(--accent)"] {
-      min-height: 2.5em;
-    }
-    .grid.cols-3 > .card h4 {
-      min-height: 1.6em;
-    }
-    /* Cards in 2-column grids - only align cards with h4 subheaders */
-    .grid.cols-2 > .card:has(h4) h3 {
-      min-height: 2.6em;
-    }
-    .grid.cols-2 > .card:has(h4) > p[style*="color: var(--accent)"] {
-      min-height: 2.5em;
-    }
-    .grid.cols-2 > .card:has(h4) > p:nth-of-type(2) {
-      min-height: 10.2em;
-    }
-    .grid.cols-2 > .card:has(h4) h4 {
-      min-height: 1.6em;
-    }
+    /* Card alignment is handled dynamically by JavaScript in script.js */
+    /* See alignGridCards() function for responsive alignment logic */
     .card:hover {
       box-shadow: var(--elevation-3);
       border-color: var(--accent-light);
