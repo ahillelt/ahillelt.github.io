@@ -433,6 +433,13 @@
       display: flex;
       flex-direction: column;
     }
+    /* Cards in 3-column grids need min-heights for alignment */
+    .grid.cols-3 > .card h3 {
+      min-height: 2.6em;
+    }
+    .grid.cols-3 > .card > p[style*="color: var(--accent)"] {
+      min-height: 2.5em;
+    }
     .card:hover {
       box-shadow: var(--elevation-3);
       border-color: var(--accent-light);
