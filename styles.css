@@ -451,7 +451,7 @@
       min-height: 2.5em;
     }
     .grid.cols-2 > .card > p:nth-of-type(2) {
-      min-height: 5.1em;
+      min-height: 10.2em;
     }
     .grid.cols-2 > .card h4 {
       min-height: 1.6em;
