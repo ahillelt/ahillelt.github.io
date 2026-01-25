@@ -178,110 +178,226 @@
   </div>
 
   <main id="main-content">
-    <!-- Hero -->
+    <!-- Hero - Content loaded from hero_content.csv -->
     <section class="hero">
       <div class="container">
-        <div class="hero-content">
-          <div class="hero-text">
-            <span class="eyebrow">Industry Assistant Professor of Computer Science & Engineering</span>
-            <h1>Cybersecurity Researcher, Tech Entrepreneur & Educator</h1>
-            <p class="tagline">I am an Industry Assistant Professor at <strong>NYU Tandon School of Engineering</strong> specializing in cybersecurity, hardware security, and responsible AI. With 20+ years in technology and entrepreneurship, I co-founded the crowdfunding platform <strong>RocketHub</strong> (acquired 2015) and served as Managing Partner at early stage venture fund <strong>Stacked Capital</strong>. My interdisciplinary work spans hardware security, AI ethics, governance of emerging technologies, and conflict resolution; combining technical expertise with policy experience, including expert testimony before U.S. Congress on the JOBS Act.</p>
-            <div class="chips">
-              <span class="chip">Cybersecurity</span>
-              <span class="chip">Hardware Security</span>
-              <span class="chip">Ethical AI</span>
-              <span class="chip">AI Governance</span>
-              <span class="chip">Applied Cryptography</span>
-              <span class="chip">Entrepreneurship</span>
-              <span class="chip">Tech Policy</span>
-              <span class="chip">Venture Capital</span>
-            </div>
-            <div class="cta">
-              <a href="#contact" class="btn primary">Contact</a>
-              <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener noreferrer">View Faculty Page</a>
-            </div>
-          </div>
-          <div class="portrait">
-            <img src="headshot2.png"
-                 alt="Alon Hillel-Tuch"
-                 width="800"
-                 height="800"
-                 fetchpriority="high"
-                 decoding="async"
-                 style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
+        <div class="hero-content" id="hero-container">
+          <!-- Hero content will be populated by JavaScript -->
         </div>
       </div>
     </section>
 
-    <!-- Stats -->
+    <script>
+      // Load hero content from CSV
+      (async function() {
+        const container = document.querySelector('#hero-container');
+        if (!container) return;
+
+        try {
+          const response = await fetch('hero_content.csv', { cache: 'no-store' });
+          if (!response.ok) throw new Error('Failed to load hero content');
+
+          const csvText = await response.text();
+          const lines = csvText.trim().split('\n');
+          const data = {};
+
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i];
+            const commaIndex = line.indexOf(',');
+            if (commaIndex > -1) {
+              const key = line.substring(0, commaIndex).replace(/^"|"$/g, '');
+              let value = line.substring(commaIndex + 1);
+              if (value.startsWith('"') && value.endsWith('"')) {
+                value = value.slice(1, -1).replace(/""/g, '"');
+              }
+              data[key] = value;
+            }
+          }
+
+          const chips = data.chips ? data.chips.split('|').map(chip =>
+            `<span class="chip">${chip}</span>`
+          ).join('') : '';
+
+          container.innerHTML = `
+            <div class="hero-text">
+              <span class="eyebrow">${data.eyebrow || ''}</span>
+              <h1>${data.title || ''}</h1>
+              <p class="tagline">${data.tagline || ''}</p>
+              <div class="chips">${chips}</div>
+              <div class="cta">
+                <a href="${data.cta_primary_link || '#contact'}" class="btn primary">${data.cta_primary_text || 'Contact'}</a>
+                <a href="${data.cta_secondary_link || '#'}" target="_blank" class="btn secondary" rel="noopener noreferrer">${data.cta_secondary_text || ''}</a>
+              </div>
+            </div>
+            <div class="portrait">
+              <img src="${data.image_src || 'headshot2.png'}"
+                   alt="${data.image_alt || 'Alon Hillel-Tuch'}"
+                   width="800" height="800" fetchpriority="high" decoding="async"
+                   style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+          `;
+        } catch (error) {
+          console.error('Error loading hero content:', error);
+        }
+      })();
+    </script>
+
+    <!-- Stats - Content loaded from stats.csv -->
     <section class="stats">
       <div class="container">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number">507</div>
-            <div class="stat-label">Students Taught (Faculty)</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">20+</div>
-            <div class="stat-label">Years Industry</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">2</div>
-            <div class="stat-label">Congressional Testimonies</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">70+</div>
-            <div class="stat-label">Speaking Engagements & Workshops</div>
-          </div>
+        <div class="stats-grid" id="stats-container">
+          <!-- Stats will be populated by JavaScript -->
         </div>
       </div>
     </section>
 
-    <!-- About -->
+    <script>
+      (async function() {
+        const container = document.querySelector('#stats-container');
+        if (!container) return;
+
+        try {
+          const response = await fetch('stats.csv', { cache: 'no-store' });
+          if (!response.ok) throw new Error('Failed to load stats');
+
+          const csvText = await response.text();
+          const lines = csvText.trim().split('\n');
+
+          container.innerHTML = '';
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i];
+            const values = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let j = 0; j < line.length; j++) {
+              const char = line[j];
+              if (char === '"') {
+                inQuotes = !inQuotes;
+              } else if (char === ',' && !inQuotes) {
+                values.push(current.replace(/^"|"$/g, ''));
+                current = '';
+              } else {
+                current += char;
+              }
+            }
+            values.push(current.replace(/^"|"$/g, ''));
+
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            card.innerHTML = `
+              <div class="stat-number">${values[0] || ''}</div>
+              <div class="stat-label">${values[1] || ''}</div>
+            `;
+            container.appendChild(card);
+          }
+        } catch (error) {
+          console.error('Error loading stats:', error);
+        }
+      })();
+    </script>
+
+    <!-- About - Content loaded from about_content.csv and section_headers.csv -->
     <section id="about">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">About</h2>
-          <p class="section-subtitle">Academic research, teaching, and industry experience</p>
+        <div class="section-header" id="about-header">
+          <!-- Header loaded from section_headers.csv -->
         </div>
-        <div class="grid cols-2">
-          <div class="card">
-            <h3>Academic Mission</h3>
-            <p>I am an Industry Assistant Professor at NYU Tandon School of Engineering specializing in cybersecurity and responsible AI. With 20+ years in technology and entrepreneurship, I have led RocketHub to a successful acquisition and helped launch deep-tech ventures. I focus on applied security research that addresses real-world challenges in hardware security, AI ethics, and governance of emerging technologies.</p>
-
-            <h4>Education & Credentials</h4>
-            <ul style="margin-top: 12px;">
-              <li><strong>M.S. in Computer Science & Cybersecurity</strong> — NYU Tandon School of Engineering</li>
-              <li><strong>M.S. in Negotiation & Conflict Resolution</strong> — Columbia University, Earth Institute</li>
-              <li><strong>B.A. in Economics & Chinese</strong> — Hamilton College</li>
-            </ul>
-
-            <h4 style="margin-top: 20px;">Research & Teaching</h4>
-            <p>I teach graduate courses in cybersecurity and computer networking, mentor students through the OSIRIS Lab, and conduct research examining how technical systems interact with human decision-making and governance structures. My interdisciplinary work combines technical expertise with conflict resolution methodologies to address AI alignment challenges and develop frameworks for responsible AI deployment.</p>
-
-            <h4>Teaching Philosophy</h4>
-            <p>Classes are project-driven and interdisciplinary, bridging theory with real-world cybersecurity challenges. Security education must be experiential and hands-on. Students learn best by breaking systems, building defenses, and understanding the socio-technical context in which technology operates.</p>
-          </div>
-          <div class="card">
-            <h3>Industry & Entrepreneurship</h3>
-
-            <h4>Career Highlights</h4>
-            <ul style="margin-top: 12px; margin-bottom: 20px;">
-              <li><strong>RocketHub (Co-founder/CFO):</strong> Launched 8,000+ campaigns raising over $50M for entrepreneurs. Led the company to a successful acquisition in 2015.</li>
-              <li><strong>Stacked Capital (Managing Partner):</strong> Early-stage tech fund investing in deep-tech ventures focusing on hardware security, AI infrastructure, and critical systems resilience.</li>
-              <li><strong>Congressional Expert Testimony:</strong> Testified before U.S. Congress on the JOBS Act, advising on crowdfunding regulation and financial innovation policy.</li>
-            </ul>
-
-            <h4>Policy & Regulatory Work</h4>
-            <p>Expert testimony before U.S. House committees on startup funding and the JOBS Act. Co-authored whitepapers on crowdfunding regulation submitted to Congress, SEC, and FINRA. This domain authority combines technical expertise with regulatory policy development.</p>
-
-            <h4>Consulting & Advisory</h4>
-            <p>Available for strategic consulting on security architecture, threat modeling, applied cryptography, AI governance, and building security-conscious engineering cultures. Experience spans early-stage ventures, enterprise clients, and government advisory roles.</p>
-          </div>
+        <div class="grid cols-2" id="about-content">
+          <!-- Content loaded from about_content.csv -->
         </div>
       </div>
     </section>
+
+    <script>
+      // Load About section content from CSV
+      (async function() {
+        // Load section header
+        const headerContainer = document.querySelector('#about-header');
+        try {
+          const headerResponse = await fetch('section_headers.csv', { cache: 'no-store' });
+          if (headerResponse.ok) {
+            const csvText = await headerResponse.text();
+            const lines = csvText.trim().split('\n');
+            for (let i = 1; i < lines.length; i++) {
+              const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+              if (values[0] === 'about') {
+                headerContainer.innerHTML = `
+                  <h2 class="section-title">${values[1]}</h2>
+                  <p class="section-subtitle">${values[2]}</p>
+                `;
+                break;
+              }
+            }
+          }
+        } catch (e) { console.error('Error loading about header:', e); }
+
+        // Load about content
+        const contentContainer = document.querySelector('#about-content');
+        try {
+          const response = await fetch('about_content.csv', { cache: 'no-store' });
+          if (!response.ok) throw new Error('Failed to load about content');
+
+          const csvText = await response.text();
+          const lines = csvText.trim().split('\n');
+          const headers = lines[0].split(',');
+          const rows = [];
+
+          for (let i = 1; i < lines.length; i++) {
+            const values = [];
+            let current = '';
+            let inQuotes = false;
+            for (let j = 0; j < lines[i].length; j++) {
+              const char = lines[i][j];
+              if (char === '"') inQuotes = !inQuotes;
+              else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+              else current += char;
+            }
+            values.push(current);
+            const row = {};
+            headers.forEach((h, idx) => row[h.replace(/^"|"$/g, '')] = values[idx] || '');
+            rows.push(row);
+          }
+
+          // Build Academic Card
+          let academicHtml = '';
+          rows.forEach(row => {
+            if (['academic_mission', 'education_credentials', 'research_teaching', 'teaching_philosophy'].includes(row.section)) {
+              academicHtml += `<h3>${row.title}</h3>`;
+              if (row.section === 'education_credentials') {
+                const items = row.content.split('|');
+                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+              } else {
+                academicHtml += `<p>${row.content}</p>`;
+              }
+              if (row.section === 'education_credentials') academicHtml += '<h4 style="margin-top: 20px;">Research & Teaching</h4>';
+              if (row.section === 'research_teaching') academicHtml += '<h4>Teaching Philosophy</h4>';
+            }
+          });
+
+          // Build Industry Card
+          let industryHtml = '<h3>Industry & Entrepreneurship</h3>';
+          rows.forEach(row => {
+            if (['career_highlights', 'policy_regulatory', 'consulting_advisory'].includes(row.section)) {
+              industryHtml += `<h4>${row.title}</h4>`;
+              if (row.section === 'career_highlights') {
+                const items = row.content.split('|');
+                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+              } else {
+                industryHtml += `<p>${row.content}</p>`;
+              }
+            }
+          });
+
+          contentContainer.innerHTML = `
+            <div class="card">${academicHtml}</div>
+            <div class="card">${industryHtml}</div>
+          `;
+        } catch (error) {
+          console.error('Error loading about content:', error);
+        }
+      })();
+    </script>
 
     <!-- Press & Testimony -->
     <section id="press" class="accent-bg">
@@ -291,205 +407,371 @@
           <p class="section-subtitle">Congressional testimony · International keynotes · Expert commentary on technology policy, AI governance, and financial innovation</p>
         </div>
 
-        <!-- Congressional Testimony -->
+        <!-- Congressional Testimony - loaded from congressional_testimony.csv -->
         <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Congressional Testimony</h3>
-        <div class="grid cols-2">
-          <article class="card">
-            <h3>U.S. House Oversight Committee</h3>
-            <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">June 26, 2012</p>
-            <div class="video-wrapper">
-              <div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://cdn.jwplayer.com/players/sDNQ8J5D-xS4RtpB7.html" width="100%" height="100%" frameborder="0" scrolling="auto" title="JOBS Act Implementation | C-SPAN.org" style="position:absolute;" allowfullscreen></iframe></div>
-            </div>
-            <p>Testified on implementing the JOBS Act crowdfunding provisions, balancing innovation with investor protection in emerging fintech markets. Recommended raising crowdfunding cap from $1M to $5M to better support startups.</p>
-            <div class="pub-links">
-              <a href="https://oversight.house.gov/wp-content/uploads/2012/06/6-26-12-TARP-Hillel-Tuch.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📄 Written Testimony
-              </a>
-              <a href="https://www.c-span.org/program/house-committee/jobs-act-implementation/280562" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📺 Watch on C-SPAN
-              </a>
-            </div>
-          </article>
-
-          <article class="card">
-            <h3>U.S. House Financial Services Committee</h3>
-            <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">March 5, 2014</p>
-            <div class="video-wrapper">
-              <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/105809391" title="U.S. House Financial Services Committee Testimony" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <p>Provided expert statement on crowdfunding market structure, regulatory frameworks, and the role of technology platforms in democratizing access to capital while maintaining market integrity and investor protection. Warned that overly strict compliance requirements could "limit the rate we're able to domestically innovate and create jobs."</p>
-            <div class="pub-links">
-              <a href="https://financialservices.house.gov/uploadedfiles/hhrg-113-ba09-wstate-ahilleltuch-20140305.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
-                📄 Written Statement
-              </a>
-            </div>
-          </article>
+        <div class="grid cols-2" id="congressional-testimony-container">
+          <!-- Content loaded from congressional_testimony.csv -->
         </div>
 
-        <!-- Keynotes & Speaking -->
+        <script>
+          (async function() {
+            const container = document.querySelector('#congressional-testimony-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('congressional_testimony.csv', { cache: 'no-store' });
+              if (!response.ok) throw new Error('Failed to load congressional testimony data');
+
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('article');
+                card.className = 'card';
+
+                let videoHtml = '';
+                if (item.video_type === 'jwplayer') {
+                  videoHtml = `<div class="video-wrapper"><div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" width="100%" height="100%" frameborder="0" scrolling="auto" title="${item.title}" style="position:absolute;" allowfullscreen></iframe></div></div>`;
+                } else if (item.video_type === 'vimeo') {
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                }
+
+                let linksHtml = '';
+                if (item.links) {
+                  const linkPairs = item.links.split('::');
+                  linksHtml = '<div class="pub-links">';
+                  linkPairs.forEach(pair => {
+                    const [label, url] = pair.split('|');
+                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                  });
+                  linksHtml += '</div>';
+                }
+
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.date}</p>
+                  ${videoHtml}
+                  <p>${item.description}</p>
+                  ${linksHtml}
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading congressional testimony:', error);
+            }
+          })();
+        </script>
+
+        <!-- Keynotes & Speaking - loaded from keynotes_speaking.csv -->
         <div style="margin-top: 80px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 8px;">Keynotes & Speaking Engagements</h3>
           <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 16px;">50+ keynote presentations on security, innovation, and technology policy · Featured as Top Global Partner of US government (2015, Secretary John Kerry)</p>
 
-          <div class="grid cols-2">
-            <div class="card video-card">
-              <h3>TEDx: Emergence of an Alternate Path</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">TEDxNavesink · September 20, 2013</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133619019" title="TEDx: Emergence of an Alternate Path" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Delivered talk outlining the ethos of crowdfunding as a disruptive technology enabling grassroots innovation. Emphasized that "some of the best innovations and ideas happen at the grassroots level" as platforms like RocketHub incubate new ideas. Exploring how technology adoption cycles create alternate paths for human progress and social transformation.</p>
-            </div>
-
-            <div class="card video-card">
-              <h3>Augmented Intelligence (AI)</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Real Estate Leaders Summit · Re.Comm.17 · Kitzbühel, Austria · November 22–24, 2017</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://www.youtube.com/embed/rMs4Mpojk3Q" title="Augmented Intelligence AI Talk - Re.Comm 2017" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-              </div>
-              <p>International keynote examining human-AI collaboration and future intelligent systems. Shared stage with Wikipedia's Jimmy Wales and UK politician Nigel Farage. Austrian press noted presence as one of 11 renowned international speakers who "enthused 230 participants" at this elite gathering of global real estate and tech leaders.</p>
-            </div>
-
-            <div class="card video-card">
-              <h3>The Future of Crowdfunding: What the Next 5 Years Will Bring</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Campaigning Summit · Berlin · May 22, 2015</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133619613" title="The Future of Crowdfunding - Campaigning Summit Berlin" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Conference keynote exploring the evolving crowdfunding landscape and predicted industry developments. Event dedicated to mobilization and engagement trends listed Hillel-Tuch (Co-Founder of RocketHub) among its outstanding international lineup. 9-minute keynote available via Campaigning Summit YouTube channel.</p>
-            </div>
-
-            <div class="card video-card">
-              <h3>Open Economy Fundamentals</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">CrowdEconomy Conference · Minsk · c.2014</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://www.youtube.com/embed/Drr9wpJLgFE" title="Open Economy Fundamentals - CrowdEconomy Minsk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Featured speaker at Belarus conference on open innovation. Explored open economies, crowdsourcing, and collaborative innovation in emerging markets and technology ecosystems.</p>
-            </div>
-
-            <div class="card">
-              <h3>World Crowdfunding Conference</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Guiyang, China · 2015</p>
-              <p>Represented the Crowdfunding Professional Association (CfPA) and RocketHub as speaker at this large-scale international forum drawing ~13,000 attendees including government dignitaries. Addressed the global state of crowdfunding and met with Chinese officials, underscoring role as "Top Global Partner" for U.S. crowdfunding outreach in 2015.</p>
-            </div>
-
-            <div class="card">
-              <h3>Hardware Innovation Workshop</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Maker Faire · May 2012</p>
-              <p>Panel on crowdfunding for hardware startups at O'Reilly/Make's Hardware Innovation Workshop alongside makers, investors, and industry leaders.</p>
-              <div class="pub-links">
-                <a href="https://makerfaire.com/hardware-innovation-workshop/overview-2012/speaker-roster-2012/" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  📄 Speaker Roster
-                </a>
-              </div>
-            </div>
+          <div class="grid cols-2" id="keynotes-speaking-container">
+            <!-- Content loaded from keynotes_speaking.csv -->
           </div>
         </div>
 
-        <!-- Academic & Legal Panels -->
+        <script>
+          (async function() {
+            const container = document.querySelector('#keynotes-speaking-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('keynotes_speaking.csv', { cache: 'no-store' });
+              if (!response.ok) throw new Error('Failed to load keynotes data');
+
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('div');
+                card.className = item.video_type !== 'none' && item.video_src ? 'card video-card' : 'card';
+
+                let videoHtml = '';
+                if (item.video_type === 'vimeo' && item.video_src) {
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                } else if (item.video_type === 'youtube' && item.video_src) {
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+                }
+
+                let linksHtml = '';
+                if (item.links) {
+                  const linkPairs = item.links.split('::');
+                  linksHtml = '<div class="pub-links">';
+                  linkPairs.forEach(pair => {
+                    const [label, url] = pair.split('|');
+                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                  });
+                  linksHtml += '</div>';
+                }
+
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.venue} · ${item.date}</p>
+                  ${videoHtml}
+                  <p>${item.description}</p>
+                  ${linksHtml}
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading keynotes:', error);
+            }
+          })();
+        </script>
+
+        <!-- Academic & Legal Panels - loaded from academic_legal_forums.csv -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Academic & Legal Forums</h3>
-          <div class="grid cols-2">
-            <article class="card">
-              <h3>Fordham Law School Symposium</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Fordham Journal of Corporate & Financial Law · Vol. 20, 2015</p>
-              <p><strong>JOBS Act: The Terrible Twos - General Solicitation & Crowdfunding, The Next Frontier of Securities Regulation</strong></p>
-              <p>Panelist alongside SEC Commissioner Troy A. Paredes, Congressman Patrick McHenry, and other leading securities law experts. Examined general solicitation rules and crowdfunding regulations two years after the JOBS Act passage, providing industry perspective on regulatory implementation challenges.</p>
-              <div class="pub-links">
-                <a href="https://ir.lawnet.fordham.edu/jcfl/vol20/iss2/7/" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  📄 Published Symposium
-                </a>
-              </div>
-            </article>
-
-            <article class="card">
-              <h3>Connecticut Bar Association CLE Program</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Technology Law Committee · 2012-2013</p>
-              <p>Featured panelist at CLE program about the federal "Jumpstarting Our Business Startups" (JOBS) Act. Panel held at Carmen Anthony Steakhouse in New Haven, attended by 28 attorneys. Spoke as representative of RocketHub.com (one of the online exchanges seeking approval) about lobbying in support of the JOBS Act. Joined by Henry M. Beck Jr. (Halloran & Sage LLP) discussing SEC regulation pitfalls and patent agent Mark Nowotarski on crowdfunding success stories.</p>
-              <div class="pub-links">
-                <a href="https://www.ctbar.org/docs/default-source/publications/annual-reports/2012-2013_annual_report.pdf" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  📄 CBA Annual Report
-                </a>
-              </div>
-            </article>
+          <div class="grid cols-2" id="academic-legal-container">
+            <!-- Content loaded from academic_legal_forums.csv -->
           </div>
         </div>
 
-        <!-- Press Coverage -->
+        <script>
+          (async function() {
+            const container = document.querySelector('#academic-legal-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('academic_legal_forums.csv', { cache: 'no-store' });
+              if (!response.ok) throw new Error('Failed to load academic legal forums data');
+
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('article');
+                card.className = 'card';
+
+                let linksHtml = '';
+                if (item.links) {
+                  const linkPairs = item.links.split('::');
+                  linksHtml = '<div class="pub-links">';
+                  linkPairs.forEach(pair => {
+                    const [label, url] = pair.split('|');
+                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                  });
+                  linksHtml += '</div>';
+                }
+
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.venue} · ${item.date}</p>
+                  <p>${item.description}</p>
+                  ${linksHtml}
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading academic legal forums:', error);
+            }
+          })();
+        </script>
+
+        <!-- Press Coverage - loaded from press_coverage.csv -->
         <div style="margin-top: 80px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Press & Media Coverage</h3>
 
           <!-- Featured TV/Video Coverage -->
-          <div class="grid cols-2">
-            <article class="card">
-              <h3>NPR Morning Edition</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">May 9, 2014</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133615381" title="NPR Morning Edition Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Featured on NPR's Morning Edition arguing that overly strict SEC auditing requirements would place "too big a financial burden" on startups and could "limit the rate we're able to domestically innovate and create jobs."</p>
-              <div class="pub-links">
-                <a href="https://www.npr.org/2014/05/09/310832193/crowdfunding-can-help-build-business-but-at-what-cost" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  🎙️ Listen on NPR
-                </a>
-              </div>
-            </article>
-
-            <article class="card">
-              <h3>CCTV International</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">International Coverage</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133625379" title="CCTV Interview" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>International television interview discussing crowdfunding innovation, global market trends, and the democratization of access to capital for entrepreneurs worldwide.</p>
-            </article>
+          <div class="grid cols-2" id="press-coverage-container">
+            <!-- Content loaded from press_coverage.csv -->
           </div>
 
-          <!-- Forbes Technology Council - Full Width -->
-          <article class="card" style="margin-top: 40px;">
-            <div class="forbes-header">
-              <div>
-                <span class="forbes-badge">Forbes Technology Council</span>
-              </div>
-              <div>
-                <h3 style="margin: 0 0 8px 0; font-size: 24px;">Founding Member & Guest Writer</h3>
-                <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">Expert analysis and thought leadership on AI governance, cybersecurity, and technology innovation. Published insights on emerging technology trends and their implications for business and society.</p>
-              </div>
-              <div class="pub-links">
-                <a href="https://councils.forbes.com/profile/Alon-Hillel-Tuch-Managing-Partner-Stacked-Capital/c2a302ca-0c61-4db5-84b1-68814e376cb5" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  View Full Profile & All Articles →
-                </a>
-              </div>
-            </div>
+        <script>
+          (async function() {
+            const container = document.querySelector('#press-coverage-container');
+            if (!container) return;
 
-            <div class="forbes-articles-grid">
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/07/10/companies-are-killing-themselves-with-ai-a-hidden-crisis/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Companies Are Killing Themselves With AI: A Hidden Crisis</span>
-                <span class="article-date">July 2024</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/04/19/generative-ais-challenges-to-cybersecurity/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Generative AI's Challenges To Cybersecurity</span>
-                <span class="article-date">April 2024</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2024/03/22/the-paradox-of-corporate-ventures-why-so-many-fail/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">The Paradox Of Corporate Ventures: Why So Many Fail</span>
-                <span class="article-date">March 2024</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/11/01/is-venture-capital-drinking-its-own-kool-aid/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Is Venture Capital Drinking Its Own Kool-Aid?</span>
-                <span class="article-date">November 2019</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/10/11/six-ways-your-early-start-up-data-can-be-misleading/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Six Ways Your Early Start-Up Data Can Be Misleading</span>
-                <span class="article-date">October 2019</span>
-              </a>
-              <a href="https://www.forbes.com/sites/forbestechcouncil/2019/09/24/why-the-best-technology-doesnt-always-win/" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                <span class="article-title">Why The Best Technology Doesn't Always Win</span>
-                <span class="article-date">September 2019</span>
-              </a>
-            </div>
+            try {
+              const response = await fetch('press_coverage.csv', { cache: 'no-store' });
+              if (!response.ok) throw new Error('Failed to load press coverage data');
+
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('article');
+                card.className = 'card';
+
+                let videoHtml = '';
+                if (item.video_type === 'vimeo' && item.video_src) {
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                }
+
+                let linksHtml = '';
+                if (item.links) {
+                  const linkPairs = item.links.split('::');
+                  linksHtml = '<div class="pub-links">';
+                  linkPairs.forEach(pair => {
+                    const [label, url] = pair.split('|');
+                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                  });
+                  linksHtml += '</div>';
+                }
+
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.date}</p>
+                  ${videoHtml}
+                  <p>${item.description}</p>
+                  ${linksHtml}
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading press coverage:', error);
+            }
+          })();
+        </script>
+
+          <!-- Forbes Technology Council - loaded from forbes_council.csv and forbes_articles.csv -->
+          <article class="card" style="margin-top: 40px;" id="forbes-council-container">
+            <!-- Content loaded from forbes_council.csv and forbes_articles.csv -->
           </article>
+
+        <script>
+          (async function() {
+            const container = document.querySelector('#forbes-council-container');
+            if (!container) return;
+
+            try {
+              // Load forbes council info
+              const councilResponse = await fetch('forbes_council.csv', { cache: 'no-store' });
+              const councilCsv = await councilResponse.text();
+              const councilLines = councilCsv.trim().split('\n');
+              const councilData = {};
+              for (let i = 1; i < councilLines.length; i++) {
+                const commaIndex = councilLines[i].indexOf(',');
+                if (commaIndex > -1) {
+                  const key = councilLines[i].substring(0, commaIndex).replace(/^"|"$/g, '');
+                  let value = councilLines[i].substring(commaIndex + 1);
+                  if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+                  councilData[key] = value;
+                }
+              }
+
+              // Load forbes articles
+              const articlesResponse = await fetch('forbes_articles.csv', { cache: 'no-store' });
+              const articlesCsv = await articlesResponse.text();
+              const articlesLines = articlesCsv.trim().split('\n');
+              const articles = [];
+              for (let i = 1; i < articlesLines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < articlesLines[i].length; j++) {
+                  const char = articlesLines[i][j];
+                  if (char === '"') inQuotes = !inQuotes;
+                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
+                  else current += char;
+                }
+                values.push(current.replace(/^"|"$/g, ''));
+                if (values[0]) articles.push({ title: values[0], date: values[1], url: values[2] });
+              }
+
+              let articlesHtml = articles.map(a => `
+                <a href="${a.url}" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
+                  <span class="article-title">${a.title}</span>
+                  <span class="article-date">${a.date}</span>
+                </a>
+              `).join('');
+
+              container.innerHTML = `
+                <div class="forbes-header">
+                  <div><span class="forbes-badge">${councilData.badge || 'Forbes Technology Council'}</span></div>
+                  <div>
+                    <h3 style="margin: 0 0 8px 0; font-size: 24px;">${councilData.title || ''}</h3>
+                    <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">${councilData.description || ''}</p>
+                  </div>
+                  <div class="pub-links">
+                    <a href="${councilData.profile_url || '#'}" class="pub-link" target="_blank" rel="noopener noreferrer">${councilData.profile_text || 'View Profile'}</a>
+                  </div>
+                </div>
+                <div class="forbes-articles-grid">${articlesHtml}</div>
+              `;
+            } catch (error) {
+              console.error('Error loading Forbes council:', error);
+            }
+          })();
+        </script>
 
           <!-- Major Press Coverage -->
           <!-- News articles are loaded dynamically from news_articles.csv -->
@@ -596,92 +878,253 @@
             })();
           </script>
 
-          <!-- Additional Coverage -->
-          <div style="margin-top: 40px;">
-            <div class="card">
-              <h3>Additional Coverage</h3>
-              <p style="margin-bottom: 8px;"><strong>Featured in:</strong> Fortune, Bloomberg, Reuters, Wall Street Journal, China Daily, and international business publications</p>
-              <p style="color: var(--text-muted);">Expert commentary on crowdfunding, fintech innovation, technology policy, AI governance, and cybersecurity. Consulted by TIME Magazine for "100 Most Influential People in AI" list (Winter 2023).</p>
-              <p style="margin-top: 16px; color: var(--accent); font-weight: 600;">Available for media interviews on cybersecurity, AI governance, technology policy, and financial innovation.</p>
-              <div class="pub-links">
-                <a href="#contact" class="pub-link">Media Inquiries</a>
-              </div>
-            </div>
+          <!-- Additional Coverage - loaded from additional_coverage.csv -->
+          <div style="margin-top: 40px;" id="additional-coverage-container">
+            <!-- Content loaded from additional_coverage.csv -->
           </div>
+
+        <script>
+          (async function() {
+            const container = document.querySelector('#additional-coverage-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('additional_coverage.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const data = {};
+              for (let i = 1; i < lines.length; i++) {
+                const commaIndex = lines[i].indexOf(',');
+                if (commaIndex > -1) {
+                  const key = lines[i].substring(0, commaIndex).replace(/^"|"$/g, '');
+                  let value = lines[i].substring(commaIndex + 1);
+                  if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1).replace(/""/g, '"');
+                  data[key] = value;
+                }
+              }
+
+              container.innerHTML = `
+                <div class="card">
+                  <h3>Additional Coverage</h3>
+                  <p style="margin-bottom: 8px;"><strong>Featured in:</strong> ${data.featured_in || ''}</p>
+                  <p style="color: var(--text-muted);">${data.description || ''}</p>
+                  <p style="margin-top: 16px; color: var(--accent); font-weight: 600;">${data.cta_text || ''}</p>
+                  <div class="pub-links">
+                    <a href="${data.cta_link || '#contact'}" class="pub-link">${data.cta_label || 'Media Inquiries'}</a>
+                  </div>
+                </div>
+              `;
+            } catch (error) {
+              console.error('Error loading additional coverage:', error);
+            }
+          })();
+        </script>
         </div>
 
-        <!-- Podcasts & Webinars -->
+        <!-- Podcasts & Webinars - loaded from podcasts_webinars.csv -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 28px; color: var(--navy); margin-bottom: 28px; text-align: center;">Podcasts & Webinars</h3>
-          <div class="grid cols-2">
-            <div class="card">
-              <h3>Lunch & Learn Series</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Crowdfunding Professional Association · 2016</p>
-              <p>Featured guest in CfPA's webinar series. Session billed "Lunch & Learn with Alon Hillel-Tuch (Co-founder of RocketHub)", sharing industry insights on crowdfunding trends and best practices for entrepreneurs and investors.</p>
-            </div>
-
-            <div class="card">
-              <h3>The Sound Entrepreneur</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">October 2016</p>
-              <p><strong>"How does an investor make money with equity crowdfunding?"</strong></p>
-              <p>Audio interview for business advice media outlet. Explained equity crowdfunding models and ROI expectations in roundtable-style discussion, helping demystify crowdfunding for creatives and startups.</p>
-            </div>
+          <div class="grid cols-2" id="podcasts-webinars-container">
+            <!-- Content loaded from podcasts_webinars.csv -->
           </div>
         </div>
 
-        <!-- Speaking Topics -->
-        <div style="margin-top: 60px;">
-          <div class="card">
-            <h3>Available for Speaking Engagements</h3>
-            <p>Delivering keynotes and participating in panels on topics at the intersection of cybersecurity, technology policy, and responsible innovation. Extensive experience bridging technical depth with accessible communication for diverse audiences.</p>
-            <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 8px;">Speaking Topics</h4>
-            <div class="grid cols-2" style="margin-top: 20px;">
-              <div>
-                <ul>
-                  <li><strong>AI Governance:</strong> Policy frameworks for responsible deployment</li>
-                  <li><strong>AI Safety:</strong> Operational security frameworks and alignment</li>
-                  <li><strong>Hardware Security:</strong> Embedded systems threats and defenses</li>
-                  <li><strong>Conflict Resolution:</strong> Technology policy and AI alignment</li>
-                  <li><strong>Security Culture:</strong> Building security-conscious engineering teams</li>
-                </ul>
-              </div>
-              <div>
-                <ul>
-                  <li><strong>Applied Cryptography:</strong> Usable security for developers</li>
-                  <li><strong>Technology Policy:</strong> Regulatory frameworks and innovation</li>
-                  <li><strong>Academia to Industry:</strong> Bridging research and practice</li>
-                  <li><strong>Critical Infrastructure:</strong> Security and resilience</li>
-                  <li><strong>Financial Innovation:</strong> Crowdfunding, fintech, and democratizing capital</li>
-                </ul>
-              </div>
-            </div>
-            <div class="pub-links" style="margin-top: 24px;">
-              <a href="#contact" class="pub-link">Request Speaking Engagement</a>
-            </div>
-          </div>
+        <script>
+          (async function() {
+            const container = document.querySelector('#podcasts-webinars-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('podcasts_webinars.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.venue} · ${item.date}</p>
+                  <p>${item.description}</p>
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading podcasts webinars:', error);
+            }
+          })();
+        </script>
+
+        <!-- Speaking Topics - loaded from speaking_info.csv and speaking_topics.csv -->
+        <div style="margin-top: 60px;" id="speaking-topics-section">
+          <!-- Content loaded from speaking_info.csv and speaking_topics.csv -->
         </div>
+
+        <script>
+          (async function() {
+            const container = document.querySelector('#speaking-topics-section');
+            if (!container) return;
+
+            try {
+              // Load speaking info
+              const infoResponse = await fetch('speaking_info.csv', { cache: 'no-store' });
+              const infoCsv = await infoResponse.text();
+              const infoLines = infoCsv.trim().split('\n');
+              const info = {};
+              for (let i = 1; i < infoLines.length; i++) {
+                const commaIndex = infoLines[i].indexOf(',');
+                if (commaIndex > -1) {
+                  const key = infoLines[i].substring(0, commaIndex).replace(/^"|"$/g, '');
+                  let value = infoLines[i].substring(commaIndex + 1);
+                  if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+                  info[key] = value;
+                }
+              }
+
+              // Load speaking topics
+              const topicsResponse = await fetch('speaking_topics.csv', { cache: 'no-store' });
+              const topicsCsv = await topicsResponse.text();
+              const topicsLines = topicsCsv.trim().split('\n');
+              const col1Topics = [], col2Topics = [];
+
+              for (let i = 1; i < topicsLines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < topicsLines[i].length; j++) {
+                  const char = topicsLines[i][j];
+                  if (char === '"') inQuotes = !inQuotes;
+                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
+                  else current += char;
+                }
+                values.push(current.replace(/^"|"$/g, ''));
+
+                const topic = { topic: values[0], description: values[1], column: values[2] };
+                if (topic.column === '1') col1Topics.push(topic);
+                else col2Topics.push(topic);
+              }
+
+              const col1Html = col1Topics.map(t => `<li><strong>${t.topic}:</strong> ${t.description}</li>`).join('');
+              const col2Html = col2Topics.map(t => `<li><strong>${t.topic}:</strong> ${t.description}</li>`).join('');
+
+              container.innerHTML = `
+                <div class="card">
+                  <h3>Available for Speaking Engagements</h3>
+                  <p>${info.intro || ''}</p>
+                  <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 8px;">${info.section_title || 'Speaking Topics'}</h4>
+                  <div class="grid cols-2" style="margin-top: 20px;">
+                    <div><ul>${col1Html}</ul></div>
+                    <div><ul>${col2Html}</ul></div>
+                  </div>
+                  <div class="pub-links" style="margin-top: 24px;">
+                    <a href="${info.cta_link || '#contact'}" class="pub-link">${info.cta_label || 'Request Speaking Engagement'}</a>
+                  </div>
+                </div>
+              `;
+            } catch (error) {
+              console.error('Error loading speaking topics:', error);
+            }
+          })();
+        </script>
       </div>
     </section>
 
     <!-- Teaching -->
     <section id="teaching">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Teaching</h2>
-          <p class="section-subtitle">Hands-on cybersecurity education preparing students for industry challenges</p>
+        <div class="section-header" id="teaching-header">
+          <!-- Header loaded from section_headers.csv -->
         </div>
 
-        <!-- CAE Designations -->
-        <div style="margin-bottom: 48px;">
-          <div class="card">
-            <h3>CAE Designations</h3>
-            <p>NYU Tandon holds prestigious National Security Agency (NSA) and Department of Homeland Security (DHS) designations as a Center of Academic Excellence in Cyber Defense (CAE-CD) and Cyber Operations (CAE-CO), recognizing our comprehensive cybersecurity curriculum and research excellence.</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">
-              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Defense</div>
-              <div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">CAE-Cyber Operations</div>
-            </div>
-          </div>
+        <!-- CAE Designations - loaded from cae_designations.csv -->
+        <div style="margin-bottom: 48px;" id="cae-designations-container">
+          <!-- Content loaded from cae_designations.csv -->
         </div>
+
+        <script>
+          // Load teaching section header
+          (async function() {
+            const headerContainer = document.querySelector('#teaching-header');
+            try {
+              const response = await fetch('section_headers.csv', { cache: 'no-store' });
+              if (response.ok) {
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                for (let i = 1; i < lines.length; i++) {
+                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+                  if (values[0] === 'teaching') {
+                    headerContainer.innerHTML = `
+                      <h2 class="section-title">${values[1]}</h2>
+                      <p class="section-subtitle">${values[2]}</p>
+                    `;
+                    break;
+                  }
+                }
+              }
+            } catch (e) { console.error('Error loading teaching header:', e); }
+          })();
+
+          // Load CAE designations
+          (async function() {
+            const container = document.querySelector('#cae-designations-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('cae_designations.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              if (lines.length > 1) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[1].length; j++) {
+                  const char = lines[1][j];
+                  if (char === '"') inQuotes = !inQuotes;
+                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
+                  else current += char;
+                }
+                values.push(current.replace(/^"|"$/g, ''));
+
+                const description = values[0];
+                const designations = values[1] ? values[1].split('|') : [];
+
+                const designationsHtml = designations.map(d =>
+                  `<div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">${d}</div>`
+                ).join('');
+
+                container.innerHTML = `
+                  <div class="card">
+                    <h3>CAE Designations</h3>
+                    <p>${description}</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">${designationsHtml}</div>
+                  </div>
+                `;
+              }
+            } catch (error) {
+              console.error('Error loading CAE designations:', error);
+            }
+          })();
+        </script>
 
         <!-- View Tabs -->
         <div class="view-tabs">
@@ -789,47 +1232,91 @@
       </div>
     </section>
 
-    <!-- Labs & Centers -->
+    <!-- Labs & Centers - loaded from labs_centers.csv -->
     <section id="labs" class="accent-bg">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Labs & Centers</h2>
-          <p class="section-subtitle">Leading cybersecurity research and education initiatives</p>
+        <div class="section-header" id="labs-header">
+          <!-- Header loaded from section_headers.csv -->
         </div>
 
-        <div class="grid cols-2">
-          <div class="card">
-            <h3>OSIRIS Lab</h3>
-            <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">NYU Tandon · Faculty Director</p>
-            <p>OSIRIS (Organization for Security and Intelligence Research In Systems) is NYU's student-run offensive security research lab. Students compete in international CTF competitions, conduct independent security research, and develop cutting-edge security tools.</p>
-            <h4>Lab Activities</h4>
-            <ul>
-              <li>Capture The Flag (CTF) competitions and training</li>
-              <li>Independent security research projects</li>
-              <li>Tool development and open-source contributions</li>
-              <li>Weekly seminars and workshops</li>
-              <li>Collaboration with industry security teams</li>
-            </ul>
-            <p style="margin-top: 16px;"><a href="https://osiris.cyber.nyu.edu/" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">Explore OSIRIS Lab →</a></p>
-          </div>
-
-          <div class="card">
-            <h3>Center for Cyber Security (CCS)</h3>
-            <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">NYU Tandon · Faculty Member</p>
-            <p>The Center for Cybersecurity at NYU Tandon is a hub for interdisciplinary research, education, and public engagement in cybersecurity. The center brings together faculty, students, and industry partners to address critical security challenges.</p>
-            <h4>Center Focus Areas</h4>
-            <ul>
-              <li>Applied cryptography and secure systems</li>
-              <li>Network and software security</li>
-              <li>Privacy-enhancing technologies</li>
-              <li>Security policy and governance</li>
-              <li>Industry partnerships and workforce development</li>
-            </ul>
-            <p style="margin-top: 16px;"><a href="https://cyber.nyu.edu/" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">Visit CCS Website →</a></p>
-          </div>
+        <div class="grid cols-2" id="labs-centers-container">
+          <!-- Content loaded from labs_centers.csv -->
         </div>
       </div>
     </section>
+
+    <script>
+      // Load labs section header
+      (async function() {
+        const headerContainer = document.querySelector('#labs-header');
+        try {
+          const response = await fetch('section_headers.csv', { cache: 'no-store' });
+          if (response.ok) {
+            const csvText = await response.text();
+            const lines = csvText.trim().split('\n');
+            for (let i = 1; i < lines.length; i++) {
+              const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+              if (values[0] === 'labs') {
+                headerContainer.innerHTML = `
+                  <h2 class="section-title">${values[1]}</h2>
+                  <p class="section-subtitle">${values[2]}</p>
+                `;
+                break;
+              }
+            }
+          }
+        } catch (e) { console.error('Error loading labs header:', e); }
+      })();
+
+      // Load labs and centers
+      (async function() {
+        const container = document.querySelector('#labs-centers-container');
+        if (!container) return;
+
+        try {
+          const response = await fetch('labs_centers.csv', { cache: 'no-store' });
+          const csvText = await response.text();
+          const lines = csvText.trim().split('\n');
+          const headers = lines[0].split(',');
+
+          container.innerHTML = '';
+          for (let i = 1; i < lines.length; i++) {
+            const values = [];
+            let current = '';
+            let inQuotes = false;
+            for (let j = 0; j < lines[i].length; j++) {
+              const char = lines[i][j];
+              const nextChar = lines[i][j + 1];
+              if (char === '"') {
+                if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                else inQuotes = !inQuotes;
+              } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+              else current += char;
+            }
+            values.push(current);
+
+            const item = {};
+            headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+            const activities = item.activities ? item.activities.split('|').map(a => `<li>${a}</li>`).join('') : '';
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <h3>${item.name}</h3>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.role}</p>
+              <p>${item.description}</p>
+              <h4>${item.name.includes('Lab') ? 'Lab Activities' : 'Center Focus Areas'}</h4>
+              <ul>${activities}</ul>
+              <p style="margin-top: 16px;"><a href="${item.link_url}" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">${item.link_text}</a></p>
+            `;
+            container.appendChild(card);
+          }
+        } catch (error) {
+          console.error('Error loading labs centers:', error);
+        }
+      })();
+    </script>
 
     <!-- Research -->
     <section id="research">
@@ -1034,169 +1521,262 @@
           </script>
         </div>
 
-        <!-- Patents -->
+        <!-- Patents - loaded from patents.csv -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Patents</h3>
           <p style="text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 16px;">Foundational patents in crowdfunding infrastructure cited by major fintech companies including Square, Capital One, 3M, and cryptocurrency platforms</p>
 
-          <div class="grid cols-2">
-            <div class="publication">
-              <div class="pub-title">Offer Presentation for Crowdfunding</div>
-              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece, Vladimir Vukicevic</div>
-              <div class="pub-venue">USPTO Patent Application 20140040157 · Filed 2014 · RocketHub Inc.</div>
-              <p class="pub-abstract">Patent covering innovative crowdfunding platform architecture, including secure payment processing, project validation mechanisms, offer presentation systems, and community engagement systems for creative and entrepreneurial ventures.</p>
-              <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 108+ forward citations (as of 2025)</p>
-              <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Square (15+ patents on merchant financing), Capital One (social discovery), 3M (internal crowdfunding), Winklevoss/Gemini (20+ crypto patents), Givling, Angelsoft, and numerous fintech innovations</p>
-              <div class="pub-links">
-                <a href="https://patents.justia.com/patent/20140040157" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  📄 View Patent Application
-                </a>
-              </div>
-            </div>
-
-            <div class="publication">
-              <div class="pub-title">Beneficiary Crowdsourcing</div>
-              <div class="pub-authors">Alon Hillel-Tuch, Brian Meece</div>
-              <div class="pub-venue">USPTO Patent Application 20140279645A1 · Filed 2013 · RocketHub Inc.</div>
-              <p class="pub-abstract">Patent describing systems and methods for equity crowdfunding platforms that ensure regulatory compliance with SEC, FINRA, and JOBS Act requirements while maintaining user experience and market efficiency. Includes beneficiary-focused crowdsourcing mechanisms.</p>
-              <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">📊 Impact: 12+ forward citations</p>
-              <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> Shanghai Baichou Financial (secondary crowdfunding markets), Heyue Group (fintech platforms), BitPagos/Ripio (crypto payments), and compliance-focused crowdfunding systems</p>
-              <div class="pub-links">
-                <a href="https://patents.google.com/?inventor=Alon+Hillel-Tuch" class="pub-link" target="_blank" rel="noopener noreferrer">
-                  📄 View on Google Patents
-                </a>
-              </div>
-            </div>
+          <div class="grid cols-2" id="patents-container">
+            <!-- Content loaded from patents.csv -->
           </div>
         </div>
+
+        <script>
+          (async function() {
+            const container = document.querySelector('#patents-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('patents.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const pub = document.createElement('div');
+                pub.className = 'publication';
+                pub.innerHTML = `
+                  <div class="pub-title">${item.title}</div>
+                  <div class="pub-authors">${item.authors}</div>
+                  <div class="pub-venue">${item.venue}</div>
+                  <p class="pub-abstract">${item.abstract}</p>
+                  <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">${item.impact}</p>
+                  <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> ${item.cited_by}</p>
+                  <div class="pub-links">
+                    <a href="${item.link_url}" class="pub-link" target="_blank" rel="noopener noreferrer">${item.link_text}</a>
+                  </div>
+                `;
+                container.appendChild(pub);
+              }
+            } catch (error) {
+              console.error('Error loading patents:', error);
+            }
+          })();
+        </script>
       </div>
     </section>
 
-    <!-- Industry -->
+    <!-- Industry - loaded from industry_companies.csv -->
     <section id="industry" class="accent-bg">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Industry Impact</h2>
-          <p class="section-subtitle">Entrepreneurship, venture capital, and technology policy leadership</p>
+        <div class="section-header" id="industry-header">
+          <!-- Header loaded from section_headers.csv -->
         </div>
 
-        <div class="grid cols-2">
-          <div class="card industry-card">
-            <h3>RocketHub · Co-Founder, CFO & CTO</h3>
-            <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">2010 - 2015 · Acquired</p>
-            <p>Co-founded one of the first global crowdfunding platforms, pioneering equity crowdfunding under the JOBS Act. Facilitated over $50M in funding across 30,000+ projects serving 500K+ users.</p>
-            <h4>Key Achievements</h4>
-            <ul>
-              <li>Built secure fintech platform with zero major security incidents</li>
-              <li>Developed compliance frameworks for emerging crowdfunding regulations</li>
-              <li>Designed fraud detection and AML systems</li>
-              <li>Led partnerships with White House, U.S. State Department, Microsoft, Cisco, Chrysler, and Fulbright Foundation</li>
-              <li>Successfully exited through acquisition in 2015</li>
-            </ul>
-          </div>
-          <div class="card industry-card">
-            <h3>Stacked Capital · Managing Partner</h3>
-            <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">2015 - Present</p>
-            <p>Early-stage venture capital focused on deep tech: hardware, AI infrastructure, and resilient systems. Invested in companies building critical technologies at the intersection of security, scalability, and societal impact.</p>
-            <h4>Investment Focus</h4>
-            <ul>
-              <li>Hardware security and embedded systems</li>
-              <li>AI/ML infrastructure and operational safety</li>
-              <li>Critical infrastructure resilience</li>
-              <li>Developer tools and security-by-default platforms</li>
-            </ul>
-          </div>
+        <div class="grid cols-2" id="industry-companies-container">
+          <!-- Content loaded from industry_companies.csv -->
         </div>
 
+        <script>
+          // Load industry section header
+          (async function() {
+            const headerContainer = document.querySelector('#industry-header');
+            try {
+              const response = await fetch('section_headers.csv', { cache: 'no-store' });
+              if (response.ok) {
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                for (let i = 1; i < lines.length; i++) {
+                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+                  if (values[0] === 'industry') {
+                    headerContainer.innerHTML = `
+                      <h2 class="section-title">${values[1]}</h2>
+                      <p class="section-subtitle">${values[2]}</p>
+                    `;
+                    break;
+                  }
+                }
+              }
+            } catch (e) { console.error('Error loading industry header:', e); }
+          })();
+
+          // Load industry companies
+          (async function() {
+            const container = document.querySelector('#industry-companies-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('industry_companies.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const achievements = item.achievements ? item.achievements.split('|').map(a => `<li>${a}</li>`).join('') : '';
+                const achievementsTitle = item.name.includes('RocketHub') ? 'Key Achievements' : 'Investment Focus';
+
+                const card = document.createElement('div');
+                card.className = 'card industry-card';
+                card.innerHTML = `
+                  <h3>${item.name} · ${item.role}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.dates}</p>
+                  <p>${item.description}</p>
+                  <h4>${achievementsTitle}</h4>
+                  <ul>${achievements}</ul>
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading industry companies:', error);
+            }
+          })();
+        </script>
+
+        <!-- Partnership Projects - loaded from partnership_projects.csv -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Partnership Projects</h3>
 
-          <div class="grid cols-2">
-            <article class="card">
-              <h3>Beacon: Disaster Response Platform</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Salesforce Partnership</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/367493508" title="Beacon - Disaster Response Platform" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Collaborated with Salesforce to develop Beacon, a technology platform for disaster response and resilience. Built critical communication infrastructure enabling coordination between emergency responders, relief organizations, and affected communities during crisis situations. Integrated secure data systems to maintain operational continuity under adverse conditions.</p>
-            </article>
-
-            <article class="card">
-              <h3>Ovation TV Creative Studio</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Ovation × will.i.am</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/148018050" title="Ovation TV Creative Studio Partnership" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Partnered with Ovation TV and will.i.am to launch a creative studio initiative supporting emerging artists and innovators. Built crowdfunding infrastructure and digital platform connecting creators with audiences and funding opportunities.</p>
-            </article>
-
-            <article class="card">
-              <h3>Chrysler Innovation Challenge</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">Chrysler Group</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/133416076" title="Chrysler Innovation Challenge" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Designed and executed Chrysler's innovation crowdfunding challenge, identifying and supporting automotive technology entrepreneurs. Platform enabled community-driven innovation in vehicle design, sustainability, and manufacturing processes.</p>
-            </article>
-
-            <article class="card">
-              <h3>A&E Network: Project Startup</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">A&E Television</p>
-              <div class="video-wrapper">
-                <iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="https://player.vimeo.com/video/63913374" title="A&E Project Startup" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-              </div>
-              <p>Technology partner for A&E's Project Startup, a reality show featuring entrepreneurs competing for funding and mentorship. Built the crowdfunding platform integrating viewer engagement with real capital deployment.</p>
-            </article>
+          <div class="grid cols-2" id="partnership-large-container">
+            <!-- Large cards with videos loaded from partnership_projects.csv -->
           </div>
 
           <div style="margin-top: 40px;">
-            <div class="grid cols-3">
-              <div class="card">
-                <h3>YALI - Young African Leaders Initiative</h3>
-                <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">White House × U.S. Department of State</p>
-                <p>Selected as technology partner for President Obama's Young African Leaders Initiative, building crowdfunding and entrepreneurship programs supporting the next generation of African innovators and changemakers across the continent.</p>
-              </div>
-
-              <div class="card">
-                <h3>Venture for America</h3>
-                <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">American Express Innovation Fund</p>
-                <p>Partnered with Venture for America and American Express to support recent college graduates working in startups. Created funding mechanisms and mentorship programs connecting talented entrepreneurs with resources and capital.</p>
-              </div>
-
-              <div class="card">
-                <h3>FreshDirect: Next Big Food Thing</h3>
-                <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">FreshDirect Partnership</p>
-                <p>Developed "Next Big Food Thing" crowdfunding initiative with FreshDirect, enabling food entrepreneurs and culinary innovators to bring new products to market through community-backed validation and distribution partnerships.</p>
-              </div>
+            <div class="grid cols-3" id="partnership-small-container">
+              <!-- Small cards loaded from partnership_projects.csv -->
             </div>
           </div>
         </div>
 
+        <script>
+          (async function() {
+            const largeContainer = document.querySelector('#partnership-large-container');
+            const smallContainer = document.querySelector('#partnership-small-container');
+            if (!largeContainer || !smallContainer) return;
+
+            try {
+              const response = await fetch('partnership_projects.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              largeContainer.innerHTML = '';
+              smallContainer.innerHTML = '';
+
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('article');
+                card.className = 'card';
+
+                let videoHtml = '';
+                if (item.video_src) {
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                }
+
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.partner}</p>
+                  ${videoHtml}
+                  <p>${item.description}</p>
+                `;
+
+                if (item.card_size === 'large') {
+                  largeContainer.appendChild(card);
+                } else {
+                  smallContainer.appendChild(card);
+                }
+              }
+            } catch (error) {
+              console.error('Error loading partnership projects:', error);
+            }
+          })();
+        </script>
+
+        <!-- Partnerships & Collaborations - loaded from partners_list.csv -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 8px;">Partnerships & Collaborations</h3>
           <p style="text-align: center; margin-bottom: 32px; color: var(--text-muted); font-size: 16px;">Collaborated with leading institutions, corporations, and organizations on innovation, entrepreneurship, and technology policy</p>
 
-          <div class="card">
-            <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">U.S. Department of State</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">White House</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Microsoft</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Cisco</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Fulbright Foundation</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">American Express</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Goldman Sachs</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Chrysler</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Whirlpool</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Gibson Guitars</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Rémy Martin</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Penn State</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">University of Utah</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Popular Science</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Bon Appétit</span>
-              <span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">Prezi</span>
-            </div>
+          <div class="card" id="partners-list-container">
+            <!-- Content loaded from partners_list.csv -->
           </div>
         </div>
+
+        <script>
+          (async function() {
+            const container = document.querySelector('#partners-list-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('partners_list.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              let partnersHtml = '';
+              for (let i = 1; i < lines.length; i++) {
+                const name = lines[i].replace(/^"|"$/g, '').trim();
+                if (name) {
+                  partnersHtml += `<span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">${name}</span>`;
+                }
+              }
+
+              container.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">${partnersHtml}</div>`;
+            } catch (error) {
+              console.error('Error loading partners list:', error);
+            }
+          })();
+        </script>
 
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Private Consulting & Advisory</h3>
@@ -1287,183 +1867,379 @@
           </script>
         </div>
 
+        <!-- Additional Career Experience - loaded from career_experience.csv -->
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Additional Career Experience</h3>
 
-          <div class="grid cols-3">
-            <div class="card">
-              <h3>BCMS Corporate</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">2007 - 2011 · Special Situations Manager & Head of Prospect Generation</p>
-              <p>Led 15-person Prospect Generation department, conducting M&A diligence that generated over $600M in offers. Member of North American Strategic Planning Committee. Managed complex special situations analysis and strategic transaction evaluation across multiple industries.</p>
-            </div>
-
-            <div class="card">
-              <h3>PlayerNet</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">2009 - 2010 · Interim CTO</p>
-              <p>Served as Interim Chief Technology Officer, overseeing technology infrastructure, platform architecture, and engineering teams during critical growth phase.</p>
-            </div>
-
-            <div class="card">
-              <h3>HBK Capital Management</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">2007</p>
-              <p>Quantitative trading and portfolio optimization for institutional investment firm managing multi-billion dollar hedge fund assets.</p>
-            </div>
+          <div class="grid cols-3" id="career-experience-container">
+            <!-- Content loaded from career_experience.csv -->
           </div>
         </div>
+
+        <script>
+          (async function() {
+            const container = document.querySelector('#career-experience-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('career_experience.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                  <h3>${item.company}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.dates} · ${item.role}</p>
+                  <p>${item.description}</p>
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading career experience:', error);
+            }
+          })();
+        </script>
       </div>
     </section>
 
-    <!-- Awards & Credentials -->
+    <!-- Awards & Credentials - loaded from credentials.csv -->
     <section id="credentials">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Awards & Credentials</h2>
-          <p class="section-subtitle">Recognition for academic excellence, industry leadership, and innovation</p>
+        <div class="section-header" id="credentials-header">
+          <!-- Header loaded from section_headers.csv -->
         </div>
 
-        <div class="grid cols-2">
-          <div class="card">
-            <h3>Academic Honors & Research Appointments</h3>
-            <ul style="margin-top: 16px;">
-              <li><strong>Academic Excellence Award</strong> — NYU Tandon School of Engineering (2024)</li>
-              <li><strong>Cyber Fellowship</strong> — NYU Tandon School of Engineering (2024)</li>
-              <li><strong>NYU Cyber Fellows Ambassador</strong> — Selected as ambassador for NYU's Cyber Fellows program</li>
-              <li><strong>Research Fellow, Earth Institute</strong> — Columbia University, Advanced Consortium for Cooperation, Conflict, and Complexity (AC4)</li>
-              <li><strong>10 Under 10</strong> — Hamilton College Alumni Achievement Award recognizing outstanding early-career impact</li>
-              <li><strong>Phi Sigma Iota</strong> — International Foreign Language Honor Society</li>
-              <li><strong>IB Excellence Award</strong> — International Baccalaureate Program Distinction</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h3>Professional Certifications & Leadership</h3>
-            <ul style="margin-top: 16px;">
-              <li><strong>U.S. State Department Top Global Partner</strong> — RocketHub recognized as one of 12 top global partners in State of Global Partnerships Report (2015, Secretary John Kerry) for contributions to entrepreneurship and innovation</li>
-              <li><strong>NSA Cyber Operations Certificate</strong> — National Security Agency designation for advanced cyber operations training</li>
-              <li><strong>NSA Cyber Defense Certificate</strong> — National Security Agency designation for cyber defense expertise</li>
-              <li><strong>FINRA Capital Markets Series XVII Leader</strong> — Guest Lecturer on Securities Regulation and Crowdfunding, Award of Recognition from FINRA</li>
-              <li><strong>Six Sigma White & Yellow Belt</strong> — Process improvement and quality management certification</li>
-              <li><strong>Certified Associate Scrum Fundamentals (CASF)</strong> — Agile project management certification</li>
-              <li><strong>Bronze Lion at Cannes</strong> — Team award for virtual currency innovation with Wieden+Kennedy (2013)</li>
-              <li><strong>Board Member</strong> — Crowdfunding Professional Association</li>
-              <li><strong>Board Observer</strong> — Visionary Health</li>
-              <li><strong>Forbes Technology Council</strong> — Founding Council Member contributing expert analysis on AI governance, cybersecurity, and innovation</li>
-              <li><strong>IEEE New York Metropolitan Region</strong> — Professional Member</li>
-              <li><strong>New York Academy of Sciences</strong> — Member</li>
-              <li><strong>Association of Change Management Professionals (ACMP)</strong> — Member</li>
-              <li><strong>Congressional Expert Witness</strong> — Testified before U.S. House Oversight & Reform Committee (2012) and Financial Services Committee (2014)</li>
-            </ul>
-          </div>
+        <div class="grid cols-2" id="credentials-container">
+          <!-- Content loaded from credentials.csv -->
         </div>
 
-        <div style="margin-top: 40px;">
-          <div class="card">
-            <h3 style="text-align: center; margin-bottom: 24px;">Languages</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
-              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">English <span style="color: var(--text-muted); font-weight: 400;">(Native)</span></span>
-              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Dutch <span style="color: var(--text-muted); font-weight: 400;">(Native)</span></span>
-              <span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">Mandarin Chinese <span style="color: var(--text-muted); font-weight: 400;">(Conversational)</span></span>
-            </div>
-          </div>
+        <!-- Languages - loaded from languages.csv -->
+        <div style="margin-top: 40px;" id="languages-container">
+          <!-- Content loaded from languages.csv -->
         </div>
 
-        <div style="margin-top: 40px;">
-          <div class="card">
-            <h3 style="text-align: center; margin-bottom: 24px;">Technical Skills & Expertise</h3>
-
-            <div class="grid cols-2" style="margin-top: 24px;">
-              <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Programming & Development</h4>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Languages:</strong> C/C++, Python, Kotlin, LaTeX</p>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>AI/ML Frameworks:</strong> PyTorch, Keras, TensorFlow, scikit-learn</p>
-              </div>
-
-              <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security Tools & Frameworks</h4>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Testing Tools:</strong> Burp Suite, OWASP ZAP, Metasploit</p>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Cryptographic Libraries:</strong> libsodium, OpenSSL, LibreSSL, WolfCrypt, Bouncy Castle</p>
-              </div>
-
-              <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Security & Risk Frameworks</h4>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Security Frameworks:</strong> MITRE ATT&CK, NIST SSDF, OWASP</p>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Compliance & Regulatory:</strong> PCI DSS, OFAC/AML, CFIUS, FINRA</p>
-              </div>
-
-              <div>
-                <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">Cloud & Infrastructure</h4>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Cloud Platforms:</strong> AWS, Google Cloud, Azure</p>
-                <p style="color: var(--text-muted); line-height: 1.8;"><strong>Specialized Areas:</strong> Hardware Security, Embedded Systems, Secure Protocol Design</p>
-              </div>
-            </div>
-          </div>
+        <!-- Technical Skills - loaded from technical_skills.csv -->
+        <div style="margin-top: 40px;" id="technical-skills-container">
+          <!-- Content loaded from technical_skills.csv -->
         </div>
 
-        <div style="margin-top: 40px;">
-          <div class="card">
-            <h3 style="text-align: center; margin-bottom: 20px;">Education</h3>
-            <div class="grid cols-3" style="margin-top: 24px;">
-              <div style="text-align: center; padding: 20px;">
-                <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">New York University</h4>
-                <p style="color: var(--accent); font-weight: 600;">M.Sc.</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Cybersecurity</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Academic Excellence Award · Cyber Fellowship</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">NSA Cyber Operations & Defense Certificates</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">NYU Cyber Fellows Ambassador</p>
-              </div>
-              <div style="text-align: center; padding: 20px;">
-                <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Columbia University</h4>
-                <p style="color: var(--accent); font-weight: 600;">M.Sc.</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Negotiation & Conflict Resolution</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Research Fellow, Earth Institute (Advanced Consortium for Cooperation, Conflict, and Complexity)</p>
-              </div>
-              <div style="text-align: center; padding: 20px;">
-                <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">Hamilton College</h4>
-                <p style="color: var(--accent); font-weight: 600;">B.A.</p>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Economics, Chinese Culture & Language</p>
-                <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px; font-style: italic;">Phi Sigma Iota Honor Society</p>
-              </div>
-            </div>
-          </div>
+        <!-- Education - loaded from education.csv -->
+        <div style="margin-top: 40px;" id="education-container">
+          <!-- Content loaded from education.csv -->
         </div>
+
+        <script>
+          // Load credentials section header
+          (async function() {
+            const headerContainer = document.querySelector('#credentials-header');
+            try {
+              const response = await fetch('section_headers.csv', { cache: 'no-store' });
+              if (response.ok) {
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                for (let i = 1; i < lines.length; i++) {
+                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+                  if (values[0] === 'credentials') {
+                    headerContainer.innerHTML = `
+                      <h2 class="section-title">${values[1]}</h2>
+                      <p class="section-subtitle">${values[2]}</p>
+                    `;
+                    break;
+                  }
+                }
+              }
+            } catch (e) { console.error('Error loading credentials header:', e); }
+          })();
+
+          // Load credentials
+          (async function() {
+            const container = document.querySelector('#credentials-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('credentials.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  const nextChar = lines[i][j + 1];
+                  if (char === '"') {
+                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
+                    else inQuotes = !inQuotes;
+                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
+                  else current += char;
+                }
+                values.push(current);
+
+                const category = (values[0] || '').replace(/^"|"$/g, '');
+                const items = (values[1] || '').replace(/^"|"$/g, '').split('|');
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                  <h3>${category}</h3>
+                  <ul style="margin-top: 16px;">${items.map(item => `<li>${item}</li>`).join('')}</ul>
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading credentials:', error);
+            }
+          })();
+
+          // Load languages
+          (async function() {
+            const container = document.querySelector('#languages-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('languages.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              let languagesHtml = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+                languagesHtml += `<span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">${values[0]} <span style="color: var(--text-muted); font-weight: 400;">(${values[1]})</span></span>`;
+              }
+
+              container.innerHTML = `
+                <div class="card">
+                  <h3 style="text-align: center; margin-bottom: 24px;">Languages</h3>
+                  <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">${languagesHtml}</div>
+                </div>
+              `;
+            } catch (error) {
+              console.error('Error loading languages:', error);
+            }
+          })();
+
+          // Load technical skills
+          (async function() {
+            const container = document.querySelector('#technical-skills-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('technical_skills.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              let skillsHtml = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  if (char === '"') inQuotes = !inQuotes;
+                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
+                  else current += char;
+                }
+                values.push(current.replace(/^"|"$/g, ''));
+
+                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${item}</p>`).join('') : '';
+                skillsHtml += `
+                  <div>
+                    <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">${values[1]}</h4>
+                    ${items}
+                  </div>
+                `;
+              }
+
+              container.innerHTML = `
+                <div class="card">
+                  <h3 style="text-align: center; margin-bottom: 24px;">Technical Skills & Expertise</h3>
+                  <div class="grid cols-2" style="margin-top: 24px;">${skillsHtml}</div>
+                </div>
+              `;
+            } catch (error) {
+              console.error('Error loading technical skills:', error);
+            }
+          })();
+
+          // Load education
+          (async function() {
+            const container = document.querySelector('#education-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('education.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              let educationHtml = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  if (char === '"') inQuotes = !inQuotes;
+                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
+                  else current += char;
+                }
+                values.push(current.replace(/^"|"$/g, ''));
+
+                const additional = values[4] ? values[4].split('|').map(a => `<p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">${a}</p>`).join('') : '';
+
+                educationHtml += `
+                  <div style="text-align: center; padding: 20px;">
+                    <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">${values[0]}</h4>
+                    <p style="color: var(--accent); font-weight: 600;">${values[1]}</p>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">${values[2]}</p>
+                    ${values[3] ? `<p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">${values[3]}</p>` : ''}
+                    ${additional}
+                  </div>
+                `;
+              }
+
+              container.innerHTML = `
+                <div class="card">
+                  <h3 style="text-align: center; margin-bottom: 20px;">Education</h3>
+                  <div class="grid cols-3" style="margin-top: 24px;">${educationHtml}</div>
+                </div>
+              `;
+            } catch (error) {
+              console.error('Error loading education:', error);
+            }
+          })();
+        </script>
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact - loaded from contact_info.csv and professional_profiles.csv -->
     <section id="contact">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Contact</h2>
-          <p class="section-subtitle">Feel free to reach out for speaking, collaboration, or consulting opportunities</p>
+        <div class="section-header" id="contact-header">
+          <!-- Header loaded from section_headers.csv -->
         </div>
 
-        <div class="grid cols-2">
-          <div class="card">
-            <h3>Academic & Research</h3>
-            <p>For research collaboration, student projects, or academic partnerships:</p>
-            <p style="margin-top: 16px;"><strong>Email:</strong> ah5647 [at] nyu [dot] edu</p>
-            <p><strong>Office:</strong> NYU Tandon School of Engineering</p>
-            <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include a brief description of your research interests, goals, and timeline.</p>
-          </div>
-
-          <div class="card">
-            <h3>Industry & Consulting</h3>
-            <p>For consulting engagements, speaking invitations, or industry partnerships:</p>
-            <p style="margin-top: 16px;"><strong>Email:</strong> alon [dot] hilleltuch [at] gmail [dot] com</p>
-            <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">Please include your organization, project scope, constraints, and expected outcomes.</p>
-          </div>
+        <div class="grid cols-2" id="contact-info-container">
+          <!-- Content loaded from contact_info.csv -->
         </div>
 
-        <div class="card" style="margin-top: 32px;">
-          <h3 style="text-align: center; margin-bottom: 24px;">Professional Profiles</h3>
-          <div class="cta" style="justify-content: center;">
-            <a href="https://engineering.nyu.edu/faculty/alon-hillel-tuch" target="_blank" class="btn secondary" rel="noopener noreferrer">NYU Profile</a>
-            <a href="https://scholar.google.com/citations?hl=en&user=yxEpRBIAAAAJ" target="_blank" class="btn secondary" rel="noopener noreferrer">Google Scholar</a>
-            <a href="https://www.linkedin.com/in/ahillelt/" target="_blank" class="btn secondary" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://github.com/ahillelt" target="_blank" class="btn secondary" rel="noopener noreferrer">GitHub</a>
-            <a href="https://x.com/ahillelt" target="_blank" class="btn secondary" rel="noopener noreferrer">X (Twitter)</a>
-          </div>
+        <div class="card" style="margin-top: 32px;" id="professional-profiles-container">
+          <!-- Content loaded from professional_profiles.csv -->
         </div>
+
+        <script>
+          // Load contact section header
+          (async function() {
+            const headerContainer = document.querySelector('#contact-header');
+            try {
+              const response = await fetch('section_headers.csv', { cache: 'no-store' });
+              if (response.ok) {
+                const csvText = await response.text();
+                const lines = csvText.trim().split('\n');
+                for (let i = 1; i < lines.length; i++) {
+                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+                  if (values[0] === 'contact') {
+                    headerContainer.innerHTML = `
+                      <h2 class="section-title">${values[1]}</h2>
+                      <p class="section-subtitle">${values[2]}</p>
+                    `;
+                    break;
+                  }
+                }
+              }
+            } catch (e) { console.error('Error loading contact header:', e); }
+          })();
+
+          // Load contact info
+          (async function() {
+            const container = document.querySelector('#contact-info-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('contact_info.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+              const headers = lines[0].split(',');
+
+              container.innerHTML = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let j = 0; j < lines[i].length; j++) {
+                  const char = lines[i][j];
+                  if (char === '"') inQuotes = !inQuotes;
+                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
+                  else current += char;
+                }
+                values.push(current.replace(/^"|"$/g, ''));
+
+                const item = {};
+                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = values[idx] || '');
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p>${item.description}</p>
+                  <p style="margin-top: 16px;"><strong>${item.email_label}:</strong> ${item.email}</p>
+                  ${item.office ? `<p><strong>Office:</strong> ${item.office}</p>` : ''}
+                  <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">${item.note}</p>
+                `;
+                container.appendChild(card);
+              }
+            } catch (error) {
+              console.error('Error loading contact info:', error);
+            }
+          })();
+
+          // Load professional profiles
+          (async function() {
+            const container = document.querySelector('#professional-profiles-container');
+            if (!container) return;
+
+            try {
+              const response = await fetch('professional_profiles.csv', { cache: 'no-store' });
+              const csvText = await response.text();
+              const lines = csvText.trim().split('\n');
+
+              let profilesHtml = '';
+              for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
+                profilesHtml += `<a href="${values[1]}" target="_blank" class="btn secondary" rel="noopener noreferrer">${values[0]}</a>`;
+              }
+
+              container.innerHTML = `
+                <h3 style="text-align: center; margin-bottom: 24px;">Professional Profiles</h3>
+                <div class="cta" style="justify-content: center;">${profilesHtml}</div>
+              `;
+            } catch (error) {
+              console.error('Error loading professional profiles:', error);
+            }
+          })();
+        </script>
       </div>
     </section>
   </main>
