@@ -1,0 +1,5 @@
+category,title,items
+1,"Programming & Development","<strong>Languages:</strong> C/C++, Python, Kotlin, LaTeX|<strong>AI/ML Frameworks:</strong> PyTorch, Keras, TensorFlow, scikit-learn"
+2,"Security Tools & Frameworks","<strong>Testing Tools:</strong> Burp Suite, OWASP ZAP, Metasploit|<strong>Cryptographic Libraries:</strong> libsodium, OpenSSL, LibreSSL, WolfCrypt, Bouncy Castle"
+3,"Security & Risk Frameworks","<strong>Security Frameworks:</strong> MITRE ATT&CK, NIST SSDF, OWASP|<strong>Compliance & Regulatory:</strong> PCI DSS, OFAC/AML, CFIUS, FINRA"
+4,"Cloud & Infrastructure","<strong>Cloud Platforms:</strong> AWS, Google Cloud, Azure|<strong>Specialized Areas:</strong> Hardware Security, Embedded Systems, Secure Protocol Design"
