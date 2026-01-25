@@ -1,8 +1,8 @@
 year,semester,course_title,enrollment,role
-2026,Spring,Application Security,,Faculty
+2026,Spring,Application Security,145,Faculty
 2026,Spring,AI Governance,,Faculty
-2026,Spring,Cyber Resiliency Management,,Faculty
-2026,Spring,Information Systems Security Engineering and Management,,Faculty
+2026,Spring,Cyber Resiliency Management,10,Faculty
+2026,Spring,Information Systems Security Engineering and Management,20,Faculty
 2025,Fall,Application Security,89,Faculty
 2025,Fall,Computer Networking,134,Faculty
 2025,Summer,Computer Networking,40,Faculty
