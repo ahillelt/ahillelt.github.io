@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is **Alon Hillel-Tuch's professional portfolio website** - a static GitHub Pages site showcasing academic credentials, cybersecurity/AI governance expertise, research publications, speaking engagements, and industry experience.
+This is **Alon Hillel-Tuch's professional portfolio website** - a static GitHub Pages site showcasing academic credentials, cybersecurity/AI governance expertise, research publications, speaking engagements, and industry experience. target audience is universities & colleges, industry professionals, and expert witness opportunities. 
 
 **Key Facts:**
 - **Type:** Static single-page website (no build process, no frameworks)
@@ -152,6 +152,7 @@ Push to `main` branch triggers automatic GitHub Pages deployment. No build step 
 - Preserve accessibility features (ARIA, semantic HTML)
 - Test on mobile viewports
 - Follow the established CSV format conventions
+- Maintain strong cyber security practices
 
 ### Don'ts
 - Don't hardcode content in HTML (use CSVs)
