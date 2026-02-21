@@ -1,11 +1,18 @@
     // ============================================================================
-    // SECURITY: HTML Escaping Function (Prevent XSS)
+    // SECURITY: HTML Escaping and URL Sanitization (Prevent XSS)
     // ============================================================================
     function escapeHtml(text) {
       if (text === null || text === undefined) return '';
       const div = document.createElement('div');
       div.textContent = String(text);
       return div.innerHTML;
+    }
+
+    function sanitizeUrl(url) {
+      if (!url) return '#';
+      const trimmed = String(url).trim();
+      if (/^\s*(javascript|data|vbscript)\s*:/i.test(trimmed)) return '#';
+      return trimmed;
     }
 
     // ============================================================================
@@ -304,6 +311,21 @@
         event.target.classList.add('active');
         event.target.setAttribute('aria-pressed', 'true');
       }
+    }
+
+    // Switch between year filters in course details view
+    function switchYear(year) {
+      document.querySelectorAll('.year-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-pressed', 'false');
+      });
+      // Find and activate the clicked tab
+      document.querySelectorAll('.year-tab').forEach(tab => {
+        if (tab.textContent.trim() === year || (year === 'all' && tab.textContent.trim() === 'All Years')) {
+          tab.classList.add('active');
+          tab.setAttribute('aria-pressed', 'true');
+        }
+      });
     }
 
     function renderCourses(courseHistory, courseCatalog) {
