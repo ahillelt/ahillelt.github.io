@@ -188,6 +188,24 @@
     </section>
 
     <script>
+      // SECURITY: Global HTML escaping and URL sanitization utilities
+      // Defined early so all inline scripts can use them
+      function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+      }
+      function sanitizeUrl(url) {
+        if (!url) return '#';
+        const trimmed = String(url).trim();
+        // Block dangerous protocols
+        if (/^\s*(javascript|data|vbscript)\s*:/i.test(trimmed)) return '#';
+        return trimmed;
+      }
+    </script>
+
+    <script>
       // Load hero content from CSV
       (async function() {
         const container = document.querySelector('#hero-container');
@@ -215,23 +233,23 @@
           }
 
           const chips = data.chips ? data.chips.split('|').map(chip =>
-            `<span class="chip">${chip}</span>`
+            `<span class="chip">${escapeHtml(chip)}</span>`
           ).join('') : '';
 
           container.innerHTML = `
             <div class="hero-text">
-              <span class="eyebrow">${data.eyebrow || ''}</span>
-              <h1>${data.title || ''}</h1>
-              <p class="tagline">${data.tagline || ''}</p>
+              <span class="eyebrow">${escapeHtml(data.eyebrow || '')}</span>
+              <h1>${escapeHtml(data.title || '')}</h1>
+              <p class="tagline">${escapeHtml(data.tagline || '')}</p>
               <div class="chips">${chips}</div>
               <div class="cta">
-                <a href="${data.cta_primary_link || '#contact'}" class="btn primary">${data.cta_primary_text || 'Contact'}</a>
-                <a href="${data.cta_secondary_link || '#'}" target="_blank" class="btn secondary" rel="noopener noreferrer">${data.cta_secondary_text || ''}</a>
+                <a href="${sanitizeUrl(data.cta_primary_link || '#contact')}" class="btn primary">${escapeHtml(data.cta_primary_text || 'Contact')}</a>
+                <a href="${sanitizeUrl(data.cta_secondary_link || '#')}" target="_blank" class="btn secondary" rel="noopener noreferrer">${escapeHtml(data.cta_secondary_text || '')}</a>
               </div>
             </div>
             <div class="portrait">
-              <img src="${data.image_src || 'headshot2.png'}"
-                   alt="${data.image_alt || 'Alon Hillel-Tuch'}"
+              <img src="${sanitizeUrl(data.image_src || 'headshot2.png')}"
+                   alt="${escapeHtml(data.image_alt || 'Alon Hillel-Tuch')}"
                    width="800" height="800" fetchpriority="high" decoding="async"
                    style="width: 100%; height: 100%; object-fit: cover;" />
             </div>
@@ -257,11 +275,39 @@
         if (!container) return;
 
         try {
-          const response = await fetch('stats.csv', { cache: 'no-store' });
-          if (!response.ok) throw new Error('Failed to load stats');
+          // Fetch stats.csv and courses_history.csv in parallel
+          const [statsResponse, coursesResponse] = await Promise.all([
+            fetch('stats.csv', { cache: 'no-store' }),
+            fetch('courses_history.csv', { cache: 'no-store' })
+          ]);
 
-          const csvText = await response.text();
+          if (!statsResponse.ok) throw new Error('Failed to load stats');
+
+          const csvText = await statsResponse.text();
           const lines = csvText.trim().split('\n');
+
+          // Calculate dynamic faculty student count from courses_history.csv
+          let dynamicStudentCount = null;
+          if (coursesResponse.ok) {
+            const coursesCsv = await coursesResponse.text();
+            const courseLines = coursesCsv.trim().split('\n');
+            const courseHeaders = courseLines[0].split(',');
+            const enrollmentIdx = courseHeaders.indexOf('enrollment');
+            const roleIdx = courseHeaders.indexOf('role');
+
+            if (enrollmentIdx !== -1 && roleIdx !== -1) {
+              dynamicStudentCount = 0;
+              for (let i = 1; i < courseLines.length; i++) {
+                const vals = courseLines[i].split(',');
+                const role = (vals[roleIdx] || '').trim();
+                const enrollment = (vals[enrollmentIdx] || '').trim();
+                if (role === 'Faculty') {
+                  const match = enrollment.match(/~?(\d+)/);
+                  if (match) dynamicStudentCount += parseInt(match[1], 10);
+                }
+              }
+            }
+          }
 
           container.innerHTML = '';
           for (let i = 1; i < lines.length; i++) {
@@ -283,11 +329,19 @@
             }
             values.push(current.replace(/^"|"$/g, ''));
 
+            let statNumber = values[0] || '';
+            const statLabel = values[1] || '';
+
+            // Replace static student count with dynamic calculation
+            if (statLabel.toLowerCase().includes('students taught') && dynamicStudentCount !== null) {
+              statNumber = String(dynamicStudentCount);
+            }
+
             const card = document.createElement('div');
             card.className = 'stat-card';
             card.innerHTML = `
-              <div class="stat-number">${values[0] || ''}</div>
-              <div class="stat-label">${values[1] || ''}</div>
+              <div class="stat-number">${escapeHtml(statNumber)}</div>
+              <div class="stat-label">${escapeHtml(statLabel)}</div>
             `;
             container.appendChild(card);
           }
@@ -323,8 +377,8 @@
               const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
               if (values[0] === 'about') {
                 headerContainer.innerHTML = `
-                  <h2 class="section-title">${values[1]}</h2>
-                  <p class="section-subtitle">${values[2]}</p>
+                  <h2 class="section-title">${escapeHtml(values[1])}</h2>
+                  <p class="section-subtitle">${escapeHtml(values[2])}</p>
                 `;
                 break;
               }
@@ -363,12 +417,12 @@
           let academicHtml = '';
           rows.forEach(row => {
             if (['academic_mission', 'education_credentials', 'research_teaching', 'teaching_philosophy'].includes(row.section)) {
-              academicHtml += `<h3>${row.title}</h3>`;
+              academicHtml += `<h3>${escapeHtml(row.title)}</h3>`;
               if (row.section === 'education_credentials') {
                 const items = row.content.split('|');
-                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${escapeHtml(item)}</li>`).join('') + '</ul>';
               } else {
-                academicHtml += `<p>${row.content}</p>`;
+                academicHtml += `<p>${escapeHtml(row.content)}</p>`;
               }
               if (row.section === 'education_credentials') academicHtml += '<h4 style="margin-top: 20px;">Research & Teaching</h4>';
               if (row.section === 'research_teaching') academicHtml += '<h4>Teaching Philosophy</h4>';
@@ -379,12 +433,12 @@
           let industryHtml = '<h3>Industry & Entrepreneurship</h3>';
           rows.forEach(row => {
             if (['career_highlights', 'policy_regulatory', 'consulting_advisory'].includes(row.section)) {
-              industryHtml += `<h4>${row.title}</h4>`;
+              industryHtml += `<h4>${escapeHtml(row.title)}</h4>`;
               if (row.section === 'career_highlights') {
                 const items = row.content.split('|');
-                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${escapeHtml(item)}</li>`).join('') + '</ul>';
               } else {
-                industryHtml += `<p>${row.content}</p>`;
+                industryHtml += `<p>${escapeHtml(row.content)}</p>`;
               }
             }
           });
@@ -450,9 +504,9 @@
 
                 let videoHtml = '';
                 if (item.video_type === 'jwplayer') {
-                  videoHtml = `<div class="video-wrapper"><div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" width="100%" height="100%" frameborder="0" scrolling="auto" title="${item.title}" style="position:absolute;" allowfullscreen></iframe></div></div>`;
+                  videoHtml = `<div class="video-wrapper"><div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" width="100%" height="100%" frameborder="0" scrolling="auto" title="${escapeHtml(item.title)}" style="position:absolute;" allowfullscreen></iframe></div></div>`;
                 } else if (item.video_type === 'vimeo') {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
                 }
 
                 let linksHtml = '';
@@ -461,16 +515,16 @@
                   linksHtml = '<div class="pub-links">';
                   linkPairs.forEach(pair => {
                     const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
                   });
                   linksHtml += '</div>';
                 }
 
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.date}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.date)}</p>
                   ${videoHtml}
-                  <p>${item.description}</p>
+                  <p>${escapeHtml(item.description)}</p>
                   ${linksHtml}
                 `;
                 container.appendChild(card);
@@ -528,9 +582,9 @@
 
                 let videoHtml = '';
                 if (item.video_type === 'vimeo' && item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
                 } else if (item.video_type === 'youtube' && item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
                 }
 
                 let linksHtml = '';
@@ -539,16 +593,16 @@
                   linksHtml = '<div class="pub-links">';
                   linkPairs.forEach(pair => {
                     const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
                   });
                   linksHtml += '</div>';
                 }
 
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.venue} · ${item.date}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
                   ${videoHtml}
-                  <p>${item.description}</p>
+                  <p>${escapeHtml(item.description)}</p>
                   ${linksHtml}
                 `;
                 container.appendChild(card);
@@ -608,15 +662,15 @@
                   linksHtml = '<div class="pub-links">';
                   linkPairs.forEach(pair => {
                     const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
                   });
                   linksHtml += '</div>';
                 }
 
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.venue} · ${item.date}</p>
-                  <p>${item.description}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
+                  <p>${escapeHtml(item.description)}</p>
                   ${linksHtml}
                 `;
                 container.appendChild(card);
@@ -673,7 +727,7 @@
 
                 let videoHtml = '';
                 if (item.video_type === 'vimeo' && item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
                 }
 
                 let linksHtml = '';
@@ -682,16 +736,16 @@
                   linksHtml = '<div class="pub-links">';
                   linkPairs.forEach(pair => {
                     const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${url.trim()}" class="pub-link" target="_blank" rel="noopener noreferrer">${label.trim()}</a>`;
+                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
                   });
                   linksHtml += '</div>';
                 }
 
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.date}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.date)}</p>
                   ${videoHtml}
-                  <p>${item.description}</p>
+                  <p>${escapeHtml(item.description)}</p>
                   ${linksHtml}
                 `;
                 container.appendChild(card);
@@ -748,21 +802,21 @@
               }
 
               let articlesHtml = articles.map(a => `
-                <a href="${a.url}" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                  <span class="article-title">${a.title}</span>
-                  <span class="article-date">${a.date}</span>
+                <a href="${sanitizeUrl(a.url)}" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
+                  <span class="article-title">${escapeHtml(a.title)}</span>
+                  <span class="article-date">${escapeHtml(a.date)}</span>
                 </a>
               `).join('');
 
               container.innerHTML = `
                 <div class="forbes-header">
-                  <div><span class="forbes-badge">${councilData.badge || 'Forbes Technology Council'}</span></div>
+                  <div><span class="forbes-badge">${escapeHtml(councilData.badge || 'Forbes Technology Council')}</span></div>
                   <div>
-                    <h3 style="margin: 0 0 8px 0; font-size: 24px;">${councilData.title || ''}</h3>
-                    <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">${councilData.description || ''}</p>
+                    <h3 style="margin: 0 0 8px 0; font-size: 24px;">${escapeHtml(councilData.title || '')}</h3>
+                    <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">${escapeHtml(councilData.description || '')}</p>
                   </div>
                   <div class="pub-links">
-                    <a href="${councilData.profile_url || '#'}" class="pub-link" target="_blank" rel="noopener noreferrer">${councilData.profile_text || 'View Profile'}</a>
+                    <a href="${sanitizeUrl(councilData.profile_url || '#')}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(councilData.profile_text || 'View Profile')}</a>
                   </div>
                 </div>
                 <div class="forbes-articles-grid">${articlesHtml}</div>
@@ -837,13 +891,6 @@
                   const card = document.createElement('article');
                   card.className = 'card';
 
-                  // Simple HTML escaping
-                  const escapeHtml = (text) => {
-                    const div = document.createElement('div');
-                    div.textContent = text;
-                    return div.innerHTML;
-                  };
-
                   let html = `
                     <h3>${escapeHtml(article.source)}</h3>
                     <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(article.date)}</p>
@@ -854,7 +901,7 @@
                   if (article.link_url && article.link_url.trim()) {
                     html += `
                     <div class="pub-links">
-                      <a href="${escapeHtml(article.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">
+                      <a href="${sanitizeUrl(article.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">
                         ${article.link_icon ? escapeHtml(article.link_icon) + ' ' : ''}${escapeHtml(article.link_caption)}
                       </a>
                     </div>
@@ -906,11 +953,11 @@
               container.innerHTML = `
                 <div class="card">
                   <h3>Additional Coverage</h3>
-                  <p style="margin-bottom: 8px;"><strong>Featured in:</strong> ${data.featured_in || ''}</p>
-                  <p style="color: var(--text-muted);">${data.description || ''}</p>
-                  <p style="margin-top: 16px; color: var(--accent); font-weight: 600;">${data.cta_text || ''}</p>
+                  <p style="margin-bottom: 8px;"><strong>Featured in:</strong> ${escapeHtml(data.featured_in || '')}</p>
+                  <p style="color: var(--text-muted);">${escapeHtml(data.description || '')}</p>
+                  <p style="margin-top: 16px; color: var(--accent); font-weight: 600;">${escapeHtml(data.cta_text || '')}</p>
                   <div class="pub-links">
-                    <a href="${data.cta_link || '#contact'}" class="pub-link">${data.cta_label || 'Media Inquiries'}</a>
+                    <a href="${sanitizeUrl(data.cta_link || '#contact')}" class="pub-link">${escapeHtml(data.cta_label || 'Media Inquiries')}</a>
                   </div>
                 </div>
               `;
@@ -962,9 +1009,9 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.venue} · ${item.date}</p>
-                  <p>${item.description}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
+                  <p>${escapeHtml(item.description)}</p>
                 `;
                 container.appendChild(card);
               }
@@ -1023,20 +1070,20 @@
                 else col2Topics.push(topic);
               }
 
-              const col1Html = col1Topics.map(t => `<li><strong>${t.topic}:</strong> ${t.description}</li>`).join('');
-              const col2Html = col2Topics.map(t => `<li><strong>${t.topic}:</strong> ${t.description}</li>`).join('');
+              const col1Html = col1Topics.map(t => `<li><strong>${escapeHtml(t.topic)}:</strong> ${escapeHtml(t.description)}</li>`).join('');
+              const col2Html = col2Topics.map(t => `<li><strong>${escapeHtml(t.topic)}:</strong> ${escapeHtml(t.description)}</li>`).join('');
 
               container.innerHTML = `
                 <div class="card">
                   <h3>Available for Speaking Engagements</h3>
-                  <p>${info.intro || ''}</p>
-                  <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 8px;">${info.section_title || 'Speaking Topics'}</h4>
+                  <p>${escapeHtml(info.intro || '')}</p>
+                  <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 8px;">${escapeHtml(info.section_title || 'Speaking Topics')}</h4>
                   <div class="grid cols-2" style="margin-top: 20px;">
                     <div><ul>${col1Html}</ul></div>
                     <div><ul>${col2Html}</ul></div>
                   </div>
                   <div class="pub-links" style="margin-top: 24px;">
-                    <a href="${info.cta_link || '#contact'}" class="pub-link">${info.cta_label || 'Request Speaking Engagement'}</a>
+                    <a href="${sanitizeUrl(info.cta_link || '#contact')}" class="pub-link">${escapeHtml(info.cta_label || 'Request Speaking Engagement')}</a>
                   </div>
                 </div>
               `;
@@ -1073,8 +1120,8 @@
                   const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
                   if (values[0] === 'teaching') {
                     headerContainer.innerHTML = `
-                      <h2 class="section-title">${values[1]}</h2>
-                      <p class="section-subtitle">${values[2]}</p>
+                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
+                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
                     `;
                     break;
                   }
@@ -1109,13 +1156,13 @@
                 const designations = values[1] ? values[1].split('|') : [];
 
                 const designationsHtml = designations.map(d =>
-                  `<div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">${d}</div>`
+                  `<div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">${escapeHtml(d)}</div>`
                 ).join('');
 
                 container.innerHTML = `
                   <div class="card">
                     <h3>CAE Designations</h3>
-                    <p>${description}</p>
+                    <p>${escapeHtml(description)}</p>
                     <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">${designationsHtml}</div>
                   </div>
                 `;
@@ -1211,12 +1258,6 @@
                 const p = document.createElement('p');
                 p.style.marginTop = index === 0 ? '20px' : '16px';
 
-                const escapeHtml = (text) => {
-                  const div = document.createElement('div');
-                  div.textContent = text;
-                  return div.innerHTML;
-                };
-
                 p.innerHTML = `<strong>${escapeHtml(course.course_name)} (${escapeHtml(course.course_code)})</strong> — ${escapeHtml(course.description)}`;
 
                 container.appendChild(p);
@@ -1258,8 +1299,8 @@
               const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
               if (values[0] === 'labs') {
                 headerContainer.innerHTML = `
-                  <h2 class="section-title">${values[1]}</h2>
-                  <p class="section-subtitle">${values[2]}</p>
+                  <h2 class="section-title">${escapeHtml(values[1])}</h2>
+                  <p class="section-subtitle">${escapeHtml(values[2])}</p>
                 `;
                 break;
               }
@@ -1298,17 +1339,17 @@
             const item = {};
             headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
 
-            const activities = item.activities ? item.activities.split('|').map(a => `<li>${a}</li>`).join('') : '';
+            const activities = item.activities ? item.activities.split('|').map(a => `<li>${escapeHtml(a)}</li>`).join('') : '';
 
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
-              <h3>${item.name}</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.role}</p>
-              <p>${item.description}</p>
+              <h3>${escapeHtml(item.name)}</h3>
+              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.role)}</p>
+              <p>${escapeHtml(item.description)}</p>
               <h4>${item.name.includes('Lab') ? 'Lab Activities' : 'Center Focus Areas'}</h4>
               <ul>${activities}</ul>
-              <p style="margin-top: 16px;"><a href="${item.link_url}" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">${item.link_text}</a></p>
+              <p style="margin-top: 16px;"><a href="${sanitizeUrl(item.link_url)}" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">${escapeHtml(item.link_text)}</a></p>
             `;
             container.appendChild(card);
           }
@@ -1384,12 +1425,6 @@
               areas.forEach(area => {
                 const card = document.createElement('div');
                 card.className = 'card';
-
-                const escapeHtml = (text) => {
-                  const div = document.createElement('div');
-                  div.textContent = text;
-                  return div.innerHTML;
-                };
 
                 card.innerHTML = `
                   <h3>${escapeHtml(area.title)}</h3>
@@ -1473,12 +1508,6 @@
                   const pub = document.createElement('div');
                   pub.className = 'publication';
 
-                  const escapeHtml = (text) => {
-                    const div = document.createElement('div');
-                    div.textContent = text;
-                    return div.innerHTML;
-                  };
-
                   let html = `
                     <div class="pub-title">${escapeHtml(paper.title)}</div>
                     <div class="pub-authors">${escapeHtml(paper.authors)}</div>
@@ -1498,7 +1527,7 @@
                     linkPairs.forEach(pair => {
                       const [label, url] = pair.split('|');
                       if (label && url) {
-                        html += `<a href="${escapeHtml(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
+                        html += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
                       }
                     });
                     html += '</div>';
@@ -1564,14 +1593,14 @@
                 const pub = document.createElement('div');
                 pub.className = 'publication';
                 pub.innerHTML = `
-                  <div class="pub-title">${item.title}</div>
-                  <div class="pub-authors">${item.authors}</div>
-                  <div class="pub-venue">${item.venue}</div>
-                  <p class="pub-abstract">${item.abstract}</p>
-                  <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">${item.impact}</p>
-                  <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> ${item.cited_by}</p>
+                  <div class="pub-title">${escapeHtml(item.title)}</div>
+                  <div class="pub-authors">${escapeHtml(item.authors)}</div>
+                  <div class="pub-venue">${escapeHtml(item.venue)}</div>
+                  <p class="pub-abstract">${escapeHtml(item.abstract)}</p>
+                  <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">${escapeHtml(item.impact)}</p>
+                  <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> ${escapeHtml(item.cited_by)}</p>
                   <div class="pub-links">
-                    <a href="${item.link_url}" class="pub-link" target="_blank" rel="noopener noreferrer">${item.link_text}</a>
+                    <a href="${sanitizeUrl(item.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(item.link_text)}</a>
                   </div>
                 `;
                 container.appendChild(pub);
@@ -1608,8 +1637,8 @@
                   const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
                   if (values[0] === 'industry') {
                     headerContainer.innerHTML = `
-                      <h2 class="section-title">${values[1]}</h2>
-                      <p class="section-subtitle">${values[2]}</p>
+                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
+                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
                     `;
                     break;
                   }
@@ -1648,15 +1677,15 @@
                 const item = {};
                 headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
 
-                const achievements = item.achievements ? item.achievements.split('|').map(a => `<li>${a}</li>`).join('') : '';
+                const achievements = item.achievements ? item.achievements.split('|').map(a => `<li>${escapeHtml(a)}</li>`).join('') : '';
                 const achievementsTitle = item.name.includes('RocketHub') ? 'Key Achievements' : 'Investment Focus';
 
                 const card = document.createElement('div');
                 card.className = 'card industry-card';
                 card.innerHTML = `
-                  <h3>${item.name} · ${item.role}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.dates}</p>
-                  <p>${item.description}</p>
+                  <h3>${escapeHtml(item.name)} · ${escapeHtml(item.role)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.dates)}</p>
+                  <p>${escapeHtml(item.description)}</p>
                   <h4>${achievementsTitle}</h4>
                   <ul>${achievements}</ul>
                 `;
@@ -1721,14 +1750,14 @@
 
                 let videoHtml = '';
                 if (item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${item.video_src}" title="${item.title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
                 }
 
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.partner}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.partner)}</p>
                   ${videoHtml}
-                  <p>${item.description}</p>
+                  <p>${escapeHtml(item.description)}</p>
                 `;
 
                 if (item.card_size === 'large') {
@@ -1767,7 +1796,7 @@
               for (let i = 1; i < lines.length; i++) {
                 const name = lines[i].replace(/^"|"$/g, '').trim();
                 if (name) {
-                  partnersHtml += `<span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">${name}</span>`;
+                  partnersHtml += `<span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">${escapeHtml(name)}</span>`;
                 }
               }
 
@@ -1839,12 +1868,6 @@
                   const card = document.createElement('div');
                   card.className = 'card';
 
-                  const escapeHtml = (text) => {
-                    const div = document.createElement('div');
-                    div.textContent = text;
-                    return div.innerHTML;
-                  };
-
                   card.innerHTML = `
                     <h3>${escapeHtml(eng.company)}</h3>
                     <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(eng.role)}</p>
@@ -1909,9 +1932,9 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                  <h3>${item.company}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${item.dates} · ${item.role}</p>
-                  <p>${item.description}</p>
+                  <h3>${escapeHtml(item.company)}</h3>
+                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.dates)} · ${escapeHtml(item.role)}</p>
+                  <p>${escapeHtml(item.description)}</p>
                 `;
                 container.appendChild(card);
               }
@@ -1962,8 +1985,8 @@
                   const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
                   if (values[0] === 'credentials') {
                     headerContainer.innerHTML = `
-                      <h2 class="section-title">${values[1]}</h2>
-                      <p class="section-subtitle">${values[2]}</p>
+                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
+                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
                     `;
                     break;
                   }
@@ -2004,8 +2027,8 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                  <h3>${category}</h3>
-                  <ul style="margin-top: 16px;">${items.map(item => `<li>${item}</li>`).join('')}</ul>
+                  <h3>${escapeHtml(category)}</h3>
+                  <ul style="margin-top: 16px;">${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
                 `;
                 container.appendChild(card);
               }
@@ -2027,7 +2050,7 @@
               let languagesHtml = '';
               for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                languagesHtml += `<span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">${values[0]} <span style="color: var(--text-muted); font-weight: 400;">(${values[1]})</span></span>`;
+                languagesHtml += `<span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">${escapeHtml(values[0])} <span style="color: var(--text-muted); font-weight: 400;">(${escapeHtml(values[1])})</span></span>`;
               }
 
               container.innerHTML = `
@@ -2064,10 +2087,10 @@
                 }
                 values.push(current.replace(/^"|"$/g, ''));
 
-                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${item}</p>`).join('') : '';
+                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${escapeHtml(item)}</p>`).join('') : '';
                 skillsHtml += `
                   <div>
-                    <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">${values[1]}</h4>
+                    <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">${escapeHtml(values[1])}</h4>
                     ${items}
                   </div>
                 `;
@@ -2107,14 +2130,14 @@
                 }
                 values.push(current.replace(/^"|"$/g, ''));
 
-                const additional = values[4] ? values[4].split('|').map(a => `<p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">${a}</p>`).join('') : '';
+                const additional = values[4] ? values[4].split('|').map(a => `<p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">${escapeHtml(a)}</p>`).join('') : '';
 
                 educationHtml += `
                   <div style="text-align: center; padding: 20px;">
-                    <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">${values[0]}</h4>
-                    <p style="color: var(--accent); font-weight: 600;">${values[1]}</p>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">${values[2]}</p>
-                    ${values[3] ? `<p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">${values[3]}</p>` : ''}
+                    <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">${escapeHtml(values[0])}</h4>
+                    <p style="color: var(--accent); font-weight: 600;">${escapeHtml(values[1])}</p>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">${escapeHtml(values[2])}</p>
+                    ${values[3] ? `<p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">${escapeHtml(values[3])}</p>` : ''}
                     ${additional}
                   </div>
                 `;
@@ -2162,8 +2185,8 @@
                   const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
                   if (values[0] === 'contact') {
                     headerContainer.innerHTML = `
-                      <h2 class="section-title">${values[1]}</h2>
-                      <p class="section-subtitle">${values[2]}</p>
+                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
+                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
                     `;
                     break;
                   }
@@ -2202,11 +2225,11 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p>${item.description}</p>
-                  <p style="margin-top: 16px;"><strong>${item.email_label}:</strong> ${item.email}</p>
-                  ${item.office ? `<p><strong>Office:</strong> ${item.office}</p>` : ''}
-                  <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">${item.note}</p>
+                  <h3>${escapeHtml(item.title)}</h3>
+                  <p>${escapeHtml(item.description)}</p>
+                  <p style="margin-top: 16px;"><strong>${escapeHtml(item.email_label)}:</strong> ${escapeHtml(item.email)}</p>
+                  ${item.office ? `<p><strong>Office:</strong> ${escapeHtml(item.office)}</p>` : ''}
+                  <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">${escapeHtml(item.note)}</p>
                 `;
                 container.appendChild(card);
               }
@@ -2228,7 +2251,7 @@
               let profilesHtml = '';
               for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                profilesHtml += `<a href="${values[1]}" target="_blank" class="btn secondary" rel="noopener noreferrer">${values[0]}</a>`;
+                profilesHtml += `<a href="${sanitizeUrl(values[1])}" target="_blank" class="btn secondary" rel="noopener noreferrer">${escapeHtml(values[0])}</a>`;
               }
 
               container.innerHTML = `
