@@ -240,7 +240,7 @@
             <div class="hero-text">
               <span class="eyebrow">${escapeHtml(data.eyebrow || '')}</span>
               <h1>${escapeHtml(data.title || '')}</h1>
-              <p class="tagline">${escapeHtml(data.tagline || '')}</p>
+              <p class="tagline">${data.tagline || ''}</p>
               <div class="chips">${chips}</div>
               <div class="cta">
                 <a href="${sanitizeUrl(data.cta_primary_link || '#contact')}" class="btn primary">${escapeHtml(data.cta_primary_text || 'Contact')}</a>
@@ -414,15 +414,16 @@
           }
 
           // Build Academic Card
+          // Note: row.content may contain intentional HTML (<strong>, <br>) from CSV
           let academicHtml = '';
           rows.forEach(row => {
             if (['academic_mission', 'education_credentials', 'research_teaching', 'teaching_philosophy'].includes(row.section)) {
               academicHtml += `<h3>${escapeHtml(row.title)}</h3>`;
               if (row.section === 'education_credentials') {
                 const items = row.content.split('|');
-                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${escapeHtml(item)}</li>`).join('') + '</ul>';
+                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
               } else {
-                academicHtml += `<p>${escapeHtml(row.content)}</p>`;
+                academicHtml += `<p>${row.content}</p>`;
               }
               if (row.section === 'education_credentials') academicHtml += '<h4 style="margin-top: 20px;">Research & Teaching</h4>';
               if (row.section === 'research_teaching') academicHtml += '<h4>Teaching Philosophy</h4>';
@@ -430,15 +431,16 @@
           });
 
           // Build Industry Card
+          // Note: row.content may contain intentional HTML (<strong>, <br>) from CSV
           let industryHtml = '<h3>Industry & Entrepreneurship</h3>';
           rows.forEach(row => {
             if (['career_highlights', 'policy_regulatory', 'consulting_advisory'].includes(row.section)) {
               industryHtml += `<h4>${escapeHtml(row.title)}</h4>`;
               if (row.section === 'career_highlights') {
                 const items = row.content.split('|');
-                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${escapeHtml(item)}</li>`).join('') + '</ul>';
+                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
               } else {
-                industryHtml += `<p>${escapeHtml(row.content)}</p>`;
+                industryHtml += `<p>${row.content}</p>`;
               }
             }
           });
@@ -667,10 +669,11 @@
                   linksHtml += '</div>';
                 }
 
+                // Note: item.description may contain intentional HTML (<strong>, <br>) from CSV
                 card.innerHTML = `
                   <h3>${escapeHtml(item.title)}</h3>
                   <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  <p>${escapeHtml(item.description)}</p>
+                  <p>${item.description}</p>
                   ${linksHtml}
                 `;
                 container.appendChild(card);
@@ -1008,10 +1011,11 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                // Note: item.description may contain intentional HTML (<strong>, <br>) from CSV
                 card.innerHTML = `
                   <h3>${escapeHtml(item.title)}</h3>
                   <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  <p>${escapeHtml(item.description)}</p>
+                  <p>${item.description}</p>
                 `;
                 container.appendChild(card);
               }
@@ -2026,9 +2030,10 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                // Note: credential items may contain intentional HTML (<strong>) from CSV
                 card.innerHTML = `
                   <h3>${escapeHtml(category)}</h3>
-                  <ul style="margin-top: 16px;">${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+                  <ul style="margin-top: 16px;">${items.map(item => `<li>${item}</li>`).join('')}</ul>
                 `;
                 container.appendChild(card);
               }
@@ -2087,7 +2092,8 @@
                 }
                 values.push(current.replace(/^"|"$/g, ''));
 
-                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${escapeHtml(item)}</p>`).join('') : '';
+                // Note: skill items may contain intentional HTML (<strong>) from CSV
+                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${item}</p>`).join('') : '';
                 skillsHtml += `
                   <div>
                     <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">${escapeHtml(values[1])}</h4>
