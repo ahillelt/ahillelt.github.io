@@ -371,9 +371,12 @@
     /* Sections */
     section {
       padding: 80px 0;
-      /* PERFORMANCE: Content-visibility for faster initial render */
-      content-visibility: auto;
-      contain-intrinsic-size: auto 500px;
+      /*
+       * NOTE: do not use `content-visibility: auto` on sections.
+       * Sections are anchor scroll targets; collapsing off-screen sections to a
+       * `contain-intrinsic-size` placeholder makes anchor-link scrolling land
+       * in the wrong section as later sections expand to their real heights.
+       */
     }
     .section-header {
       text-align: center;
