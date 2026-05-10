@@ -87,8 +87,21 @@
           anchor.classList.add('active');
           anchor.setAttribute('aria-current', 'page');
 
-          // Scroll to target
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Compute target position with explicit navbar offset.
+          // `scroll-padding-top` alone is unreliable when async CSV content
+          // loads into earlier sections during the smooth-scroll animation.
+          const header = document.querySelector('header.nav');
+          const navHeight = header ? header.offsetHeight : 80;
+          const scrollToTarget = () => {
+            const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+            window.scrollTo({ top, behavior: 'smooth' });
+          };
+          scrollToTarget();
+
+          // Correction passes: if content above the target loads/shifts after
+          // the initial scroll, re-align so the user lands at the section top.
+          setTimeout(scrollToTarget, 450);
+          setTimeout(scrollToTarget, 900);
 
           // ACCESSIBILITY: Set focus to target for screen readers
           target.setAttribute('tabindex', '-1');
