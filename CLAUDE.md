@@ -100,7 +100,7 @@ Push to `main` branch triggers automatic GitHub Pages deployment. No build step 
 
 - **DOM Caching:** All frequently accessed elements are cached in `DOM_CACHE` object
 - **CSV Parsing:** Custom parser handles quoted fields, embedded commas, and escaping
-- **XSS Prevention:** Use `escapeHtml()` function for user-facing content
+- **XSS Prevention:** `escapeHtml()`, `sanitizeUrl()` and `sanitizeHtml()` are defined once, inline near the top of `index.html` (never redeclare them in `script.js`). Use `escapeHtml()` for text and attributes, `sanitizeUrl()` for every `href`/`src` (allowlists http(s)/mailto/tel/relative), and `sanitizeHtml()` for CSV fields that intentionally contain `<strong>`/`<em>`/`<b>`/`<i>`/`<br>` (all other tags are escaped)
 - **Performance:** Intersection Observer for animations, throttled scroll events
 - **Cookies:** Secure flags (`SameSite=Strict`, `Secure`) for layout preferences
 
@@ -204,8 +204,8 @@ outlet,title,date,url,description
 
 ## Security Features
 
-- Content Security Policy (CSP) configured
-- X-Frame-Options: DENY
+- Content Security Policy (CSP) configured via `<meta>`
+- Clickjacking: inline frame-busting script in `<head>` (GitHub Pages can't send `X-Frame-Options`/`frame-ancestors` headers, and browsers ignore both in `<meta>`)
 - X-XSS-Protection enabled
 - Secure cookie flags for preferences
 - Input escaping for XSS prevention

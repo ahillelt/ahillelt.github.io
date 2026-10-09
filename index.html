@@ -19,8 +19,8 @@
   <meta property="og:description" content="Industry Assistant Professor at NYU Tandon. Expert in cybersecurity, hardware security, AI governance, and AI safety.">
   <meta property="og:url" content="https://ahillelt.github.io/">
   <meta property="og:image" content="https://ahillelt.github.io/headshot2.png">
-  <meta property="og:image:width" content="800">
-  <meta property="og:image:height" content="800">
+  <meta property="og:image:width" content="335">
+  <meta property="og:image:height" content="360">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="Alon Hillel-Tuch">
 
@@ -34,11 +34,25 @@
 
   <!-- Security Headers -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; frame-src https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; connect-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; frame-src https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';" />
+
+  <!-- SECURITY: Clickjacking defense. GitHub Pages cannot send X-Frame-Options or a
+       CSP frame-ancestors header, and browsers ignore both when set via <meta>.
+       Refuse to render when framed by another origin. -->
+  <script>
+    (function() {
+      if (window.top === window.self) return;
+      let sameOrigin = false;
+      try { sameOrigin = window.top.location.origin === window.location.origin; } catch (e) { /* cross-origin */ }
+      if (!sameOrigin) {
+        document.documentElement.style.display = 'none';
+        try { window.top.location = window.location.href; } catch (e) { /* sandboxed frame */ }
+      }
+    })();
+  </script>
 
   <!-- Performance: Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +69,7 @@
   <link rel="dns-prefetch" href="https://www.youtube.com">
 
   <!-- Preload Critical Assets -->
-  <link rel="preload" href="headshot2.png" as="image" type="image/png" fetchpriority="high">
+  <link rel="preload" href="headshot2.png" as="image" fetchpriority="high">
 
   <!-- PERFORMANCE: Optimized font loading - reduced weights, added font-display -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
@@ -121,7 +135,9 @@
       const getCookie = window.__portfolioUtils.getCookie;
 
       // Get saved order from localStorage or cookie
-      let savedOrder = localStorage.getItem('navOrder');
+      // localStorage throws (SecurityError) when site data is blocked
+      let savedOrder = null;
+      try { savedOrder = localStorage.getItem('navOrder'); } catch (e) { /* storage blocked */ }
       if (!savedOrder) {
         savedOrder = getCookie('navOrder');
       }
@@ -190,18 +206,30 @@
     <script>
       // SECURITY: Global HTML escaping and URL sanitization utilities
       // Defined early so all inline scripts can use them
+      // Escapes quotes too, so output is safe in both element content and quoted attributes
       function escapeHtml(text) {
         if (text === null || text === undefined) return '';
-        const div = document.createElement('div');
-        div.textContent = String(text);
-        return div.innerHTML;
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
+      // Returns a URL safe to interpolate into a quoted HTML attribute.
+      // Allowlist: http(s), mailto, tel, and relative/fragment URLs only.
       function sanitizeUrl(url) {
         if (!url) return '#';
-        const trimmed = String(url).trim();
-        // Block dangerous protocols
-        if (/^\s*(javascript|data|vbscript)\s*:/i.test(trimmed)) return '#';
-        return trimmed;
+        // Strip whitespace/control chars browsers ignore inside schemes (e.g. "java\tscript:")
+        const trimmed = String(url).trim().replace(/[\u0000-\u001F\u007F]/g, '');
+        const scheme = trimmed.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/);
+        if (scheme && !/^(https?|mailto|tel)$/i.test(scheme[1])) return '#';
+        return escapeHtml(trimmed);
+      }
+      // For CSV fields that intentionally contain light formatting.
+      // Escapes everything, then re-enables only attribute-less <strong>, <em>, <b>, <i>, <br>.
+      function sanitizeHtml(html) {
+        return escapeHtml(html).replace(/&lt;(\/?)(strong|em|b|i|br)\s*\/?&gt;/gi, '<$1$2>');
       }
     </script>
 
@@ -240,7 +268,7 @@
             <div class="hero-text">
               <span class="eyebrow">${escapeHtml(data.eyebrow || '')}</span>
               <h1>${escapeHtml(data.title || '')}</h1>
-              <p class="tagline">${data.tagline || ''}</p>
+              <p class="tagline">${sanitizeHtml(data.tagline || '')}</p>
               <div class="chips">${chips}</div>
               <div class="cta">
                 <a href="${sanitizeUrl(data.cta_primary_link || '#contact')}" class="btn primary">${escapeHtml(data.cta_primary_text || 'Contact')}</a>
@@ -414,16 +442,16 @@
           }
 
           // Build Academic Card
-          // Note: row.content may contain intentional HTML (<strong>, <br>) from CSV
+          // Note: row.content may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
           let academicHtml = '';
           rows.forEach(row => {
             if (['academic_mission', 'education_credentials', 'research_teaching', 'teaching_philosophy'].includes(row.section)) {
               academicHtml += `<h3>${escapeHtml(row.title)}</h3>`;
               if (row.section === 'education_credentials') {
                 const items = row.content.split('|');
-                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${sanitizeHtml(item)}</li>`).join('') + '</ul>';
               } else {
-                academicHtml += `<p>${row.content}</p>`;
+                academicHtml += `<p>${sanitizeHtml(row.content)}</p>`;
               }
               if (row.section === 'education_credentials') academicHtml += '<h4 style="margin-top: 20px;">Research & Teaching</h4>';
               if (row.section === 'research_teaching') academicHtml += '<h4>Teaching Philosophy</h4>';
@@ -431,16 +459,16 @@
           });
 
           // Build Industry Card
-          // Note: row.content may contain intentional HTML (<strong>, <br>) from CSV
+          // Note: row.content may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
           let industryHtml = '<h3>Industry & Entrepreneurship</h3>';
           rows.forEach(row => {
             if (['career_highlights', 'policy_regulatory', 'consulting_advisory'].includes(row.section)) {
               industryHtml += `<h4>${escapeHtml(row.title)}</h4>`;
               if (row.section === 'career_highlights') {
                 const items = row.content.split('|');
-                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${sanitizeHtml(item)}</li>`).join('') + '</ul>';
               } else {
-                industryHtml += `<p>${row.content}</p>`;
+                industryHtml += `<p>${sanitizeHtml(row.content)}</p>`;
               }
             }
           });
@@ -669,11 +697,11 @@
                   linksHtml += '</div>';
                 }
 
-                // Note: item.description may contain intentional HTML (<strong>, <br>) from CSV
+                // Note: item.description may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
                 card.innerHTML = `
                   <h3>${escapeHtml(item.title)}</h3>
                   <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  <p>${item.description}</p>
+                  <p>${sanitizeHtml(item.description)}</p>
                   ${linksHtml}
                 `;
                 container.appendChild(card);
@@ -921,7 +949,7 @@
                   <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
                     <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
                     <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Articles</h3>
-                    <p style="color: var(--text-muted);">${error.message}</p>
+                    <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
                   </div>
                 `;
               }
@@ -1011,11 +1039,11 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
-                // Note: item.description may contain intentional HTML (<strong>, <br>) from CSV
+                // Note: item.description may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
                 card.innerHTML = `
                   <h3>${escapeHtml(item.title)}</h3>
                   <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  <p>${item.description}</p>
+                  <p>${sanitizeHtml(item.description)}</p>
                 `;
                 container.appendChild(card);
               }
@@ -1443,7 +1471,7 @@
                 <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
                   <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
                   <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Research Areas</h3>
-                  <p style="color: var(--text-muted);">${error.message}</p>
+                  <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
                 </div>
               `;
             }
@@ -1546,7 +1574,7 @@
                   <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
                     <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
                     <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Papers</h3>
-                    <p style="color: var(--text-muted);">${error.message}</p>
+                    <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
                   </div>
                 `;
               }
@@ -1886,7 +1914,7 @@
                   <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
                     <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
                     <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Consulting Data</h3>
-                    <p style="color: var(--text-muted);">${error.message}</p>
+                    <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
                   </div>
                 `;
               }
@@ -2030,10 +2058,10 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
-                // Note: credential items may contain intentional HTML (<strong>) from CSV
+                // Note: credential items may contain intentional <strong> from CSV; sanitizeHtml allows only that
                 card.innerHTML = `
                   <h3>${escapeHtml(category)}</h3>
-                  <ul style="margin-top: 16px;">${items.map(item => `<li>${item}</li>`).join('')}</ul>
+                  <ul style="margin-top: 16px;">${items.map(item => `<li>${sanitizeHtml(item)}</li>`).join('')}</ul>
                 `;
                 container.appendChild(card);
               }
@@ -2092,8 +2120,8 @@
                 }
                 values.push(current.replace(/^"|"$/g, ''));
 
-                // Note: skill items may contain intentional HTML (<strong>) from CSV
-                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${item}</p>`).join('') : '';
+                // Note: skill items may contain intentional <strong> from CSV; sanitizeHtml allows only that
+                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${sanitizeHtml(item)}</p>`).join('') : '';
                 skillsHtml += `
                   <div>
                     <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">${escapeHtml(values[1])}</h4>

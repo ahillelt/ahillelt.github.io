@@ -1,19 +1,8 @@
     // ============================================================================
-    // SECURITY: HTML Escaping and URL Sanitization (Prevent XSS)
+    // SECURITY: escapeHtml(), sanitizeUrl() and sanitizeHtml() are defined once in
+    // the inline <script> near the top of index.html. Do not redeclare them here:
+    // a later function declaration silently replaces the global one.
     // ============================================================================
-    function escapeHtml(text) {
-      if (text === null || text === undefined) return '';
-      const div = document.createElement('div');
-      div.textContent = String(text);
-      return div.innerHTML;
-    }
-
-    function sanitizeUrl(url) {
-      if (!url) return '#';
-      const trimmed = String(url).trim();
-      if (/^\s*(javascript|data|vbscript)\s*:/i.test(trimmed)) return '#';
-      return trimmed;
-    }
 
     // ============================================================================
     // PERFORMANCE: DOM Element Cache
@@ -246,7 +235,7 @@
         <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
           <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
           <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Course Data</h3>
-          <p style="color: var(--text-muted); margin-bottom: 24px;">${message || 'An error occurred while loading the course information.'}</p>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">${escapeHtml(message || 'An error occurred while loading the course information.')}</p>
           <button onclick="loadCourses()" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
             Try Again
           </button>
@@ -466,7 +455,8 @@
         let order = window.__initialNavOrder;
 
         if (!order) {
-          let savedOrder = localStorage.getItem('navOrder');
+          let savedOrder = null;
+          try { savedOrder = localStorage.getItem('navOrder'); } catch (e) { /* storage blocked */ }
           if (!savedOrder) {
             savedOrder = getCookie('navOrder');
           }
@@ -738,21 +728,40 @@
             return false;
           });
 
-          // Touch events for mobile support
-          let touchStartY = 0;
+          // Touch events for mobile support.
+          // Dragging starts only after a long-press so that a normal tap still
+          // fires the click and navigates (calling preventDefault on touchstart
+          // would cancel the click and make nav links dead on touch devices).
+          const LONG_PRESS_MS = 400;
+          let longPressTimer = null;
           let touchCurrentElement = null;
 
-          item.addEventListener('touchstart', (e) => {
-            draggedElement = item;
-            item.classList.add('dragging');
-            touchStartY = e.touches[0].clientY;
-            touchCurrentElement = item;
-            // Prevent scrolling while dragging
-            e.preventDefault();
-          }, { passive: false });
+          const cancelLongPress = () => {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+          };
+
+          item.addEventListener('touchstart', () => {
+            cancelLongPress();
+            longPressTimer = setTimeout(() => {
+              draggedElement = item;
+              touchCurrentElement = item;
+              item.classList.add('dragging');
+            }, LONG_PRESS_MS);
+          }, { passive: true });
+
+          item.addEventListener('touchcancel', () => {
+            cancelLongPress();
+            item.classList.remove('dragging');
+            hideDropIndicator();
+            draggedElement = null;
+            touchCurrentElement = null;
+          });
 
           item.addEventListener('touchmove', (e) => {
-            if (!draggedElement) return;
+            // Finger moved before the long-press fired: user is scrolling
+            if (longPressTimer) cancelLongPress();
+            if (draggedElement !== item) return;
 
             e.preventDefault();
             const touch = e.touches[0];
@@ -776,8 +785,12 @@
           }, { passive: false });
 
           item.addEventListener('touchend', (e) => {
-            if (!draggedElement) return;
+            cancelLongPress();
+            // Plain tap: let the click through so the link navigates
+            if (draggedElement !== item) return;
 
+            // Drag gesture: suppress the click that would otherwise follow
+            e.preventDefault();
             item.classList.remove('dragging');
 
             // Remove drag-over from all items
@@ -863,10 +876,12 @@
     }
 
     function resetLayout(event) {
-      const btn = event.target;
-
-      // Clear saved data
-      localStorage.removeItem('navOrder');
+      // Clear saved data (localStorage can throw when storage is blocked)
+      try {
+        localStorage.removeItem('navOrder');
+      } catch (e) {
+        console.warn('Failed to clear localStorage:', e.message);
+      }
       document.cookie = 'navOrder=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
       // Instant reload
