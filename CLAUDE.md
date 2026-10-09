@@ -36,7 +36,7 @@ All website content is externalized into CSV files for easy editing without touc
 | **Hero/Stats** | `hero_content.csv`, `stats.csv` | Homepage hero section content |
 | **About** | `about_content.csv`, `section_headers.csv` | Bio cards and section titles |
 | **Contact** | `contact_info.csv`, `professional_profiles.csv` | Contact details and social links |
-| **Teaching** | `courses_history.csv`, `courses_catalog.csv`, `course_development.csv`, `cae_designations.csv` | Course info and CAE certifications |
+| **Teaching** | `courses_history.csv`, `courses_catalog.csv`, `course_development.csv`, `cae_designations.csv`, `teaching_summary.csv` | Course info, primary/secondary courses, and CAE certifications |
 | **Speaking** | `keynotes_speaking.csv`, `congressional_testimony.csv`, `press_coverage.csv`, `speaking_topics.csv`, `podcasts_webinars.csv`, `academic_legal_forums.csv` | Speaking engagements and media |
 | **Research** | `papers_published.csv`, `patents.csv`, `research_areas.csv` | Publications and patents |
 | **Industry** | `career_experience.csv`, `industry_companies.csv`, `consulting_advisory.csv`, `partnership_projects.csv`, `partners_list.csv` | Business ventures and consulting |

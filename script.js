@@ -206,10 +206,11 @@
       showCourseLoading();
 
       try {
-        // Load both CSV files
-        const [historyResponse, catalogResponse] = await Promise.all([
+        // Load course CSV files (teaching summary is optional)
+        const [historyResponse, catalogResponse, summaryText] = await Promise.all([
           fetch('courses_history.csv', { cache: 'no-store' }),
-          fetch('courses_catalog.csv', { cache: 'no-store' })
+          fetch('courses_catalog.csv', { cache: 'no-store' }),
+          fetchCSV('teaching_summary.csv').catch(() => '')
         ]);
 
         // Check for HTTP errors
@@ -223,7 +224,9 @@
         const courseHistory = parseCSVObjects(historyText);
         const courseCatalog = parseCSVObjects(catalogText);
 
-        renderCourses(courseHistory, courseCatalog);
+        const teachingSummary = parseCSVKeyValues(summaryText);
+
+        renderCourses(courseHistory, courseCatalog, teachingSummary);
       } catch (error) {
         console.error('Error loading courses:', error);
         showCourseLoadError(error.message);
@@ -290,17 +293,17 @@
       });
     }
 
-    function renderCourses(courseHistory, courseCatalog) {
+    function renderCourses(courseHistory, courseCatalog, teachingSummary) {
       const years = [...new Set(courseHistory.map(c => c.year))].sort((a, b) => b - a);
 
       // Render Course History View (simple table)
-      renderHistoryView(courseHistory);
+      renderHistoryView(courseHistory, teachingSummary);
 
       // Render Course Details View (unique courses only)
       renderDetailsView(courseCatalog);
     }
 
-    function renderHistoryView(courses) {
+    function renderHistoryView(courses, teachingSummary = {}) {
       const container = document.querySelector('#history-container');
       let html = '<table class="course-table"><thead><tr>';
       html += '<th>Year</th><th>Semester</th><th>Course Title</th><th>Enrollment</th><th>Role</th>';
@@ -345,10 +348,18 @@
         <p><strong>Total Students Taught:</strong> ~${totalEnrollment} students across all courses</p>
         <p style="margin-top: 8px;"><strong>As Faculty:</strong> ~${facultyEnrollment} students</p>
         <p style="margin-top: 8px;"><strong>As TA/CA:</strong> ~${taEnrollment} students</p>
-        <p style="margin-top: 12px;"><strong>Primary Courses:</strong> Application Security (CS-GY 9163), Computer Networking (CS-GY 6843), AI Governance (CS-GY 9215 A), Cyber Resiliency Management (CS-GY 9215 B), ISSEM (CS-GY 6803)</p>
+        ${courseListHtml('Primary Courses', teachingSummary.primary_courses, '12px')}
+        ${courseListHtml('Secondary Courses', teachingSummary.secondary_courses, '8px')}
       </div>`;
 
       container.innerHTML = html;
+    }
+
+    // Pipe-delimited course list from teaching_summary.csv -> "Label: A, B, C"
+    function courseListHtml(label, list, marginTop) {
+      const items = (list || '').split('|').filter(Boolean);
+      if (items.length === 0) return '';
+      return `<p style="margin-top: ${marginTop};"><strong>${escapeHtml(label)}:</strong> ${items.map(escapeHtml).join(', ')}</p>`;
     }
 
     function renderDetailsView(courses) {
