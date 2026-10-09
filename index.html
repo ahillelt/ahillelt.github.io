@@ -37,22 +37,8 @@
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; frame-src https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; frame-src https://cdn.jwplayer.com https://player.vimeo.com https://www.youtube.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';" />
 
-  <!-- SECURITY: Clickjacking defense. GitHub Pages cannot send X-Frame-Options or a
-       CSP frame-ancestors header, and browsers ignore both when set via <meta>.
-       Refuse to render when framed by another origin. -->
-  <script>
-    (function() {
-      if (window.top === window.self) return;
-      let sameOrigin = false;
-      try { sameOrigin = window.top.location.origin === window.location.origin; } catch (e) { /* cross-origin */ }
-      if (!sameOrigin) {
-        document.documentElement.style.display = 'none';
-        try { window.top.location = window.location.href; } catch (e) { /* sandboxed frame */ }
-      }
-    })();
-  </script>
 
   <!-- Performance: Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,8 +58,12 @@
   <link rel="preload" href="headshot2.png" as="image" fetchpriority="high">
 
   <!-- PERFORMANCE: Optimized font loading - reduced weights, added font-display -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+  <link id="font-css" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" media="print">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"></noscript>
+
+  <!-- Early scripts: clickjacking defense, shared XSS/CSV utilities, saved layout.
+       Every script is an external file so the CSP needs no 'unsafe-inline'. -->
+  <script src="head.js"></script>
 
   <!-- External CSS -->
   <link rel="stylesheet" href="styles.css">
@@ -102,56 +92,7 @@
   <!-- ACCESSIBILITY: Skip to main content link -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Global shared utilities to avoid code duplication -->
-  <script>
-    window.__portfolioUtils = {
-      sectionMap: {
-        '#about': 'about',
-        '#press': 'press',
-        '#teaching': 'teaching',
-        '#labs': 'labs',
-        '#research': 'research',
-        '#industry': 'industry',
-        '#credentials': 'credentials',
-        '#contact': 'contact'
-      },
-      getCookie: function(name) {
-        const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
-        return value ? decodeURIComponent(value.split('=')[1]) : null;
-      },
-      setCookie: function(name, value, days = 365) {
-        const MS_PER_DAY = 864e5; // 86400000 milliseconds in a day
-        const expires = new Date(Date.now() + days * MS_PER_DAY).toUTCString();
-        // SECURITY: Add Secure flag for HTTPS, SameSite=Strict to prevent CSRF
-        const isSecure = window.location.protocol === 'https:' ? '; Secure' : '';
-        document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict${isSecure}`;
-      }
-    };
-  </script>
 
-  <!-- Inline script to load saved layout IMMEDIATELY (before render) -->
-  <script>
-    (function() {
-      const getCookie = window.__portfolioUtils.getCookie;
-
-      // Get saved order from localStorage or cookie
-      // localStorage throws (SecurityError) when site data is blocked
-      let savedOrder = null;
-      try { savedOrder = localStorage.getItem('navOrder'); } catch (e) { /* storage blocked */ }
-      if (!savedOrder) {
-        savedOrder = getCookie('navOrder');
-      }
-
-      // Store in global variable for immediate use
-      if (savedOrder) {
-        try {
-          window.__initialNavOrder = JSON.parse(savedOrder);
-        } catch (e) {
-          console.error('Failed to parse saved nav order:', e);
-        }
-      }
-    })();
-  </script>
 
   <header class="nav">
     <div class="container nav-inner">
@@ -159,7 +100,7 @@
         <a href="#" class="logo" aria-label="Go to top of page">AHT</a>
         <div>Alon Hillel‑Tuch</div>
       </div>
-      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
+      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
       <nav id="mainNav">
         <div class="drop-indicator" id="dropIndicator"></div>
         <a href="#about">About</a>
@@ -176,7 +117,7 @@
 
   <!-- Floating Layout Controls -->
   <div class="layout-controls-floating" id="layoutControls">
-    <button class="save-btn" onclick="saveLayout(event)" aria-label="Save current layout" title="Save current layout">
+    <button class="save-btn" aria-label="Save current layout" title="Save current layout">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
         <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -184,7 +125,7 @@
       </svg>
       Save Layout
     </button>
-    <button class="reset-btn" onclick="resetLayout(event)" aria-label="Reset to default layout" title="Reset to default layout">
+    <button class="reset-btn" aria-label="Reset to default layout" title="Reset to default layout">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="1 4 1 10 7 10"></polyline>
         <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
@@ -203,90 +144,7 @@
       </div>
     </section>
 
-    <script>
-      // SECURITY: Global HTML escaping and URL sanitization utilities
-      // Defined early so all inline scripts can use them
-      // Escapes quotes too, so output is safe in both element content and quoted attributes
-      function escapeHtml(text) {
-        if (text === null || text === undefined) return '';
-        return String(text)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#39;');
-      }
-      // Returns a URL safe to interpolate into a quoted HTML attribute.
-      // Allowlist: http(s), mailto, tel, and relative/fragment URLs only.
-      function sanitizeUrl(url) {
-        if (!url) return '#';
-        // Strip whitespace/control chars browsers ignore inside schemes (e.g. "java\tscript:")
-        const trimmed = String(url).trim().replace(/[\u0000-\u001F\u007F]/g, '');
-        const scheme = trimmed.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/);
-        if (scheme && !/^(https?|mailto|tel)$/i.test(scheme[1])) return '#';
-        return escapeHtml(trimmed);
-      }
-      // For CSV fields that intentionally contain light formatting.
-      // Escapes everything, then re-enables only attribute-less <strong>, <em>, <b>, <i>, <br>.
-      function sanitizeHtml(html) {
-        return escapeHtml(html).replace(/&lt;(\/?)(strong|em|b|i|br)\s*\/?&gt;/gi, '<$1$2>');
-      }
-    </script>
 
-    <script>
-      // Load hero content from CSV
-      (async function() {
-        const container = document.querySelector('#hero-container');
-        if (!container) return;
-
-        try {
-          const response = await fetch('hero_content.csv', { cache: 'no-store' });
-          if (!response.ok) throw new Error('Failed to load hero content');
-
-          const csvText = await response.text();
-          const lines = csvText.trim().split('\n');
-          const data = {};
-
-          for (let i = 1; i < lines.length; i++) {
-            const line = lines[i];
-            const commaIndex = line.indexOf(',');
-            if (commaIndex > -1) {
-              const key = line.substring(0, commaIndex).replace(/^"|"$/g, '');
-              let value = line.substring(commaIndex + 1);
-              if (value.startsWith('"') && value.endsWith('"')) {
-                value = value.slice(1, -1).replace(/""/g, '"');
-              }
-              data[key] = value;
-            }
-          }
-
-          const chips = data.chips ? data.chips.split('|').map(chip =>
-            `<span class="chip">${escapeHtml(chip)}</span>`
-          ).join('') : '';
-
-          container.innerHTML = `
-            <div class="hero-text">
-              <span class="eyebrow">${escapeHtml(data.eyebrow || '')}</span>
-              <h1>${escapeHtml(data.title || '')}</h1>
-              <p class="tagline">${sanitizeHtml(data.tagline || '')}</p>
-              <div class="chips">${chips}</div>
-              <div class="cta">
-                <a href="${sanitizeUrl(data.cta_primary_link || '#contact')}" class="btn primary">${escapeHtml(data.cta_primary_text || 'Contact')}</a>
-                <a href="${sanitizeUrl(data.cta_secondary_link || '#')}" target="_blank" class="btn secondary" rel="noopener noreferrer">${escapeHtml(data.cta_secondary_text || '')}</a>
-              </div>
-            </div>
-            <div class="portrait">
-              <img src="${sanitizeUrl(data.image_src || 'headshot2.png')}"
-                   alt="${escapeHtml(data.image_alt || 'Alon Hillel-Tuch')}"
-                   width="800" height="800" fetchpriority="high" decoding="async"
-                   style="width: 100%; height: 100%; object-fit: cover;" />
-            </div>
-          `;
-        } catch (error) {
-          console.error('Error loading hero content:', error);
-        }
-      })();
-    </script>
 
     <!-- Stats - Content loaded from stats.csv -->
     <section class="stats">
@@ -297,87 +155,6 @@
       </div>
     </section>
 
-    <script>
-      (async function() {
-        const container = document.querySelector('#stats-container');
-        if (!container) return;
-
-        try {
-          // Fetch stats.csv and courses_history.csv in parallel
-          const [statsResponse, coursesResponse] = await Promise.all([
-            fetch('stats.csv', { cache: 'no-store' }),
-            fetch('courses_history.csv', { cache: 'no-store' })
-          ]);
-
-          if (!statsResponse.ok) throw new Error('Failed to load stats');
-
-          const csvText = await statsResponse.text();
-          const lines = csvText.trim().split('\n');
-
-          // Calculate dynamic faculty student count from courses_history.csv
-          let dynamicStudentCount = null;
-          if (coursesResponse.ok) {
-            const coursesCsv = await coursesResponse.text();
-            const courseLines = coursesCsv.trim().split('\n');
-            const courseHeaders = courseLines[0].split(',');
-            const enrollmentIdx = courseHeaders.indexOf('enrollment');
-            const roleIdx = courseHeaders.indexOf('role');
-
-            if (enrollmentIdx !== -1 && roleIdx !== -1) {
-              dynamicStudentCount = 0;
-              for (let i = 1; i < courseLines.length; i++) {
-                const vals = courseLines[i].split(',');
-                const role = (vals[roleIdx] || '').trim();
-                const enrollment = (vals[enrollmentIdx] || '').trim();
-                if (role === 'Faculty') {
-                  const match = enrollment.match(/~?(\d+)/);
-                  if (match) dynamicStudentCount += parseInt(match[1], 10);
-                }
-              }
-            }
-          }
-
-          container.innerHTML = '';
-          for (let i = 1; i < lines.length; i++) {
-            const line = lines[i];
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-
-            for (let j = 0; j < line.length; j++) {
-              const char = line[j];
-              if (char === '"') {
-                inQuotes = !inQuotes;
-              } else if (char === ',' && !inQuotes) {
-                values.push(current.replace(/^"|"$/g, ''));
-                current = '';
-              } else {
-                current += char;
-              }
-            }
-            values.push(current.replace(/^"|"$/g, ''));
-
-            let statNumber = values[0] || '';
-            const statLabel = values[1] || '';
-
-            // Replace static student count with dynamic calculation
-            if (statLabel.toLowerCase().includes('students taught') && dynamicStudentCount !== null) {
-              statNumber = String(dynamicStudentCount);
-            }
-
-            const card = document.createElement('div');
-            card.className = 'stat-card';
-            card.innerHTML = `
-              <div class="stat-number">${escapeHtml(statNumber)}</div>
-              <div class="stat-label">${escapeHtml(statLabel)}</div>
-            `;
-            container.appendChild(card);
-          }
-        } catch (error) {
-          console.error('Error loading stats:', error);
-        }
-      })();
-    </script>
 
     <!-- About - Content loaded from about_content.csv and section_headers.csv -->
     <section id="about">
@@ -391,97 +168,6 @@
       </div>
     </section>
 
-    <script>
-      // Load About section content from CSV
-      (async function() {
-        // Load section header
-        const headerContainer = document.querySelector('#about-header');
-        try {
-          const headerResponse = await fetch('section_headers.csv', { cache: 'no-store' });
-          if (headerResponse.ok) {
-            const csvText = await headerResponse.text();
-            const lines = csvText.trim().split('\n');
-            for (let i = 1; i < lines.length; i++) {
-              const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-              if (values[0] === 'about') {
-                headerContainer.innerHTML = `
-                  <h2 class="section-title">${escapeHtml(values[1])}</h2>
-                  <p class="section-subtitle">${escapeHtml(values[2])}</p>
-                `;
-                break;
-              }
-            }
-          }
-        } catch (e) { console.error('Error loading about header:', e); }
-
-        // Load about content
-        const contentContainer = document.querySelector('#about-content');
-        try {
-          const response = await fetch('about_content.csv', { cache: 'no-store' });
-          if (!response.ok) throw new Error('Failed to load about content');
-
-          const csvText = await response.text();
-          const lines = csvText.trim().split('\n');
-          const headers = lines[0].split(',');
-          const rows = [];
-
-          for (let i = 1; i < lines.length; i++) {
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-            for (let j = 0; j < lines[i].length; j++) {
-              const char = lines[i][j];
-              if (char === '"') inQuotes = !inQuotes;
-              else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-              else current += char;
-            }
-            values.push(current);
-            const row = {};
-            headers.forEach((h, idx) => row[h.replace(/^"|"$/g, '')] = values[idx] || '');
-            rows.push(row);
-          }
-
-          // Build Academic Card
-          // Note: row.content may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
-          let academicHtml = '';
-          rows.forEach(row => {
-            if (['academic_mission', 'education_credentials', 'research_teaching', 'teaching_philosophy'].includes(row.section)) {
-              academicHtml += `<h3>${escapeHtml(row.title)}</h3>`;
-              if (row.section === 'education_credentials') {
-                const items = row.content.split('|');
-                academicHtml += '<ul style="margin-top: 12px;">' + items.map(item => `<li>${sanitizeHtml(item)}</li>`).join('') + '</ul>';
-              } else {
-                academicHtml += `<p>${sanitizeHtml(row.content)}</p>`;
-              }
-              if (row.section === 'education_credentials') academicHtml += '<h4 style="margin-top: 20px;">Research & Teaching</h4>';
-              if (row.section === 'research_teaching') academicHtml += '<h4>Teaching Philosophy</h4>';
-            }
-          });
-
-          // Build Industry Card
-          // Note: row.content may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
-          let industryHtml = '<h3>Industry & Entrepreneurship</h3>';
-          rows.forEach(row => {
-            if (['career_highlights', 'policy_regulatory', 'consulting_advisory'].includes(row.section)) {
-              industryHtml += `<h4>${escapeHtml(row.title)}</h4>`;
-              if (row.section === 'career_highlights') {
-                const items = row.content.split('|');
-                industryHtml += '<ul style="margin-top: 12px; margin-bottom: 20px;">' + items.map(item => `<li>${sanitizeHtml(item)}</li>`).join('') + '</ul>';
-              } else {
-                industryHtml += `<p>${sanitizeHtml(row.content)}</p>`;
-              }
-            }
-          });
-
-          contentContainer.innerHTML = `
-            <div class="card">${academicHtml}</div>
-            <div class="card">${industryHtml}</div>
-          `;
-        } catch (error) {
-          console.error('Error loading about content:', error);
-        }
-      })();
-    </script>
 
     <!-- Press & Testimony -->
     <section id="press" class="accent-bg">
@@ -497,73 +183,6 @@
           <!-- Content loaded from congressional_testimony.csv -->
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#congressional-testimony-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('congressional_testimony.csv', { cache: 'no-store' });
-              if (!response.ok) throw new Error('Failed to load congressional testimony data');
-
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('article');
-                card.className = 'card';
-
-                let videoHtml = '';
-                if (item.video_type === 'jwplayer') {
-                  videoHtml = `<div class="video-wrapper"><div style="position:relative;overflow:hidden;padding-bottom:56.25%"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" width="100%" height="100%" frameborder="0" scrolling="auto" title="${escapeHtml(item.title)}" style="position:absolute;" allowfullscreen></iframe></div></div>`;
-                } else if (item.video_type === 'vimeo') {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
-                }
-
-                let linksHtml = '';
-                if (item.links) {
-                  const linkPairs = item.links.split('::');
-                  linksHtml = '<div class="pub-links">';
-                  linkPairs.forEach(pair => {
-                    const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
-                  });
-                  linksHtml += '</div>';
-                }
-
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.date)}</p>
-                  ${videoHtml}
-                  <p>${escapeHtml(item.description)}</p>
-                  ${linksHtml}
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading congressional testimony:', error);
-            }
-          })();
-        </script>
 
         <!-- Keynotes & Speaking - loaded from keynotes_speaking.csv -->
         <div style="margin-top: 80px;">
@@ -575,73 +194,6 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#keynotes-speaking-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('keynotes_speaking.csv', { cache: 'no-store' });
-              if (!response.ok) throw new Error('Failed to load keynotes data');
-
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('div');
-                card.className = item.video_type !== 'none' && item.video_src ? 'card video-card' : 'card';
-
-                let videoHtml = '';
-                if (item.video_type === 'vimeo' && item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
-                } else if (item.video_type === 'youtube' && item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
-                }
-
-                let linksHtml = '';
-                if (item.links) {
-                  const linkPairs = item.links.split('::');
-                  linksHtml = '<div class="pub-links">';
-                  linkPairs.forEach(pair => {
-                    const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
-                  });
-                  linksHtml += '</div>';
-                }
-
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  ${videoHtml}
-                  <p>${escapeHtml(item.description)}</p>
-                  ${linksHtml}
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading keynotes:', error);
-            }
-          })();
-        </script>
 
         <!-- Academic & Legal Panels - loaded from academic_legal_forums.csv -->
         <div style="margin-top: 60px;">
@@ -651,66 +203,6 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#academic-legal-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('academic_legal_forums.csv', { cache: 'no-store' });
-              if (!response.ok) throw new Error('Failed to load academic legal forums data');
-
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('article');
-                card.className = 'card';
-
-                let linksHtml = '';
-                if (item.links) {
-                  const linkPairs = item.links.split('::');
-                  linksHtml = '<div class="pub-links">';
-                  linkPairs.forEach(pair => {
-                    const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
-                  });
-                  linksHtml += '</div>';
-                }
-
-                // Note: item.description may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  <p>${sanitizeHtml(item.description)}</p>
-                  ${linksHtml}
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading academic legal forums:', error);
-            }
-          })();
-        </script>
 
         <!-- Press Coverage - loaded from press_coverage.csv -->
         <div style="margin-top: 80px;">
@@ -721,142 +213,12 @@
             <!-- Content loaded from press_coverage.csv -->
           </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#press-coverage-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('press_coverage.csv', { cache: 'no-store' });
-              if (!response.ok) throw new Error('Failed to load press coverage data');
-
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('article');
-                card.className = 'card';
-
-                let videoHtml = '';
-                if (item.video_type === 'vimeo' && item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
-                }
-
-                let linksHtml = '';
-                if (item.links) {
-                  const linkPairs = item.links.split('::');
-                  linksHtml = '<div class="pub-links">';
-                  linkPairs.forEach(pair => {
-                    const [label, url] = pair.split('|');
-                    if (label && url) linksHtml += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
-                  });
-                  linksHtml += '</div>';
-                }
-
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.date)}</p>
-                  ${videoHtml}
-                  <p>${escapeHtml(item.description)}</p>
-                  ${linksHtml}
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading press coverage:', error);
-            }
-          })();
-        </script>
 
           <!-- Forbes Technology Council - loaded from forbes_council.csv and forbes_articles.csv -->
           <article class="card" style="margin-top: 40px;" id="forbes-council-container">
             <!-- Content loaded from forbes_council.csv and forbes_articles.csv -->
           </article>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#forbes-council-container');
-            if (!container) return;
-
-            try {
-              // Load forbes council info
-              const councilResponse = await fetch('forbes_council.csv', { cache: 'no-store' });
-              const councilCsv = await councilResponse.text();
-              const councilLines = councilCsv.trim().split('\n');
-              const councilData = {};
-              for (let i = 1; i < councilLines.length; i++) {
-                const commaIndex = councilLines[i].indexOf(',');
-                if (commaIndex > -1) {
-                  const key = councilLines[i].substring(0, commaIndex).replace(/^"|"$/g, '');
-                  let value = councilLines[i].substring(commaIndex + 1);
-                  if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-                  councilData[key] = value;
-                }
-              }
-
-              // Load forbes articles
-              const articlesResponse = await fetch('forbes_articles.csv', { cache: 'no-store' });
-              const articlesCsv = await articlesResponse.text();
-              const articlesLines = articlesCsv.trim().split('\n');
-              const articles = [];
-              for (let i = 1; i < articlesLines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < articlesLines[i].length; j++) {
-                  const char = articlesLines[i][j];
-                  if (char === '"') inQuotes = !inQuotes;
-                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
-                  else current += char;
-                }
-                values.push(current.replace(/^"|"$/g, ''));
-                if (values[0]) articles.push({ title: values[0], date: values[1], url: values[2] });
-              }
-
-              let articlesHtml = articles.map(a => `
-                <a href="${sanitizeUrl(a.url)}" target="_blank" rel="noopener noreferrer" class="forbes-article-link">
-                  <span class="article-title">${escapeHtml(a.title)}</span>
-                  <span class="article-date">${escapeHtml(a.date)}</span>
-                </a>
-              `).join('');
-
-              container.innerHTML = `
-                <div class="forbes-header">
-                  <div><span class="forbes-badge">${escapeHtml(councilData.badge || 'Forbes Technology Council')}</span></div>
-                  <div>
-                    <h3 style="margin: 0 0 8px 0; font-size: 24px;">${escapeHtml(councilData.title || '')}</h3>
-                    <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">${escapeHtml(councilData.description || '')}</p>
-                  </div>
-                  <div class="pub-links">
-                    <a href="${sanitizeUrl(councilData.profile_url || '#')}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(councilData.profile_text || 'View Profile')}</a>
-                  </div>
-                </div>
-                <div class="forbes-articles-grid">${articlesHtml}</div>
-              `;
-            } catch (error) {
-              console.error('Error loading Forbes council:', error);
-            }
-          })();
-        </script>
 
           <!-- Major Press Coverage -->
           <!-- News articles are loaded dynamically from news_articles.csv -->
@@ -864,139 +226,12 @@
             <!-- Articles will be populated here by JavaScript -->
           </div>
 
-          <script>
-            // Load news articles immediately - inline script executes as soon as DOM element is ready
-            (async function() {
-              const container = document.querySelector('#news-articles-container');
-              if (!container) return;
-
-              try {
-                const response = await fetch('news_articles.csv', { cache: 'no-store' });
-                if (!response.ok) {
-                  throw new Error('Failed to load news articles data');
-                }
-
-                const csvText = await response.text();
-
-                // Parse CSV inline to avoid dependency on functions defined later
-                const lines = csvText.trim().split('\n');
-                const headers = lines[0].split(',');
-                const articles = [];
-
-                for (let i = 1; i < lines.length; i++) {
-                  // Simple CSV parsing for quoted fields
-                  const values = [];
-                  let current = '';
-                  let insideQuotes = false;
-
-                  for (let j = 0; j < lines[i].length; j++) {
-                    const char = lines[i][j];
-                    const nextChar = lines[i][j + 1];
-
-                    if (char === '"') {
-                      if (insideQuotes && nextChar === '"') {
-                        current += '"';
-                        j++;
-                      } else {
-                        insideQuotes = !insideQuotes;
-                      }
-                    } else if (char === ',' && !insideQuotes) {
-                      values.push(current);
-                      current = '';
-                    } else {
-                      current += char;
-                    }
-                  }
-                  values.push(current);
-
-                  const article = {};
-                  headers.forEach((header, index) => {
-                    article[header] = values[index] || '';
-                  });
-                  articles.push(article);
-                }
-
-                // Render articles
-                container.innerHTML = '';
-                articles.forEach(article => {
-                  const card = document.createElement('article');
-                  card.className = 'card';
-
-                  let html = `
-                    <h3>${escapeHtml(article.source)}</h3>
-                    <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(article.date)}</p>
-                    <p><strong>"${escapeHtml(article.title)}"</strong></p>
-                    <p>${escapeHtml(article.body)}</p>
-                  `;
-
-                  if (article.link_url && article.link_url.trim()) {
-                    html += `
-                    <div class="pub-links">
-                      <a href="${sanitizeUrl(article.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">
-                        ${article.link_icon ? escapeHtml(article.link_icon) + ' ' : ''}${escapeHtml(article.link_caption)}
-                      </a>
-                    </div>
-                    `;
-                  }
-
-                  card.innerHTML = html;
-                  container.appendChild(card);
-                });
-              } catch (error) {
-                console.error('Error loading news articles:', error);
-                // Show error state
-                container.innerHTML = `
-                  <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
-                    <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
-                    <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Articles</h3>
-                    <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
-                  </div>
-                `;
-              }
-            })();
-          </script>
 
           <!-- Additional Coverage - loaded from additional_coverage.csv -->
           <div style="margin-top: 40px;" id="additional-coverage-container">
             <!-- Content loaded from additional_coverage.csv -->
           </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#additional-coverage-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('additional_coverage.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const data = {};
-              for (let i = 1; i < lines.length; i++) {
-                const commaIndex = lines[i].indexOf(',');
-                if (commaIndex > -1) {
-                  const key = lines[i].substring(0, commaIndex).replace(/^"|"$/g, '');
-                  let value = lines[i].substring(commaIndex + 1);
-                  if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1).replace(/""/g, '"');
-                  data[key] = value;
-                }
-              }
-
-              container.innerHTML = `
-                <div class="card">
-                  <h3>Additional Coverage</h3>
-                  <p style="margin-bottom: 8px;"><strong>Featured in:</strong> ${escapeHtml(data.featured_in || '')}</p>
-                  <p style="color: var(--text-muted);">${escapeHtml(data.description || '')}</p>
-                  <p style="margin-top: 16px; color: var(--accent); font-weight: 600;">${escapeHtml(data.cta_text || '')}</p>
-                  <div class="pub-links">
-                    <a href="${sanitizeUrl(data.cta_link || '#contact')}" class="pub-link">${escapeHtml(data.cta_label || 'Media Inquiries')}</a>
-                  </div>
-                </div>
-              `;
-            } catch (error) {
-              console.error('Error loading additional coverage:', error);
-            }
-          })();
-        </script>
         </div>
 
         <!-- Podcasts & Webinars - loaded from podcasts_webinars.csv -->
@@ -1007,123 +242,12 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#podcasts-webinars-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('podcasts_webinars.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                // Note: item.description may contain intentional <strong>/<br> from CSV; sanitizeHtml allows only those
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.venue)} · ${escapeHtml(item.date)}</p>
-                  <p>${sanitizeHtml(item.description)}</p>
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading podcasts webinars:', error);
-            }
-          })();
-        </script>
 
         <!-- Speaking Topics - loaded from speaking_info.csv and speaking_topics.csv -->
         <div style="margin-top: 60px;" id="speaking-topics-section">
           <!-- Content loaded from speaking_info.csv and speaking_topics.csv -->
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#speaking-topics-section');
-            if (!container) return;
-
-            try {
-              // Load speaking info
-              const infoResponse = await fetch('speaking_info.csv', { cache: 'no-store' });
-              const infoCsv = await infoResponse.text();
-              const infoLines = infoCsv.trim().split('\n');
-              const info = {};
-              for (let i = 1; i < infoLines.length; i++) {
-                const commaIndex = infoLines[i].indexOf(',');
-                if (commaIndex > -1) {
-                  const key = infoLines[i].substring(0, commaIndex).replace(/^"|"$/g, '');
-                  let value = infoLines[i].substring(commaIndex + 1);
-                  if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-                  info[key] = value;
-                }
-              }
-
-              // Load speaking topics
-              const topicsResponse = await fetch('speaking_topics.csv', { cache: 'no-store' });
-              const topicsCsv = await topicsResponse.text();
-              const topicsLines = topicsCsv.trim().split('\n');
-              const col1Topics = [], col2Topics = [];
-
-              for (let i = 1; i < topicsLines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < topicsLines[i].length; j++) {
-                  const char = topicsLines[i][j];
-                  if (char === '"') inQuotes = !inQuotes;
-                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
-                  else current += char;
-                }
-                values.push(current.replace(/^"|"$/g, ''));
-
-                const topic = { topic: values[0], description: values[1], column: values[2] };
-                if (topic.column === '1') col1Topics.push(topic);
-                else col2Topics.push(topic);
-              }
-
-              const col1Html = col1Topics.map(t => `<li><strong>${escapeHtml(t.topic)}:</strong> ${escapeHtml(t.description)}</li>`).join('');
-              const col2Html = col2Topics.map(t => `<li><strong>${escapeHtml(t.topic)}:</strong> ${escapeHtml(t.description)}</li>`).join('');
-
-              container.innerHTML = `
-                <div class="card">
-                  <h3>Available for Speaking Engagements</h3>
-                  <p>${escapeHtml(info.intro || '')}</p>
-                  <h4 style="color: var(--navy); margin-top: 24px; margin-bottom: 8px;">${escapeHtml(info.section_title || 'Speaking Topics')}</h4>
-                  <div class="grid cols-2" style="margin-top: 20px;">
-                    <div><ul>${col1Html}</ul></div>
-                    <div><ul>${col2Html}</ul></div>
-                  </div>
-                  <div class="pub-links" style="margin-top: 24px;">
-                    <a href="${sanitizeUrl(info.cta_link || '#contact')}" class="pub-link">${escapeHtml(info.cta_label || 'Request Speaking Engagement')}</a>
-                  </div>
-                </div>
-              `;
-            } catch (error) {
-              console.error('Error loading speaking topics:', error);
-            }
-          })();
-        </script>
       </div>
     </section>
 
@@ -1139,76 +263,11 @@
           <!-- Content loaded from cae_designations.csv -->
         </div>
 
-        <script>
-          // Load teaching section header
-          (async function() {
-            const headerContainer = document.querySelector('#teaching-header');
-            try {
-              const response = await fetch('section_headers.csv', { cache: 'no-store' });
-              if (response.ok) {
-                const csvText = await response.text();
-                const lines = csvText.trim().split('\n');
-                for (let i = 1; i < lines.length; i++) {
-                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                  if (values[0] === 'teaching') {
-                    headerContainer.innerHTML = `
-                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
-                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
-                    `;
-                    break;
-                  }
-                }
-              }
-            } catch (e) { console.error('Error loading teaching header:', e); }
-          })();
-
-          // Load CAE designations
-          (async function() {
-            const container = document.querySelector('#cae-designations-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('cae_designations.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              if (lines.length > 1) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[1].length; j++) {
-                  const char = lines[1][j];
-                  if (char === '"') inQuotes = !inQuotes;
-                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
-                  else current += char;
-                }
-                values.push(current.replace(/^"|"$/g, ''));
-
-                const description = values[0];
-                const designations = values[1] ? values[1].split('|') : [];
-
-                const designationsHtml = designations.map(d =>
-                  `<div style="padding: 12px 24px; background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; border-radius: 10px; font-weight: 700; font-size: 15px;">${escapeHtml(d)}</div>`
-                ).join('');
-
-                container.innerHTML = `
-                  <div class="card">
-                    <h3>CAE Designations</h3>
-                    <p>${escapeHtml(description)}</p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">${designationsHtml}</div>
-                  </div>
-                `;
-              }
-            } catch (error) {
-              console.error('Error loading CAE designations:', error);
-            }
-          })();
-        </script>
 
         <!-- View Tabs -->
         <div class="view-tabs">
-          <button class="view-tab active" onclick="switchView('history', event)" aria-label="View course history" aria-pressed="true">Course History</button>
-          <button class="view-tab" onclick="switchView('details', event)" aria-label="View course details" aria-pressed="false">Course Details</button>
+          <button class="view-tab active" data-view="history" aria-label="View course history" aria-pressed="true">Course History</button>
+          <button class="view-tab" data-view="details" aria-label="View course details" aria-pressed="false">Course Details</button>
         </div>
 
         <!-- Course History View -->
@@ -1220,11 +279,11 @@
         <div id="view-details" class="view-content">
           <!-- Year Tabs -->
           <div class="year-tabs">
-            <button class="year-tab active" onclick="switchYear('2026')" aria-label="Filter courses from 2026" aria-pressed="true">2026</button>
-            <button class="year-tab" onclick="switchYear('2025')" aria-label="Filter courses from 2025" aria-pressed="false">2025</button>
-            <button class="year-tab" onclick="switchYear('2024')" aria-label="Filter courses from 2024" aria-pressed="false">2024</button>
-            <button class="year-tab" onclick="switchYear('2023')" aria-label="Filter courses from 2023" aria-pressed="false">2023</button>
-            <button class="year-tab" onclick="switchYear('all')" aria-label="Show all courses" aria-pressed="false">All Years</button>
+            <button class="year-tab active" data-year="2026" aria-label="Filter courses from 2026" aria-pressed="true">2026</button>
+            <button class="year-tab" data-year="2025" aria-label="Filter courses from 2025" aria-pressed="false">2025</button>
+            <button class="year-tab" data-year="2024" aria-label="Filter courses from 2024" aria-pressed="false">2024</button>
+            <button class="year-tab" data-year="2023" aria-label="Filter courses from 2023" aria-pressed="false">2023</button>
+            <button class="year-tab" data-year="all" aria-label="Show all courses" aria-pressed="false">All Years</button>
           </div>
           <div id="details-container" aria-live="polite" aria-atomic="true"></div>
         </div>
@@ -1237,71 +296,6 @@
           </div>
         </div>
 
-        <script>
-          // Load course development data immediately
-          (async function() {
-            const container = document.querySelector('#course-development-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('course_development.csv', { cache: 'no-store' });
-              if (!response.ok) {
-                throw new Error('Failed to load course development data');
-              }
-
-              const csvText = await response.text();
-
-              // Parse CSV
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-
-              const courses = [];
-              for (let i = 1; i < lines.length; i++) {
-                const line = lines[i];
-                if (!line.trim()) continue;
-
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-
-                for (let j = 0; j < line.length; j++) {
-                  const char = line[j];
-                  if (char === '"') {
-                    inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) {
-                    values.push(current.trim().replace(/^"|"$/g, ''));
-                    current = '';
-                  } else {
-                    current += char;
-                  }
-                }
-                values.push(current.trim().replace(/^"|"$/g, ''));
-
-                const course = {};
-                headers.forEach((header, index) => {
-                  course[header] = values[index] || '';
-                });
-                courses.push(course);
-              }
-
-              // Render courses
-              container.innerHTML = '';
-              courses.forEach((course, index) => {
-                const p = document.createElement('p');
-                p.style.marginTop = index === 0 ? '20px' : '16px';
-
-                p.innerHTML = `<strong>${escapeHtml(course.course_name)} (${escapeHtml(course.course_code)})</strong> — ${escapeHtml(course.description)}`;
-
-                container.appendChild(p);
-              });
-            } catch (error) {
-              console.error('Error loading course development data:', error);
-              container.innerHTML = `
-                <p style="color: var(--text-muted); margin-top: 20px; font-style: italic;">Unable to load course development data.</p>
-              `;
-            }
-          })();
-        </script>
       </div>
     </section>
 
@@ -1318,78 +312,6 @@
       </div>
     </section>
 
-    <script>
-      // Load labs section header
-      (async function() {
-        const headerContainer = document.querySelector('#labs-header');
-        try {
-          const response = await fetch('section_headers.csv', { cache: 'no-store' });
-          if (response.ok) {
-            const csvText = await response.text();
-            const lines = csvText.trim().split('\n');
-            for (let i = 1; i < lines.length; i++) {
-              const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-              if (values[0] === 'labs') {
-                headerContainer.innerHTML = `
-                  <h2 class="section-title">${escapeHtml(values[1])}</h2>
-                  <p class="section-subtitle">${escapeHtml(values[2])}</p>
-                `;
-                break;
-              }
-            }
-          }
-        } catch (e) { console.error('Error loading labs header:', e); }
-      })();
-
-      // Load labs and centers
-      (async function() {
-        const container = document.querySelector('#labs-centers-container');
-        if (!container) return;
-
-        try {
-          const response = await fetch('labs_centers.csv', { cache: 'no-store' });
-          const csvText = await response.text();
-          const lines = csvText.trim().split('\n');
-          const headers = lines[0].split(',');
-
-          container.innerHTML = '';
-          for (let i = 1; i < lines.length; i++) {
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-            for (let j = 0; j < lines[i].length; j++) {
-              const char = lines[i][j];
-              const nextChar = lines[i][j + 1];
-              if (char === '"') {
-                if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                else inQuotes = !inQuotes;
-              } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-              else current += char;
-            }
-            values.push(current);
-
-            const item = {};
-            headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-            const activities = item.activities ? item.activities.split('|').map(a => `<li>${escapeHtml(a)}</li>`).join('') : '';
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-              <h3>${escapeHtml(item.name)}</h3>
-              <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.role)}</p>
-              <p>${escapeHtml(item.description)}</p>
-              <h4>${item.name.includes('Lab') ? 'Lab Activities' : 'Center Focus Areas'}</h4>
-              <ul>${activities}</ul>
-              <p style="margin-top: 16px;"><a href="${sanitizeUrl(item.link_url)}" target="_blank" rel="noopener noreferrer" style="font-weight: 700;">${escapeHtml(item.link_text)}</a></p>
-            `;
-            container.appendChild(card);
-          }
-        } catch (error) {
-          console.error('Error loading labs centers:', error);
-        }
-      })();
-    </script>
 
     <!-- Research -->
     <section id="research">
@@ -1405,78 +327,6 @@
           <!-- Research areas will be populated here by JavaScript -->
         </div>
 
-        <script>
-          // Load research areas immediately - inline script executes as soon as DOM element is ready
-          (async function() {
-            const container = document.querySelector('#research-areas-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('research_areas.csv', { cache: 'no-store' });
-              if (!response.ok) throw new Error('Failed to load research areas data');
-
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-              const areas = [];
-
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let insideQuotes = false;
-
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-
-                  if (char === '"') {
-                    if (insideQuotes && nextChar === '"') {
-                      current += '"';
-                      j++;
-                    } else {
-                      insideQuotes = !insideQuotes;
-                    }
-                  } else if (char === ',' && !insideQuotes) {
-                    values.push(current);
-                    current = '';
-                  } else {
-                    current += char;
-                  }
-                }
-                values.push(current);
-
-                const area = {};
-                headers.forEach((header, index) => {
-                  area[header] = values[index] || '';
-                });
-                areas.push(area);
-              }
-
-              // Render research areas
-              container.innerHTML = '';
-              areas.forEach(area => {
-                const card = document.createElement('div');
-                card.className = 'card';
-
-                card.innerHTML = `
-                  <h3>${escapeHtml(area.title)}</h3>
-                  <p>${escapeHtml(area.description)}</p>
-                `;
-
-                container.appendChild(card);
-              });
-            } catch (error) {
-              console.error('Error loading research areas:', error);
-              container.innerHTML = `
-                <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
-                  <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
-                  <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Research Areas</h3>
-                  <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
-                </div>
-              `;
-            }
-          })();
-        </script>
 
         <!-- Publications -->
         <div style="margin-top: 60px;">
@@ -1487,99 +337,6 @@
             <!-- Papers will be populated here by JavaScript -->
           </div>
 
-          <script>
-            // Load papers immediately - inline script executes as soon as DOM element is ready
-            (async function() {
-              const container = document.querySelector('#papers-container');
-              if (!container) return;
-
-              try {
-                const response = await fetch('papers_published.csv', { cache: 'no-store' });
-                if (!response.ok) throw new Error('Failed to load papers data');
-
-                const csvText = await response.text();
-                const lines = csvText.trim().split('\n');
-                const headers = lines[0].split(',');
-                const papers = [];
-
-                for (let i = 1; i < lines.length; i++) {
-                  const values = [];
-                  let current = '';
-                  let insideQuotes = false;
-
-                  for (let j = 0; j < lines[i].length; j++) {
-                    const char = lines[i][j];
-                    const nextChar = lines[i][j + 1];
-
-                    if (char === '"') {
-                      if (insideQuotes && nextChar === '"') {
-                        current += '"';
-                        j++;
-                      } else {
-                        insideQuotes = !insideQuotes;
-                      }
-                    } else if (char === ',' && !insideQuotes) {
-                      values.push(current);
-                      current = '';
-                    } else {
-                      current += char;
-                    }
-                  }
-                  values.push(current);
-
-                  const paper = {};
-                  headers.forEach((header, index) => {
-                    paper[header] = values[index] || '';
-                  });
-                  papers.push(paper);
-                }
-
-                // Render papers
-                container.innerHTML = '';
-                papers.forEach(paper => {
-                  const pub = document.createElement('div');
-                  pub.className = 'publication';
-
-                  let html = `
-                    <div class="pub-title">${escapeHtml(paper.title)}</div>
-                    <div class="pub-authors">${escapeHtml(paper.authors)}</div>
-                    <div class="pub-venue">${escapeHtml(paper.venue)}</div>
-                    <p class="pub-abstract">${escapeHtml(paper.abstract)}</p>
-                  `;
-
-                  // Add impact if available
-                  if (paper.impact && paper.impact.trim()) {
-                    html += `<p style="color: var(--accent); font-size: 14px; margin-top: 8px; font-weight: 600;">${escapeHtml(paper.impact)}</p>`;
-                  }
-
-                  // Parse links (format: "Label|URL::Label|URL")
-                  if (paper.links && paper.links.trim()) {
-                    const linkPairs = paper.links.split('::');
-                    html += '<div class="pub-links">';
-                    linkPairs.forEach(pair => {
-                      const [label, url] = pair.split('|');
-                      if (label && url) {
-                        html += `<a href="${sanitizeUrl(url.trim())}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(label.trim())}</a>`;
-                      }
-                    });
-                    html += '</div>';
-                  }
-
-                  pub.innerHTML = html;
-                  container.appendChild(pub);
-                });
-              } catch (error) {
-                console.error('Error loading papers:', error);
-                container.innerHTML = `
-                  <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border);">
-                    <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
-                    <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Papers</h3>
-                    <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
-                  </div>
-                `;
-              }
-            })();
-          </script>
         </div>
 
         <!-- Patents - loaded from patents.csv -->
@@ -1592,56 +349,6 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#patents-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('patents.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const pub = document.createElement('div');
-                pub.className = 'publication';
-                pub.innerHTML = `
-                  <div class="pub-title">${escapeHtml(item.title)}</div>
-                  <div class="pub-authors">${escapeHtml(item.authors)}</div>
-                  <div class="pub-venue">${escapeHtml(item.venue)}</div>
-                  <p class="pub-abstract">${escapeHtml(item.abstract)}</p>
-                  <p style="color: var(--accent); font-size: 14px; margin-top: 12px; font-weight: 600;">${escapeHtml(item.impact)}</p>
-                  <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;"><strong>Cited by:</strong> ${escapeHtml(item.cited_by)}</p>
-                  <div class="pub-links">
-                    <a href="${sanitizeUrl(item.link_url)}" class="pub-link" target="_blank" rel="noopener noreferrer">${escapeHtml(item.link_text)}</a>
-                  </div>
-                `;
-                container.appendChild(pub);
-              }
-            } catch (error) {
-              console.error('Error loading patents:', error);
-            }
-          })();
-        </script>
       </div>
     </section>
 
@@ -1656,78 +363,6 @@
           <!-- Content loaded from industry_companies.csv -->
         </div>
 
-        <script>
-          // Load industry section header
-          (async function() {
-            const headerContainer = document.querySelector('#industry-header');
-            try {
-              const response = await fetch('section_headers.csv', { cache: 'no-store' });
-              if (response.ok) {
-                const csvText = await response.text();
-                const lines = csvText.trim().split('\n');
-                for (let i = 1; i < lines.length; i++) {
-                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                  if (values[0] === 'industry') {
-                    headerContainer.innerHTML = `
-                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
-                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
-                    `;
-                    break;
-                  }
-                }
-              }
-            } catch (e) { console.error('Error loading industry header:', e); }
-          })();
-
-          // Load industry companies
-          (async function() {
-            const container = document.querySelector('#industry-companies-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('industry_companies.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const achievements = item.achievements ? item.achievements.split('|').map(a => `<li>${escapeHtml(a)}</li>`).join('') : '';
-                const achievementsTitle = item.name.includes('RocketHub') ? 'Key Achievements' : 'Investment Focus';
-
-                const card = document.createElement('div');
-                card.className = 'card industry-card';
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.name)} · ${escapeHtml(item.role)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.dates)}</p>
-                  <p>${escapeHtml(item.description)}</p>
-                  <h4>${achievementsTitle}</h4>
-                  <ul>${achievements}</ul>
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading industry companies:', error);
-            }
-          })();
-        </script>
 
         <!-- Partnership Projects - loaded from partnership_projects.csv -->
         <div style="margin-top: 60px;">
@@ -1744,65 +379,6 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const largeContainer = document.querySelector('#partnership-large-container');
-            const smallContainer = document.querySelector('#partnership-small-container');
-            if (!largeContainer || !smallContainer) return;
-
-            try {
-              const response = await fetch('partnership_projects.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              largeContainer.innerHTML = '';
-              smallContainer.innerHTML = '';
-
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('article');
-                card.className = 'card';
-
-                let videoHtml = '';
-                if (item.video_src) {
-                  videoHtml = `<div class="video-wrapper"><iframe sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy" src="${sanitizeUrl(item.video_src)}" title="${escapeHtml(item.title)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
-                }
-
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.partner)}</p>
-                  ${videoHtml}
-                  <p>${escapeHtml(item.description)}</p>
-                `;
-
-                if (item.card_size === 'large') {
-                  largeContainer.appendChild(card);
-                } else {
-                  smallContainer.appendChild(card);
-                }
-              }
-            } catch (error) {
-              console.error('Error loading partnership projects:', error);
-            }
-          })();
-        </script>
 
         <!-- Partnerships & Collaborations - loaded from partners_list.csv -->
         <div style="margin-top: 60px;">
@@ -1814,30 +390,6 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#partners-list-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('partners_list.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              let partnersHtml = '';
-              for (let i = 1; i < lines.length; i++) {
-                const name = lines[i].replace(/^"|"$/g, '').trim();
-                if (name) {
-                  partnersHtml += `<span style="padding: 10px 20px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 14px;">${escapeHtml(name)}</span>`;
-                }
-              }
-
-              container.innerHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">${partnersHtml}</div>`;
-            } catch (error) {
-              console.error('Error loading partners list:', error);
-            }
-          })();
-        </script>
 
         <div style="margin-top: 60px;">
           <h3 style="font-size: 32px; text-align: center; color: var(--navy); margin-bottom: 32px;">Private Consulting & Advisory</h3>
@@ -1847,79 +399,6 @@
             <!-- Consulting cards will be populated here by JavaScript -->
           </div>
 
-          <script>
-            // Load consulting engagements immediately - inline script executes as soon as DOM element is ready
-            (async function() {
-              const container = document.querySelector('#consulting-container');
-              if (!container) return;
-
-              try {
-                const response = await fetch('consulting_advisory.csv', { cache: 'no-store' });
-                if (!response.ok) throw new Error('Failed to load consulting data');
-
-                const csvText = await response.text();
-                const lines = csvText.trim().split('\n');
-                const headers = lines[0].split(',');
-                const engagements = [];
-
-                for (let i = 1; i < lines.length; i++) {
-                  const values = [];
-                  let current = '';
-                  let insideQuotes = false;
-
-                  for (let j = 0; j < lines[i].length; j++) {
-                    const char = lines[i][j];
-                    const nextChar = lines[i][j + 1];
-
-                    if (char === '"') {
-                      if (insideQuotes && nextChar === '"') {
-                        current += '"';
-                        j++;
-                      } else {
-                        insideQuotes = !insideQuotes;
-                      }
-                    } else if (char === ',' && !insideQuotes) {
-                      values.push(current);
-                      current = '';
-                    } else {
-                      current += char;
-                    }
-                  }
-                  values.push(current);
-
-                  const engagement = {};
-                  headers.forEach((header, index) => {
-                    engagement[header] = values[index] || '';
-                  });
-                  engagements.push(engagement);
-                }
-
-                // Render consulting engagements
-                container.innerHTML = '';
-                engagements.forEach(eng => {
-                  const card = document.createElement('div');
-                  card.className = 'card';
-
-                  card.innerHTML = `
-                    <h3>${escapeHtml(eng.company)}</h3>
-                    <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(eng.role)}</p>
-                    <p>${escapeHtml(eng.description)}</p>
-                  `;
-
-                  container.appendChild(card);
-                });
-              } catch (error) {
-                console.error('Error loading consulting engagements:', error);
-                container.innerHTML = `
-                  <div style="padding: 40px; text-align: center; background: var(--bg-tertiary); border-radius: 12px; border: 2px dashed var(--border); grid-column: 1 / -1;">
-                    <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
-                    <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Consulting Data</h3>
-                    <p style="color: var(--text-muted);">${escapeHtml(error.message)}</p>
-                  </div>
-                `;
-              }
-            })();
-          </script>
         </div>
 
         <!-- Additional Career Experience - loaded from career_experience.csv -->
@@ -1931,50 +410,6 @@
           </div>
         </div>
 
-        <script>
-          (async function() {
-            const container = document.querySelector('#career-experience-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('career_experience.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = (values[idx] || '').replace(/^"|"$/g, ''));
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.company)}</h3>
-                  <p style="color: var(--accent); font-weight: 700; margin-bottom: 8px;">${escapeHtml(item.dates)} · ${escapeHtml(item.role)}</p>
-                  <p>${escapeHtml(item.description)}</p>
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading career experience:', error);
-            }
-          })();
-        </script>
       </div>
     </section>
 
@@ -2004,190 +439,6 @@
           <!-- Content loaded from education.csv -->
         </div>
 
-        <script>
-          // Load credentials section header
-          (async function() {
-            const headerContainer = document.querySelector('#credentials-header');
-            try {
-              const response = await fetch('section_headers.csv', { cache: 'no-store' });
-              if (response.ok) {
-                const csvText = await response.text();
-                const lines = csvText.trim().split('\n');
-                for (let i = 1; i < lines.length; i++) {
-                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                  if (values[0] === 'credentials') {
-                    headerContainer.innerHTML = `
-                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
-                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
-                    `;
-                    break;
-                  }
-                }
-              }
-            } catch (e) { console.error('Error loading credentials header:', e); }
-          })();
-
-          // Load credentials
-          (async function() {
-            const container = document.querySelector('#credentials-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('credentials.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  const nextChar = lines[i][j + 1];
-                  if (char === '"') {
-                    if (inQuotes && nextChar === '"') { current += '"'; j++; }
-                    else inQuotes = !inQuotes;
-                  } else if (char === ',' && !inQuotes) { values.push(current); current = ''; }
-                  else current += char;
-                }
-                values.push(current);
-
-                const category = (values[0] || '').replace(/^"|"$/g, '');
-                const items = (values[1] || '').replace(/^"|"$/g, '').split('|');
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                // Note: credential items may contain intentional <strong> from CSV; sanitizeHtml allows only that
-                card.innerHTML = `
-                  <h3>${escapeHtml(category)}</h3>
-                  <ul style="margin-top: 16px;">${items.map(item => `<li>${sanitizeHtml(item)}</li>`).join('')}</ul>
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading credentials:', error);
-            }
-          })();
-
-          // Load languages
-          (async function() {
-            const container = document.querySelector('#languages-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('languages.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              let languagesHtml = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                languagesHtml += `<span style="padding: 12px 24px; background: var(--bg-secondary); border-radius: 8px; font-weight: 600; color: var(--navy); font-size: 15px;">${escapeHtml(values[0])} <span style="color: var(--text-muted); font-weight: 400;">(${escapeHtml(values[1])})</span></span>`;
-              }
-
-              container.innerHTML = `
-                <div class="card">
-                  <h3 style="text-align: center; margin-bottom: 24px;">Languages</h3>
-                  <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">${languagesHtml}</div>
-                </div>
-              `;
-            } catch (error) {
-              console.error('Error loading languages:', error);
-            }
-          })();
-
-          // Load technical skills
-          (async function() {
-            const container = document.querySelector('#technical-skills-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('technical_skills.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              let skillsHtml = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  if (char === '"') inQuotes = !inQuotes;
-                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
-                  else current += char;
-                }
-                values.push(current.replace(/^"|"$/g, ''));
-
-                // Note: skill items may contain intentional <strong> from CSV; sanitizeHtml allows only that
-                const items = values[2] ? values[2].split('|').map(item => `<p style="color: var(--text-muted); line-height: 1.8;">${sanitizeHtml(item)}</p>`).join('') : '';
-                skillsHtml += `
-                  <div>
-                    <h4 style="color: var(--navy); font-size: 16px; margin-bottom: 12px;">${escapeHtml(values[1])}</h4>
-                    ${items}
-                  </div>
-                `;
-              }
-
-              container.innerHTML = `
-                <div class="card">
-                  <h3 style="text-align: center; margin-bottom: 24px;">Technical Skills & Expertise</h3>
-                  <div class="grid cols-2" style="margin-top: 24px;">${skillsHtml}</div>
-                </div>
-              `;
-            } catch (error) {
-              console.error('Error loading technical skills:', error);
-            }
-          })();
-
-          // Load education
-          (async function() {
-            const container = document.querySelector('#education-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('education.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              let educationHtml = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  if (char === '"') inQuotes = !inQuotes;
-                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
-                  else current += char;
-                }
-                values.push(current.replace(/^"|"$/g, ''));
-
-                const additional = values[4] ? values[4].split('|').map(a => `<p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">${escapeHtml(a)}</p>`).join('') : '';
-
-                educationHtml += `
-                  <div style="text-align: center; padding: 20px;">
-                    <h4 style="color: var(--navy); font-size: 18px; margin-bottom: 8px;">${escapeHtml(values[0])}</h4>
-                    <p style="color: var(--accent); font-weight: 600;">${escapeHtml(values[1])}</p>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">${escapeHtml(values[2])}</p>
-                    ${values[3] ? `<p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">${escapeHtml(values[3])}</p>` : ''}
-                    ${additional}
-                  </div>
-                `;
-              }
-
-              container.innerHTML = `
-                <div class="card">
-                  <h3 style="text-align: center; margin-bottom: 20px;">Education</h3>
-                  <div class="grid cols-3" style="margin-top: 24px;">${educationHtml}</div>
-                </div>
-              `;
-            } catch (error) {
-              console.error('Error loading education:', error);
-            }
-          })();
-        </script>
       </div>
     </section>
 
@@ -2206,166 +457,10 @@
           <!-- Content loaded from professional_profiles.csv -->
         </div>
 
-        <script>
-          // Load contact section header
-          (async function() {
-            const headerContainer = document.querySelector('#contact-header');
-            try {
-              const response = await fetch('section_headers.csv', { cache: 'no-store' });
-              if (response.ok) {
-                const csvText = await response.text();
-                const lines = csvText.trim().split('\n');
-                for (let i = 1; i < lines.length; i++) {
-                  const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                  if (values[0] === 'contact') {
-                    headerContainer.innerHTML = `
-                      <h2 class="section-title">${escapeHtml(values[1])}</h2>
-                      <p class="section-subtitle">${escapeHtml(values[2])}</p>
-                    `;
-                    break;
-                  }
-                }
-              }
-            } catch (e) { console.error('Error loading contact header:', e); }
-          })();
-
-          // Load contact info
-          (async function() {
-            const container = document.querySelector('#contact-info-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('contact_info.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-              const headers = lines[0].split(',');
-
-              container.innerHTML = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                for (let j = 0; j < lines[i].length; j++) {
-                  const char = lines[i][j];
-                  if (char === '"') inQuotes = !inQuotes;
-                  else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
-                  else current += char;
-                }
-                values.push(current.replace(/^"|"$/g, ''));
-
-                const item = {};
-                headers.forEach((h, idx) => item[h.replace(/^"|"$/g, '')] = values[idx] || '');
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                  <h3>${escapeHtml(item.title)}</h3>
-                  <p>${escapeHtml(item.description)}</p>
-                  <p style="margin-top: 16px;"><strong>${escapeHtml(item.email_label)}:</strong> ${escapeHtml(item.email)}</p>
-                  ${item.office ? `<p><strong>Office:</strong> ${escapeHtml(item.office)}</p>` : ''}
-                  <p style="margin-top: 16px; color: var(--text-muted); font-size: 14px;">${escapeHtml(item.note)}</p>
-                `;
-                container.appendChild(card);
-              }
-            } catch (error) {
-              console.error('Error loading contact info:', error);
-            }
-          })();
-
-          // Load professional profiles
-          (async function() {
-            const container = document.querySelector('#professional-profiles-container');
-            if (!container) return;
-
-            try {
-              const response = await fetch('professional_profiles.csv', { cache: 'no-store' });
-              const csvText = await response.text();
-              const lines = csvText.trim().split('\n');
-
-              let profilesHtml = '';
-              for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',').map(v => v.replace(/^"|"$/g, ''));
-                profilesHtml += `<a href="${sanitizeUrl(values[1])}" target="_blank" class="btn secondary" rel="noopener noreferrer">${escapeHtml(values[0])}</a>`;
-              }
-
-              container.innerHTML = `
-                <h3 style="text-align: center; margin-bottom: 24px;">Professional Profiles</h3>
-                <div class="cta" style="justify-content: center;">${profilesHtml}</div>
-              `;
-            } catch (error) {
-              console.error('Error loading professional profiles:', error);
-            }
-          })();
-        </script>
       </div>
     </section>
   </main>
 
-  <!-- Immediate reordering script (runs as soon as DOM is parsed) -->
-  <script>
-    (function() {
-      // Guard: Prevent double execution
-      if (!window.__initialNavOrder || window.__layoutReordered) return;
-
-      const nav = document.getElementById('mainNav');
-      const main = document.querySelector('main');
-
-      // Null safety checks
-      if (!nav || !main) {
-        console.error('Required elements not found');
-        return;
-      }
-      const sectionMap = window.__portfolioUtils.sectionMap;
-
-      // REORDER NAV ITEMS IMMEDIATELY
-      const navItems = Array.from(nav.querySelectorAll('a'));
-      const itemMap = {};
-      navItems.forEach(item => {
-        itemMap[item.getAttribute('href')] = item;
-      });
-
-      const dropIndicator = document.getElementById('dropIndicator');
-      const layoutControls = nav.querySelector('.layout-controls');
-
-      navItems.forEach(item => item.remove());
-
-      const firstNonLink = dropIndicator || layoutControls;
-      window.__initialNavOrder.forEach(href => {
-        if (itemMap[href]) {
-          if (firstNonLink) {
-            nav.insertBefore(itemMap[href], firstNonLink);
-          } else {
-            nav.appendChild(itemMap[href]);
-          }
-        }
-      });
-
-      // REORDER SECTIONS IMMEDIATELY
-      const sections = {};
-      Object.values(sectionMap).forEach(id => {
-        const section = document.getElementById(id);
-        if (section) {
-          sections[id] = section;
-          section.style.transition = 'none';
-        }
-      });
-
-      window.__initialNavOrder.forEach(href => {
-        const sectionId = sectionMap[href];
-        if (sections[sectionId]) {
-          main.appendChild(sections[sectionId]);
-        }
-      });
-
-      // Re-enable transitions immediately
-      Object.values(sections).forEach(section => {
-        section.style.transition = '';
-      });
-
-      // Mark that we've already done the reordering
-      window.__layoutReordered = true;
-    })();
-  </script>
 
   <footer>
     <div class="container">
@@ -2414,7 +509,8 @@
     </div>
   </footer>
 
-  <!-- External JavaScript -->
+  <!-- External JavaScript: CSV content loaders, then UI behaviour -->
+  <script src="content.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

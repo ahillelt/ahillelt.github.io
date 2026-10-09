@@ -220,8 +220,8 @@
         const historyText = await historyResponse.text();
         const catalogText = await catalogResponse.text();
 
-        const courseHistory = parseCSV(historyText);
-        const courseCatalog = parseCSV(catalogText);
+        const courseHistory = parseCSVObjects(historyText);
+        const courseCatalog = parseCSVObjects(catalogText);
 
         renderCourses(courseHistory, courseCatalog);
       } catch (error) {
@@ -236,7 +236,7 @@
           <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
           <h3 style="color: var(--text); margin-bottom: 12px;">Unable to Load Course Data</h3>
           <p style="color: var(--text-muted); margin-bottom: 24px;">${escapeHtml(message || 'An error occurred while loading the course information.')}</p>
-          <button onclick="loadCourses()" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
+          <button class="course-retry-btn" style="padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
             Try Again
           </button>
         </div>
@@ -247,51 +247,11 @@
 
       if (historyContainer) historyContainer.innerHTML = errorHtml;
       if (detailsContainer) detailsContainer.innerHTML = errorHtml;
-    }
 
-    function parseCSV(csvText) {
-      const lines = csvText.trim().split('\n');
-      const headers = lines[0].split(',');
-      const courses = [];
-
-      for (let i = 1; i < lines.length; i++) {
-        const values = parseCSVLine(lines[i]);
-        const course = {};
-        headers.forEach((header, index) => {
-          course[header] = values[index] || '';
-        });
-        courses.push(course);
-      }
-
-      return courses;
-    }
-
-    function parseCSVLine(line) {
-      const result = [];
-      let current = '';
-      let insideQuotes = false;
-
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        const nextChar = line[i + 1];
-
-        if (char === '"') {
-          // Check for escaped quote (two consecutive quotes)
-          if (insideQuotes && nextChar === '"') {
-            current += '"';
-            i++; // Skip the next quote
-          } else {
-            insideQuotes = !insideQuotes;
-          }
-        } else if (char === ',' && !insideQuotes) {
-          result.push(current);
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      result.push(current);
-      return result;
+      // Event listener instead of inline onclick (blocked by the CSP)
+      document.querySelectorAll('.course-retry-btn').forEach(btn => {
+        btn.addEventListener('click', loadCourses);
+      });
     }
 
     // Switch between views
@@ -385,7 +345,7 @@
         <p><strong>Total Students Taught:</strong> ~${totalEnrollment} students across all courses</p>
         <p style="margin-top: 8px;"><strong>As Faculty:</strong> ~${facultyEnrollment} students</p>
         <p style="margin-top: 8px;"><strong>As TA/CA:</strong> ~${taEnrollment} students</p>
-        <p style="margin-top: 12px;"><strong>Primary Courses:</strong> Application Security (CS-GY 9163), Computer Networking (CS-GY 6843), AI Governance (CS-GY 9215), Cyber Resiliency Management (CS-GY 9215), ISSEM (CS-GY 6803)</p>
+        <p style="margin-top: 12px;"><strong>Primary Courses:</strong> Application Security (CS-GY 9163), Computer Networking (CS-GY 6843), AI Governance (CS-GY 9215 A), Cyber Resiliency Management (CS-GY 9215 B), ISSEM (CS-GY 6803)</p>
       </div>`;
 
       container.innerHTML = html;
@@ -833,7 +793,7 @@
         initDragAndDrop();
       }
 
-      // Make functions globally accessible for button onclick handlers
+      // Make functions globally accessible for the Save/Reset button handlers
       window.navReorderModule = {
         saveOrder,
         loadSavedOrder,
@@ -1063,4 +1023,26 @@
 
       // Expose function globally so CSV scripts can trigger it
       window.alignGridCards = alignGridCards;
+    })();
+
+    // ============================================================================
+    // EVENT BINDINGS: replaces inline onclick attributes, which the CSP blocks
+    // ============================================================================
+    (function() {
+      const menuToggle = document.querySelector('.menu-toggle');
+      if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+
+      const saveBtn = document.querySelector('.layout-controls-floating .save-btn');
+      if (saveBtn) saveBtn.addEventListener('click', saveLayout);
+
+      const resetBtn = document.querySelector('.layout-controls-floating .reset-btn');
+      if (resetBtn) resetBtn.addEventListener('click', resetLayout);
+
+      document.querySelectorAll('.view-tab[data-view]').forEach(tab => {
+        tab.addEventListener('click', event => switchView(tab.dataset.view, event));
+      });
+
+      document.querySelectorAll('.year-tab[data-year]').forEach(tab => {
+        tab.addEventListener('click', () => switchYear(tab.dataset.year));
+      });
     })();
