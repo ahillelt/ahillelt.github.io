@@ -1138,6 +1138,8 @@
     nav a {
       cursor: grab;
       user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none; /* iOS: no link-preview popup during long-press drag */
       position: relative;
     }
     nav a:active {

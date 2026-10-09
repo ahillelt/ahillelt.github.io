@@ -14,9 +14,11 @@ This is **Alon Hillel-Tuch's professional portfolio website** - a static GitHub 
 
 ```
 /
-├── index.html          # Main website (2,363 lines) - 8 major sections
+├── index.html          # Main website markup - 8 major sections (no inline scripts)
+├── head.js             # Loaded in <head>: frame-busting, XSS helpers, shared CSV parser, saved layout
+├── content.js          # CSV loaders that render every content section
 ├── styles.css          # Styling (1,347 lines) - responsive, modern design
-├── script.js           # JavaScript (1,016 lines) - CSV loading, interactions
+├── script.js           # UI behaviour: courses tables, nav, drag-and-drop layout, event bindings
 ├── Images/             # Headshot photos (headshot.png, headshot2.png, headshot-thumb.jpg)
 ├── *.csv               # 34 CSV data files (all content lives here)
 ├── .gitignore          # Excludes node_modules/
@@ -76,7 +78,7 @@ All website content is externalized into CSV files for easy editing without touc
 
 1. **Read existing code first** before modifications
 2. **Maintain the CSV-driven architecture** - Don't embed new content in HTML
-3. **Follow existing patterns** in script.js for data loading
+3. **Follow existing patterns** in content.js for data loading
 4. **Test responsiveness** - Site uses mobile-first CSS
 5. **Verify accessibility** - ARIA labels, semantic HTML, color contrast
 
@@ -99,8 +101,9 @@ Push to `main` branch triggers automatic GitHub Pages deployment. No build step 
 ### JavaScript Patterns
 
 - **DOM Caching:** All frequently accessed elements are cached in `DOM_CACHE` object
-- **CSV Parsing:** Custom parser handles quoted fields, embedded commas, and escaping
-- **XSS Prevention:** Use `escapeHtml()` function for user-facing content
+- **CSV Parsing:** Always use the shared helpers in `head.js`: `fetchCSV(file)`, then `parseCSVObjects(text)` (header-keyed rows), `parseCSVKeyValues(text)` (`key,value` files) or `parseCSVRows(text)`. They handle quoted fields, embedded commas, `""` escapes, newlines inside quotes and CRLF. Never split CSV text on `,` or `\n` by hand
+- **No inline scripts or handlers:** The CSP has no `'unsafe-inline'` for scripts, so `<script>` blocks and `onclick=`/`onload=` attributes in HTML (including HTML built in JS) are blocked. Put code in the `.js` files and use `addEventListener`
+- **XSS Prevention:** `escapeHtml()`, `sanitizeUrl()` and `sanitizeHtml()` are defined once in `head.js` (never redeclare them elsewhere). Use `escapeHtml()` for text and attributes, `sanitizeUrl()` for every `href`/`src` (allowlists http(s)/mailto/tel/relative), and `sanitizeHtml()` for CSV fields that intentionally contain `<strong>`/`<em>`/`<b>`/`<i>`/`<br>` (all other tags are escaped)
 - **Performance:** Intersection Observer for animations, throttled scroll events
 - **Cookies:** Secure flags (`SameSite=Strict`, `Secure`) for layout preferences
 
@@ -115,21 +118,20 @@ Push to `main` branch triggers automatic GitHub Pages deployment. No build step 
 
 - **Semantic Sections:** Each major section has an ID matching navigation
 - **ARIA Labels:** Accessibility attributes on interactive elements
-- **Security Headers:** CSP, X-Frame-Options, etc. in meta tags
+- **Security Headers:** CSP etc. in meta tags (no inline scripts; see JavaScript Patterns)
 - **SEO:** JSON-LD schema, Open Graph, Twitter Cards
 
 ## Key Files Reference
 
-### index.html (2,363 lines)
-- Lines 1-150: Head (meta, security headers, SEO, preloads)
-- Lines 151-300: Navigation and hero section
-- Lines 301-800: About, Press/Speaking sections
-- Lines 801-1200: Teaching, Labs sections
-- Lines 1201-1600: Research, Industry sections
-- Lines 1601-2000: Credentials, Contact sections
-- Lines 2001-2363: Footer and inline scripts for CSV loading
+### index.html
+- `<head>`: meta, CSP and other security meta tags, SEO (Open Graph, JSON-LD), preloads, `head.js`
+- `<body>`: navigation, hero, then the 8 sections, each with empty containers (`#…-container`) that `content.js` fills from CSVs
+- End of `<body>`: `content.js`, then `script.js`
 
-### script.js (1,016 lines)
+### content.js
+- Saved-layout reordering, shared renderers (`renderPubLinks`, `loadSectionHeader`), then one loader per CSV in page order
+
+### script.js
 - Lines 1-100: DOM caching and utility functions
 - Lines 101-250: CSV parsing and data loading
 - Lines 251-500: Section renderers (teaching, speaking, etc.)
@@ -204,8 +206,8 @@ outlet,title,date,url,description
 
 ## Security Features
 
-- Content Security Policy (CSP) configured
-- X-Frame-Options: DENY
+- Content Security Policy (CSP) configured via `<meta>`; `script-src 'self'` (no inline scripts)
+- Clickjacking: frame-busting script in `head.js` (GitHub Pages can't send `X-Frame-Options`/`frame-ancestors` headers, and browsers ignore both in `<meta>`)
 - X-XSS-Protection enabled
 - Secure cookie flags for preferences
 - Input escaping for XSS prevention
