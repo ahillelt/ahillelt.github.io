@@ -59,6 +59,10 @@ HTTP_TIMEOUT = 15
 def load_config(path):
     cfg = {
         "csv_path": "nfc_scans.csv",
+        # Second copy of every scan, kept outside the program folder by
+        # default. Point it at a USB drive or a OneDrive/Dropbox/iCloud
+        # folder for an off-machine copy.
+        "backup_path": "~/NFC_Scan_Backups/nfc_scans_backup.csv",
         "station_name": socket.gethostname(),
         "sheets_webhook_url": "",
         "sheets_token": "",
@@ -82,32 +86,82 @@ def resolve_path(p):
 # --------------------------------------------------------------------------
 
 class CsvLog:
+    """One append-only CSV file. Rows that can't be written right now (for
+    example because the file is open in Excel on Windows) are held and
+    retried on the next scan."""
+
     def __init__(self, path):
         self.path = path
+        self.held = []
+        self.error = ""
         folder = os.path.dirname(path)
         if folder:
             os.makedirs(folder, exist_ok=True)
-        needs_header = not os.path.exists(path) or os.path.getsize(path) == 0
-        if needs_header:
-            self._write([CSV_HEADER])
+        self._write([])  # make sure the file exists with a header
 
     def _write(self, rows):
         # newline="" is required by the csv module; utf-8-sig would add a BOM
         # mid-file on append, so plain utf-8 is used.
+        new = not os.path.exists(self.path) or os.path.getsize(self.path) == 0
         with open(self.path, "a", newline="", encoding="utf-8") as fh:
-            csv.writer(fh).writerows(rows)
+            w = csv.writer(fh)
+            if new:
+                w.writerow(CSV_HEADER)
+            w.writerows(rows)
             fh.flush()
             os.fsync(fh.fileno())
 
     def append(self, row):
-        self._write([row])
+        """Write held rows plus this one. Returns True if all are on disk."""
+        self.held.append(row)
+        try:
+            self._write(self.held)
+            self.held = []
+            self.error = ""
+            return True
+        except OSError as exc:
+            self.error = describe_os_error(exc)
+            return False
+
+    def read_rows(self):
+        """All data rows (header skipped). Missing/unreadable file -> []."""
+        try:
+            with open(self.path, "r", newline="", encoding="utf-8", errors="replace") as fh:
+                rows = list(csv.reader(fh))
+        except OSError:
+            return []
+        if rows and rows[0] == CSV_HEADER:
+            rows = rows[1:]
+        return [r for r in rows if len(r) >= len(CSV_HEADER)]
 
     def count_rows(self):
-        try:
-            with open(self.path, "r", newline="", encoding="utf-8") as fh:
-                return max(sum(1 for _ in csv.reader(fh)) - 1, 0)
-        except OSError:
-            return 0
+        return len(self.read_rows())
+
+
+def describe_os_error(exc):
+    if isinstance(exc, PermissionError):
+        return "file is locked or read-only (close it in Excel?)"
+    return (exc.strerror or str(exc))[:80]
+
+
+def reconcile(a, b):
+    """Make sure both logs hold every scan. Any row (matched by scan_id) that
+    is in one file but not the other is appended to the other. Nothing is
+    ever deleted or rewritten. Returns a short note for the screen."""
+    rows_a, rows_b = a.read_rows(), b.read_rows()
+    ids_a = {r[5] for r in rows_a}
+    ids_b = {r[5] for r in rows_b}
+    to_a = [r for r in rows_b if r[5] not in ids_a]
+    to_b = [r for r in rows_a if r[5] not in ids_b]
+    notes = []
+    for log, rows, label in ((a, to_a, "main CSV"), (b, to_b, "backup")):
+        if rows:
+            try:
+                log._write(rows)
+                notes.append(f"restored {len(rows)} scan(s) to the {label}")
+            except OSError as exc:
+                notes.append(f"could not update the {label}: {describe_os_error(exc)}")
+    return "; ".join(notes)
 
 
 # --------------------------------------------------------------------------
@@ -231,12 +285,23 @@ def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-def draw(floor, csv_path, sync, total, recent, message):
+def file_status(log):
+    if log.held:
+        return f"  !! {len(log.held)} scan(s) NOT yet written - {log.error}"
+    return ""
+
+
+def draw(floor, log, backup, sync, total, recent, message):
     clear_screen()
     width = 72
     print("=" * width)
     print(f"  FLOOR:        {floor}")
-    print(f"  WRITING TO:   {csv_path}")
+    print(f"  WRITING TO:   {log.path}")
+    if file_status(log):
+        print("  " + file_status(log))
+    print(f"  BACKUP:       {backup.path}")
+    if file_status(backup):
+        print("  " + file_status(backup))
     if sync:
         pend = sync.pending()
         line = f"  GOOGLE SHEET: {sync.status}"
@@ -317,7 +382,19 @@ def main():
     if not floors:
         sys.exit('"floors" in the config must list at least one floor')
 
-    log = CsvLog(csv_path)
+    backup_path = resolve_path(cfg.get("backup_path") or "~/NFC_Scan_Backups/nfc_scans_backup.csv")
+    if os.path.normcase(os.path.realpath(backup_path)) == os.path.normcase(os.path.realpath(csv_path)):
+        print("backup_path must be a different file from csv_path")
+        pause_if_double_clicked()
+        sys.exit(1)
+    try:
+        log = CsvLog(csv_path)
+        backup = CsvLog(backup_path)
+    except OSError as exc:
+        print(f"Cannot create the CSV files: {exc}")
+        pause_if_double_clicked()
+        sys.exit(1)
+    startup_note = reconcile(log, backup)
 
     sync = None
     url = (cfg.get("sheets_webhook_url") or "").strip()
@@ -333,10 +410,12 @@ def main():
     recent = deque(maxlen=10)
     last_seen = {}  # (floor, tag) -> time of last logged scan
     message = f"Ready. Logging floor {floor}."
+    if startup_note:
+        message += f"  (Startup check: {startup_note}.)"
 
     try:
         while True:
-            draw(floor, csv_path, sync, total, recent, message)
+            draw(floor, log, backup, sync, total, recent, message)
             try:
                 raw = input("Scan > ")
             except EOFError:
@@ -369,24 +448,43 @@ def main():
             ts_utc = local.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             row = [ts_local, ts_utc, floor, tag, station, uuid.uuid4().hex]
 
-            log.append(row)
+            ok_main = log.append(row)
+            ok_backup = backup.append(row)
             total += 1
             if sync:
                 sync.enqueue(row)
             recent.appendleft((ts_local, floor, tag))
-            message = f"OK  saved {tag}"
-            # Audible confirmation on most terminals.
-            sys.stdout.write("\a")
+            if ok_main and ok_backup:
+                message = f"OK  saved {tag}"
+                sys.stdout.write("\a")  # audible confirmation on most terminals
+            elif ok_main or ok_backup:
+                where = "backup" if ok_backup else "main CSV"
+                message = (f"!! {tag} saved to the {where} only - the other file "
+                           "will be filled in automatically once it can be written.")
+            else:
+                message = (f"!!! {tag} could NOT be written to either CSV. It is held in "
+                           "memory and retried on the next scan - do not close the program.")
     except KeyboardInterrupt:
         pass
 
     print("\nClosing...")
+    for f in (log, backup):
+        if f.held:
+            try:
+                f._write(f.held)
+                f.held = []
+            except OSError as exc:
+                print(f"!! {len(f.held)} scan(s) could not be written to {f.path}: "
+                      f"{describe_os_error(exc)}")
+    if log.held or backup.held:
+        reconcile(log, backup)
     if sync:
         left = sync.flush()
         if left:
             print(f"{left} scan(s) not yet uploaded to Google Sheets. They are saved")
             print("and will upload automatically next time the program runs.")
-    print(f"All scans are saved in {csv_path}")
+    print(f"Scans are saved in {log.path}")
+    print(f"Backup copy:      {backup.path}")
     pause_if_double_clicked()
 
 

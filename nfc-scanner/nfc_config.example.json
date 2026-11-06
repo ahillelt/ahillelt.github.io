@@ -1,9 +1,15 @@
 {
   "_comment": "Copy this file to nfc_config.json and edit. Leave sheets_webhook_url empty for CSV only.",
   "csv_path": "nfc_scans.csv",
+  "backup_path": "~/NFC_Scan_Backups/nfc_scans_backup.csv",
   "station_name": "Lobby-Scanner-1",
   "sheets_webhook_url": "",
   "sheets_token": "",
   "debounce_seconds": 10,
-  "floors": ["G", "2", "10", "12"]
+  "floors": [
+    "G",
+    "2",
+    "10",
+    "12"
+  ]
 }

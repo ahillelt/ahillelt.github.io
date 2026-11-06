@@ -11,16 +11,17 @@ Every scan goes to a local CSV file. If you set it up, each scan also goes to a 
 The WaveID Plus acts as a keyboard ("keyboard wedge"). It types the tag ID and presses Enter.
 The program reads each line, adds a timestamp, the floor and the station name, and then:
 
-1. **Appends the scan to the CSV** right away. It never overwrites the file, so closing and
-   reopening the program keeps adding to the same log.
-2. **Sends the scan to Google Sheets** in the background, if you set that up. If the
+1. **Appends the scan to the local CSV** right away. The CSV is always created, with or without
+   Google Sheets. It's never overwritten, so closing and reopening the program keeps adding to the same log.
+2. **Appends the same scan to a backup CSV** in a separate folder (see [Backups](#backups)).
+3. **Sends the scan to Google Sheets** in the background, if you set that up. If the
    network is down, the scan waits in a queue file (`<csv>.pending.jsonl`) and uploads
    automatically once the network is back, even after a restart.
 
 At startup it asks which floor you're scanning from (**G, 2, 10 or 12**) and has you type it again to confirm.
 Anything else is rejected, and `g` is accepted for `G`.
-The top of the screen always shows the floor, the CSV file it's writing to, the Google Sheet
-status and the number of scans in the file.
+The top of the screen always shows the floor, the CSV file it's writing to, the backup file,
+the Google Sheet status and the number of scans in the file.
 
 | Column | Example |
 |---|---|
@@ -70,6 +71,29 @@ To add or rename floors later, edit the `floors` list.
 Give each scanner PC its own `station_name` so you can tell in the sheet where each scan came from.
 Without a config file, the program writes `nfc_scans.csv` next to the script and uses the computer name as the station.
 
+## Backups
+
+Every scan is written to two CSV files:
+
+| File | Default location |
+|---|---|
+| Main log | `nfc_scans.csv` next to the program |
+| Backup | `NFC_Scan_Backups/nfc_scans_backup.csv` in your home folder (`C:\Users\<you>\` on Windows, `/Users/<you>/` on Mac) |
+
+The backup is kept outside the program folder, so deleting or replacing the program doesn't remove it.
+For a copy that survives losing the computer, set `backup_path` to a USB drive or a synced cloud
+folder, for example `"D:/NFC_Backup/scans.csv"` or `"~/OneDrive/NFC_Backup/scans.csv"`.
+
+Built-in protection:
+
+- **File locked or unavailable** (most often because the CSV is open in Excel on Windows): the scan
+  still goes to the other file. The top of the screen shows a red-flag line, and the program writes the
+  waiting scans as soon as the file is free. To look at the data while scanning, open a copy of the file.
+- **Every startup**, the program compares the two files by `scan_id` and adds any scan that's missing
+  from one to the other. If one file is deleted, it's rebuilt from the other. Nothing is ever deleted or rewritten.
+- **When you quit**, it makes a last attempt to write any waiting scans. If a scan still can't be written,
+  it tells you which file was affected.
+
 ## Google Sheets setup (for multiple scanners)
 
 All stations send their scans to one small Google Apps Script attached to the sheet.
@@ -96,6 +120,8 @@ This folder's `.gitignore` already excludes it, along with the CSV and queue fil
 - **Google Sheet status says "SSL certificates missing" (Mac):** open the Python folder in
   Applications and double-click **Install Certificates.command**, then restart the logger.
   Scans waiting to upload are kept and will upload then.
+- **"!! … NOT yet written - file is locked":** close the CSV in Excel (or another program).
+  The waiting scans are written on the next scan.
 - **Nothing happens when scanning:** click on the logger window so it's the active window.
   Test the reader by scanning into a text editor: you should see the ID typed out.
 - **Windows says "Python was not found":** reinstall Python and tick "Add python.exe to PATH".
