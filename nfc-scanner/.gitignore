@@ -1,0 +1,6 @@
+# Scan data and local settings stay on the scanner PC, never in the public repo
+nfc_config.json
+*.csv
+*.pending.jsonl
+*.pending.jsonl.tmp
+__pycache__/
