@@ -46,6 +46,7 @@ CSV_HEADER = ["timestamp_local", "timestamp_utc", "floor", "tag_id", "station", 
 QUIT_WORDS = {"q", "quit", "exit"}
 FLOOR_WORDS = {"f", "floor"}
 
+SCREEN_WIDTH = 72
 MAX_FLOOR_LEN = 10
 MAX_TAG_LEN = 128
 UPLOAD_BATCH = 100
@@ -176,8 +177,11 @@ class SheetSync:
         self.lock = threading.Lock()
         self.wake = threading.Event()
         self.stop = threading.Event()
-        self.status = "starting"
         self.last_error = ""
+        self.last_ok = ""         # local time of the last successful upload
+        self.uploaded = 0         # scans uploaded this session
+        self.next_retry = 0.0     # when the next retry happens after a failure
+        self.n_pending = len(self._read_queue())
         self.thread = threading.Thread(target=self._run, daemon=True)
         self.thread.start()
 
@@ -202,6 +206,7 @@ class SheetSync:
                 fh.write(json.dumps(row) + "\n")
                 fh.flush()
                 os.fsync(fh.fileno())
+            self.n_pending += 1
         self.wake.set()
 
     def _drop_sent(self, n):
@@ -214,10 +219,24 @@ class SheetSync:
                 fh.flush()
                 os.fsync(fh.fileno())
             os.replace(tmp, self.queue_path)
+            self.n_pending = len(remaining)
 
     def pending(self):
-        with self.lock:
-            return len(self._read_queue())
+        return self.n_pending
+
+    def summary(self):
+        """(status line, detail line) for the top of the screen."""
+        n = self.n_pending
+        if n == 0:
+            line = "up to date"
+            if self.last_ok:
+                line += f" - last upload {self.last_ok} ({self.uploaded} this session)"
+            return line, ""
+        if not self.last_error:
+            return f"uploading {n} scan(s)...", ""
+        wait = max(0, int(self.next_retry - time.time() + 0.99))
+        return (f"NOT UPLOADING - {n} waiting, next try in {wait}s",
+                f"reason: {self.last_error}")
 
     # -- network --
     def _post(self, rows):
@@ -243,18 +262,17 @@ class SheetSync:
             with self.lock:
                 batch = self._read_queue()[:UPLOAD_BATCH]
             if not batch:
-                self.status = "up to date"
                 self.wake.wait(30)
                 self.wake.clear()
                 continue
             try:
                 self._post(batch)
                 self._drop_sent(len(batch))
-                self.status = "up to date"
+                self.uploaded += len(batch)
+                self.last_ok = datetime.now().strftime("%H:%M:%S")
                 self.last_error = ""
                 backoff = 2
             except (urllib.error.URLError, OSError, RuntimeError, ValueError) as exc:
-                self.status = "offline - will retry"
                 reason = getattr(exc, "reason", exc)
                 if isinstance(reason, ssl.SSLCertVerificationError):
                     # Common on macOS with python.org installers.
@@ -262,6 +280,7 @@ class SheetSync:
                                        "'Install Certificates.command' in your Python folder")
                 else:
                     self.last_error = str(reason)[:120]
+                self.next_retry = time.time() + backoff
                 self.wake.wait(backoff)
                 self.wake.clear()
                 backoff = min(backoff * 2, 60)
@@ -285,33 +304,88 @@ def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
+SCREEN_LOCK = threading.Lock()
+
+
+def enable_ansi():
+    """Turn on cursor-positioning escape codes. Needed on Windows 10/11;
+    macOS and Linux terminals support them already."""
+    if not sys.stdout.isatty() or os.environ.get("TERM") == "dumb":
+        return False
+    if os.name != "nt":
+        return True
+    try:
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        handle = k32.GetStdHandle(-11)  # STD_OUTPUT_HANDLE
+        mode = ctypes.c_uint32()
+        if not k32.GetConsoleMode(handle, ctypes.byref(mode)):
+            return False
+        return bool(k32.SetConsoleMode(handle, mode.value | 0x0004))  # VT processing
+    except Exception:
+        return False
+
+
+class SheetStatusTicker:
+    """Rewrites the two Google Sheet lines at the top of the screen once a
+    second, so the upload status is live without waiting for the next scan.
+    The cursor is saved and restored, so typing/scanning is not disturbed."""
+
+    def __init__(self, sync):
+        self.sync = sync
+        self.row = None       # screen row of the status line, None = not shown
+        self.shown = None
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def _run(self):
+        while True:
+            time.sleep(1)
+            with SCREEN_LOCK:
+                if self.row is None:
+                    continue
+                lines = sheet_lines(self.sync)
+                if lines == self.shown:
+                    continue
+                out = "\x1b7"  # save cursor
+                for i, text in enumerate(lines):
+                    out += f"\x1b[{self.row + i};1H\x1b[2K{text}"
+                out += "\x1b8"  # restore cursor
+                sys.stdout.write(out)
+                sys.stdout.flush()
+                self.shown = lines
+
+
+def sheet_lines(sync):
+    status, detail = sync.summary()
+    return (f"  GOOGLE SHEET: {status}"[:SCREEN_WIDTH],
+            (f"                {detail}" if detail else "")[:SCREEN_WIDTH])
+
+
 def file_status(log):
     if log.held:
         return f"  !! {len(log.held)} scan(s) NOT yet written - {log.error}"
     return ""
 
 
-def draw(floor, log, backup, sync, total, recent, message):
-    clear_screen()
-    width = 72
-    print("=" * width)
-    print(f"  FLOOR:        {floor}")
-    print(f"  WRITING TO:   {log.path}")
+def draw(floor, log, backup, sync, ticker, total, recent, message):
+    width = SCREEN_WIDTH
+    lines = ["=" * width, f"  FLOOR:        {floor}", f"  WRITING TO:   {log.path}"]
     if file_status(log):
-        print("  " + file_status(log))
-    print(f"  BACKUP:       {backup.path}")
+        lines.append("  " + file_status(log))
+    lines.append(f"  BACKUP:       {backup.path}")
     if file_status(backup):
-        print("  " + file_status(backup))
+        lines.append("  " + file_status(backup))
+    sheet_row = len(lines) + 1  # screen rows are 1-based
     if sync:
-        pend = sync.pending()
-        line = f"  GOOGLE SHEET: {sync.status}"
-        if pend:
-            line += f"  ({pend} waiting to upload)"
-        print(line)
-        if sync.last_error:
-            print(f"                last error: {sync.last_error}")
+        sheet = sheet_lines(sync)
+        lines.extend(sheet)
     else:
-        print("  GOOGLE SHEET: off (CSV only)")
+        lines.append("  GOOGLE SHEET: off (CSV only)")
+    with SCREEN_LOCK:
+        clear_screen()
+        print("\n".join(lines))
+        if ticker:
+            ticker.row, ticker.shown = sheet_row, sheet
     print(f"  SCANS IN FILE: {total}")
     print("=" * width)
     print("  Scan a tag.  Type 'f' + Enter to change floor, 'q' + Enter to quit.")
@@ -405,6 +479,8 @@ def main():
             sys.exit(1)
         sync = SheetSync(url, str(cfg.get("sheets_token", "")), csv_path + ".pending.jsonl")
 
+    ticker = SheetStatusTicker(sync) if sync and enable_ansi() else None
+
     floor = ask_floor(floors)
     total = log.count_rows()
     recent = deque(maxlen=10)
@@ -415,7 +491,7 @@ def main():
 
     try:
         while True:
-            draw(floor, log, backup, sync, total, recent, message)
+            draw(floor, log, backup, sync, ticker, total, recent, message)
             try:
                 raw = input("Scan > ")
             except EOFError:
@@ -428,6 +504,9 @@ def main():
             if low in QUIT_WORDS:
                 break
             if low in FLOOR_WORDS:
+                if ticker:
+                    with SCREEN_LOCK:
+                        ticker.row = None
                 floor = ask_floor(floors)
                 message = f"Floor changed. Logging floor {floor}."
                 continue
@@ -467,6 +546,9 @@ def main():
     except KeyboardInterrupt:
         pass
 
+    if ticker:
+        with SCREEN_LOCK:
+            ticker.row = None
     print("\nClosing...")
     for f in (log, backup):
         if f.held:

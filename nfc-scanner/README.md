@@ -108,6 +108,25 @@ You don't need a Google Cloud project or service account.
 5. Copy the **Web app URL** (it ends in `/exec`).
 6. On every scanner PC, put that URL in `nfc_config.json` as `sheets_webhook_url`, and the same token as `sheets_token`.
 
+### How often it uploads
+
+Each scan is sent as soon as it's made, usually within a second. The **GOOGLE SHEET** line at the top
+of the screen updates every second:
+
+| Shows | Meaning |
+|---|---|
+| `up to date - last upload 14:03:22 (12 this session)` | Everything is in the sheet |
+| `uploading 1 scan(s)...` | A scan is on its way (normal for a moment after each scan) |
+| `NOT UPLOADING - 3 waiting, next try in 8s` + `reason: ...` | Google can't be reached or rejected the upload. The scans are safe in both CSVs and the queue. It retries after 2s, then 4s, 8s and so on up to every 60s. |
+
+If it stays on **NOT UPLOADING**, the `reason` line says why:
+
+- `bad token`: `sheets_token` doesn't match `SHARED_TOKEN` in the Apps Script.
+- `unexpected reply from Google`: the web app isn't deployed with **Who has access: Anyone**, or the URL isn't
+  the `/exec` URL. Paste the URL into a browser: it should show `{"ok":true,"message":"NFC scan logger endpoint is running"}`.
+- `Not Found`: the URL is wrong or the deployment was deleted.
+- A network error such as `Name or service not known` or `timed out`: the computer is offline.
+
 The rows go into a tab named **Scans** with an extra `received_at` column.
 If you change the script later, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
 
