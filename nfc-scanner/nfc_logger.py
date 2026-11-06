@@ -28,6 +28,7 @@ import csv
 import json
 import os
 import socket
+import ssl
 import sys
 import threading
 import time
@@ -61,7 +62,8 @@ def load_config(path):
         "station_name": socket.gethostname(),
         "sheets_webhook_url": "",
         "sheets_token": "",
-        "debounce_seconds": 3,
+        "debounce_seconds": 10,
+        "floors": ["G", "2", "10", "12"],
     }
     if path and os.path.exists(path):
         with open(path, "r", encoding="utf-8") as fh:
@@ -199,7 +201,13 @@ class SheetSync:
                 backoff = 2
             except (urllib.error.URLError, OSError, RuntimeError, ValueError) as exc:
                 self.status = "offline - will retry"
-                self.last_error = str(getattr(exc, "reason", exc))[:120]
+                reason = getattr(exc, "reason", exc)
+                if isinstance(reason, ssl.SSLCertVerificationError):
+                    # Common on macOS with python.org installers.
+                    self.last_error = ("SSL certificates missing - on Mac run "
+                                       "'Install Certificates.command' in your Python folder")
+                else:
+                    self.last_error = str(reason)[:120]
                 self.wake.wait(backoff)
                 self.wake.clear()
                 backoff = min(backoff * 2, 60)
@@ -259,18 +267,28 @@ def draw(floor, csv_path, sync, total, recent, message):
 # Prompts
 # --------------------------------------------------------------------------
 
-def ask_floor():
+def match_floor(text, floors):
+    """Return the canonical floor name for what was typed, or None."""
+    text = text.strip().lower()
+    for f in floors:
+        if text == f.lower():
+            return f
+    return None
+
+
+def ask_floor(floors):
     clear_screen()
+    choices = ", ".join(floors)
     while True:
-        raw = input("Which floor are you scanning from? Enter the floor number: ").strip()
-        if not raw:
+        raw = input(f"Which floor are you scanning from? ({choices}): ")
+        floor = match_floor(raw, floors)
+        if floor is None:
+            if raw.strip():
+                print(f"  '{raw.strip()}' is not a floor. Choose one of: {choices}")
             continue
-        if len(raw) > MAX_FLOOR_LEN or not raw.replace("-", "").isalnum():
-            print("  Please enter a floor number (e.g. 3, or B1 for a basement).")
-            continue
-        confirm = input(f"Scanning from floor {raw}. Type the floor number again to confirm: ").strip()
-        if confirm.lower() == raw.lower():
-            return raw
+        confirm = input(f"Scanning from floor {floor}. Type {floor} again to confirm: ")
+        if match_floor(confirm, floors) == floor:
+            return floor
         print("  That didn't match - let's try again.\n")
 
 
@@ -295,6 +313,9 @@ def main():
     csv_path = resolve_path(cfg["csv_path"])
     station = str(cfg["station_name"])[:64]
     debounce = float(cfg.get("debounce_seconds") or 0)
+    floors = [str(f).strip()[:MAX_FLOOR_LEN] for f in (cfg.get("floors") or []) if str(f).strip()]
+    if not floors:
+        sys.exit('"floors" in the config must list at least one floor')
 
     log = CsvLog(csv_path)
 
@@ -302,13 +323,15 @@ def main():
     url = (cfg.get("sheets_webhook_url") or "").strip()
     if url and not args.no_sheets:
         if not url.startswith("https://"):
-            sys.exit("sheets_webhook_url must start with https://")
+            print("sheets_webhook_url must start with https://")
+            pause_if_double_clicked()
+            sys.exit(1)
         sync = SheetSync(url, str(cfg.get("sheets_token", "")), csv_path + ".pending.jsonl")
 
-    floor = ask_floor()
+    floor = ask_floor(floors)
     total = log.count_rows()
     recent = deque(maxlen=10)
-    last_tag, last_time = None, 0.0
+    last_seen = {}  # (floor, tag) -> time of last logged scan
     message = f"Ready. Logging floor {floor}."
 
     try:
@@ -326,7 +349,7 @@ def main():
             if low in QUIT_WORDS:
                 break
             if low in FLOOR_WORDS:
-                floor = ask_floor()
+                floor = ask_floor(floors)
                 message = f"Floor changed. Logging floor {floor}."
                 continue
             if len(tag) > MAX_TAG_LEN or any(ord(c) < 32 for c in tag):
@@ -334,10 +357,12 @@ def main():
                 continue
 
             now = time.time()
-            if debounce and tag == last_tag and now - last_time < debounce:
-                message = f"Duplicate of the last scan within {debounce:g}s - ignored."
+            key = (floor, tag)
+            if debounce and now - last_seen.get(key, 0.0) < debounce:
+                message = f"Same tag scanned again within {debounce:g}s - ignored."
                 continue
-            last_tag, last_time = tag, now
+            last_seen = {k: t for k, t in last_seen.items() if now - t < debounce}
+            last_seen[key] = now
 
             local = datetime.now().astimezone()
             ts_local = local.strftime("%Y-%m-%d %H:%M:%S")
@@ -362,6 +387,17 @@ def main():
             print(f"{left} scan(s) not yet uploaded to Google Sheets. They are saved")
             print("and will upload automatically next time the program runs.")
     print(f"All scans are saved in {csv_path}")
+    pause_if_double_clicked()
+
+
+def pause_if_double_clicked():
+    """On Windows a double-clicked script's window closes instantly; keep it
+    open so the closing messages can be read."""
+    if os.name == "nt" and sys.stdin and sys.stdin.isatty():
+        try:
+            input("Press Enter to close this window.")
+        except (EOFError, KeyboardInterrupt):
+            pass
 
 
 if __name__ == "__main__":

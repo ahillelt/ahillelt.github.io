@@ -4,5 +4,6 @@
   "station_name": "Lobby-Scanner-1",
   "sheets_webhook_url": "",
   "sheets_token": "",
-  "debounce_seconds": 3
+  "debounce_seconds": 10,
+  "floors": ["G", "2", "10", "12"]
 }

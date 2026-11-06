@@ -17,7 +17,8 @@ The program reads each line, adds a timestamp, the floor and the station name, a
    network is down, the scan waits in a queue file (`<csv>.pending.jsonl`) and uploads
    automatically once the network is back, even after a restart.
 
-At startup it asks which floor you're scanning from and has you type the number again to confirm.
+At startup it asks which floor you're scanning from (**G, 2, 10 or 12**) and has you type it again to confirm.
+Anything else is rejected, and `g` is accepted for `G`.
 The top of the screen always shows the floor, the CSV file it's writing to, the Google Sheet
 status and the number of scans in the file.
 
@@ -32,15 +33,20 @@ status and the number of scans in the file.
 
 ## Running it
 
-```bash
-python nfc_logger.py
-```
+Install Python 3 first if the computer doesn't have it (https://www.python.org/downloads/).
+On Windows, tick **"Add python.exe to PATH"** in the installer.
 
-On Windows you can double-click `nfc_logger.py`, or run `py nfc_logger.py`.
+| Computer | To start |
+|---|---|
+| Windows | Double-click `start_windows.bat` |
+| Mac | Double-click `start_mac.command`. The first time, macOS may block it: right-click it, choose **Open**, then **Open** again. |
+| Linux | Run `./start_linux.sh` in a terminal |
+
+You can also run `python3 nfc_logger.py` (or `py nfc_logger.py` on Windows) from a terminal.
 
 - **Keep the program window focused** (clicked on) while scanning. The reader types into whichever window is active.
 - Type `f` and press Enter to change floor. Type `q` and press Enter to quit (Ctrl+C also works).
-- Scanning the same tag twice within `debounce_seconds` (default 3) is ignored as an accidental double read. Set it to `0` to turn this off.
+- If the same tag is scanned again on the same floor within `debounce_seconds` (default 10), the repeat is ignored. Other tags scanned in between don't reset this. Set it to `0` to log every read.
 
 Options: `--csv PATH`, `--station NAME`, `--no-sheets`, `--config PATH`.
 
@@ -54,9 +60,12 @@ Copy `nfc_config.example.json` to `nfc_config.json` next to the script and edit 
   "station_name": "Lobby-Scanner-1",
   "sheets_webhook_url": "",
   "sheets_token": "",
-  "debounce_seconds": 3
+  "debounce_seconds": 10,
+  "floors": ["G", "2", "10", "12"]
 }
 ```
+
+To add or rename floors later, edit the `floors` list.
 
 Give each scanner PC its own `station_name` so you can tell in the sheet where each scan came from.
 Without a config file, the program writes `nfc_scans.csv` next to the script and uses the computer name as the station.
@@ -81,6 +90,15 @@ If you change the script later, use **Deploy → Manage deployments → Edit →
 **Security note:** "Anyone" means anyone who has the URL *and* the token can add rows.
 They can't read the sheet. Treat the token like a password, and don't commit `nfc_config.json`.
 This folder's `.gitignore` already excludes it, along with the CSV and queue files.
+
+## Troubleshooting
+
+- **Google Sheet status says "SSL certificates missing" (Mac):** open the Python folder in
+  Applications and double-click **Install Certificates.command**, then restart the logger.
+  Scans waiting to upload are kept and will upload then.
+- **Nothing happens when scanning:** click on the logger window so it's the active window.
+  Test the reader by scanning into a text editor: you should see the ID typed out.
+- **Windows says "Python was not found":** reinstall Python and tick "Add python.exe to PATH".
 
 ## Reader setup
 
